@@ -7,7 +7,7 @@
 /* ---- Site settings: edit these ---- */
 const SITE = {
   // Where "Contact" links and the subscribe fallback go.
-  contactEmail: "hello@pelagicresearch.com",
+  contactEmail: "ethan.jin@stern.nyu.edu",
   // Optional: a newsletter form endpoint (Buttondown, Formspree, Substack…).
   // Leave empty and the subscribe form opens a pre-filled email instead.
   subscribeAction: "",

@@ -22,7 +22,7 @@
      thesis       array of key thesis points (optional)
      risks        array of key risks (optional)
      pdf          path to the PDF, or "" if not uploaded yet
-     author       optional
+     author       optional, e.g. "Ethan Jin"
 
    Template:
    {

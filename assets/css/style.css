@@ -414,3 +414,18 @@ section.tight { padding: 56px 0; }
   .reveal { opacity: 1; transform: none; transition: none; }
   * { transition: none !important; }
 }
+
+/* ---------- About: profile card ---------- */
+
+.profile {
+  background: var(--brand); color: #fff; border-radius: 20px; padding: 32px;
+  position: relative; overflow: hidden;
+}
+.profile-mark { position: absolute; right: -40px; top: -20px; width: 260px; opacity: .14; pointer-events: none; }
+.profile dl { margin: 0; display: grid; gap: 22px; position: relative; }
+.profile dl > div { display: grid; gap: 10px; }
+.profile dl > div + div { padding-top: 22px; border-top: 1px solid rgba(255, 255, 255, .2); }
+.profile dt { font-size: .72rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: rgba(255, 255, 255, .7); }
+.profile dd { margin: 0; font-weight: 600; line-height: 1.4; }
+.profile dd span { display: block; font-weight: 400; font-size: .92rem; color: rgba(255, 255, 255, .8); margin-top: 2px; }
+.profile a { color: #fff; }
