@@ -6,13 +6,12 @@
 
 /* ---- Site settings: edit these ---- */
 const SITE = {
-  // Where "Contact" links and the subscribe fallback go.
+  // Where "Contact" links go.
   contactEmail: "ethan.jin@stern.nyu.edu",
-  // Optional: a newsletter form endpoint (Buttondown, Formspree, Substack…).
-  // Leave empty and the subscribe form opens a pre-filled email instead.
-  subscribeAction: "",
-  // Name of the email field your newsletter provider expects.
-  subscribeField: "email",
+  // Your Buttondown username (buttondown.com → Settings). Sign-ups from the
+  // subscribe form go to your Buttondown list. While empty, the form tells
+  // visitors to email you instead.
+  buttondownUsername: "",
 };
 
 const SECTORS = {
@@ -279,17 +278,30 @@ function setupSubscribe() {
   const form = $("#subscribe");
   if (!form) return;
   const input = form.querySelector("input");
-  if (SITE.subscribeAction) {
-    form.action = SITE.subscribeAction;
-    form.method = "post";
-    input.name = SITE.subscribeField;
-    return;
-  }
-  form.addEventListener("submit", (e) => {
+  const button = form.querySelector("button");
+  const status = $("#subscribe-status");
+  const say = (msg) => { status.textContent = msg; };
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const subject = encodeURIComponent("Subscribe to Pelagic Research");
-    const body = encodeURIComponent(`Please add ${input.value} to the monthly report list.`);
-    location.href = `mailto:${SITE.contactEmail}?subject=${subject}&body=${body}`;
+    if (!SITE.buttondownUsername) {
+      say(`Email sign-ups open soon. For now, email ${SITE.contactEmail} and I'll add you to the list.`);
+      return;
+    }
+    const endpoint = `https://buttondown.com/api/emails/embed-subscribe/${encodeURIComponent(SITE.buttondownUsername)}`;
+    button.disabled = true;
+    say("Subscribing…");
+    try {
+      // Buttondown's embed endpoint doesn't allow reading the response cross-site,
+      // so a completed request is treated as success.
+      await fetch(endpoint, { method: "POST", mode: "no-cors", body: new FormData(form) });
+      form.reset();
+      say("Thanks. Check your inbox for an email to confirm your subscription.");
+    } catch {
+      say(`That didn't go through. Check your connection and try again, or email ${SITE.contactEmail}.`);
+    } finally {
+      button.disabled = false;
+    }
   });
 }
 

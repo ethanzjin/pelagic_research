@@ -1,6 +1,6 @@
 # Pelagic Research
 
-Website for **Pelagic Research**, an independent equity research publication covering marine, energy and sustainability stocks. One report per month.
+Website for **Pelagic Research**, an independent equity research publication covering marine, energy and sustainability stocks. One to two reports per month.
 
 Plain HTML/CSS/JS: no build step and no dependencies. Open `index.html` in a browser, or serve the folder:
 
@@ -8,7 +8,7 @@ Plain HTML/CSS/JS: no build step and no dependencies. Open `index.html` in a bro
 python3 -m http.server 8000   # then visit http://localhost:8000
 ```
 
-## Publishing a monthly report
+## Publishing a report
 
 1. Put the PDF in `reports/`, e.g. `reports/2026-11-xyz.pdf`.
 2. Open `assets/js/reports.js` and add an entry to the **top** of the list (a template and a field guide are in the comment at the top of that file).
@@ -21,7 +21,7 @@ The homepage "Latest report" card, the list of earlier reports, the research arc
 At the top of `assets/js/site.js`:
 
 - `contactEmail`: the address used by every "Contact" link.
-- `subscribeAction` / `subscribeField`: paste a newsletter form endpoint (Buttondown, Formspree, Substack, etc.). If you leave it empty, the subscribe form opens a pre-filled email to `contactEmail`.
+- `buttondownUsername`: your Buttondown username. Sign-ups from the subscribe form go to your Buttondown list. While it is empty, the form asks visitors to email you instead.
 
 ## Structure
 
