@@ -410,3 +410,22 @@ section.tight { padding: 56px 0; }
 .profile dd { margin: 0; font-weight: 600; line-height: 1.4; }
 .profile dd span { display: block; font-weight: 400; font-size: .92rem; color: rgba(255, 255, 255, .8); margin-top: 2px; }
 .profile a { color: #fff; }
+
+/* ---------- Get in touch ---------- */
+
+.contact {
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%);
+  border-radius: 24px; padding: 56px; color: #fff;
+  display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: center;
+  position: relative; overflow: hidden;
+}
+.contact > img { position: absolute; right: -60px; bottom: -40px; width: 380px; opacity: .12; pointer-events: none; }
+.contact-text { position: relative; min-width: 0; }
+.contact h2 { color: #fff; }
+.contact p { color: rgba(255, 255, 255, .85); margin: 0; max-width: 34em; }
+.contact-links { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; position: relative; }
+.contact-links .btn { overflow-wrap: anywhere; }
+@media (max-width: 860px) {
+  .contact { grid-template-columns: 1fr; padding: 36px 26px; gap: 24px; }
+  .contact-links { justify-content: flex-start; }
+}
