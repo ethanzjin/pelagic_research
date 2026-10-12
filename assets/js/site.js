@@ -6,13 +6,8 @@
 
 /* ---- Site settings: edit these ---- */
 const SITE = {
-  // Where "Contact" links and the subscribe fallback go.
+  // Where "Contact" links go.
   contactEmail: "ethan.jin@stern.nyu.edu",
-  // Optional: a newsletter form endpoint (Buttondown, Formspree, Substack…).
-  // Leave empty and the subscribe form opens a pre-filled email instead.
-  subscribeAction: "",
-  // Name of the email field your newsletter provider expects.
-  subscribeField: "email",
 };
 
 const SECTORS = {
@@ -116,7 +111,7 @@ function renderLatest() {
   if (!r) {
     el.innerHTML = `<div class="feature-body"><span class="eyebrow">Latest report</span>
       <h2>No reports yet</h2>
-      <p class="summary">The first report is being written. Subscribe below to get it by email when it comes out.</p></div>`;
+      <p class="summary">The first report is being written and will be posted here when it's done.</p></div>`;
     el.style.display = "block";
     return;
   }
@@ -275,24 +270,6 @@ function setupContact() {
   });
 }
 
-function setupSubscribe() {
-  const form = $("#subscribe");
-  if (!form) return;
-  const input = form.querySelector("input");
-  if (SITE.subscribeAction) {
-    form.action = SITE.subscribeAction;
-    form.method = "post";
-    input.name = SITE.subscribeField;
-    return;
-  }
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const subject = encodeURIComponent("Subscribe to Pelagic Research");
-    const body = encodeURIComponent(`Please add ${input.value} to the monthly report list.`);
-    location.href = `mailto:${SITE.contactEmail}?subject=${subject}&body=${body}`;
-  });
-}
-
 let revealObserver;
 function observeReveals() {
   const items = document.querySelectorAll(".reveal:not(.in)");
@@ -312,7 +289,6 @@ function observeReveals() {
 document.addEventListener("DOMContentLoaded", () => {
   setupNav();
   setupContact();
-  setupSubscribe();
   renderLatest();
   renderRecent();
   renderArchive();

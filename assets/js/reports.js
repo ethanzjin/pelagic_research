@@ -1,5 +1,5 @@
 /* =========================================================
-   REPORT LIBRARY — the only file you need to edit each month.
+   REPORT LIBRARY — the only file you need to edit to publish a report.
 
    To publish a new report:
      1. Drop the PDF into /reports  (e.g. reports/2026-11-ticker.pdf)
