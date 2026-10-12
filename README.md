@@ -21,12 +21,11 @@ The homepage "Latest report" card, the list of earlier reports, the research arc
 At the top of `assets/js/site.js`:
 
 - `contactEmail`: the address used by every "Contact" link.
-- `buttondownUsername`: your Buttondown username. Sign-ups from the subscribe form go to your Buttondown list. While it is empty, the form asks visitors to email you instead.
 
 ## Structure
 
 ```
-index.html        Home: hero, latest report, sectors, earlier reports, subscribe
+index.html        Home: hero, latest report, about me, sectors, earlier reports, process
 research.html     Full archive with sector filter and search
 report.html       Report detail page (summary, thesis, risks, embedded PDF)
 about.html        Mission, methodology, rating definitions, disclaimer

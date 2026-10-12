@@ -8,10 +8,6 @@
 const SITE = {
   // Where "Contact" links go.
   contactEmail: "ethan.jin@stern.nyu.edu",
-  // Your Buttondown username (buttondown.com → Settings). Sign-ups from the
-  // subscribe form go to your Buttondown list. While empty, the form tells
-  // visitors to email you instead.
-  buttondownUsername: "",
 };
 
 const SECTORS = {
@@ -115,7 +111,7 @@ function renderLatest() {
   if (!r) {
     el.innerHTML = `<div class="feature-body"><span class="eyebrow">Latest report</span>
       <h2>No reports yet</h2>
-      <p class="summary">The first report is being written. Subscribe below to get it by email when it comes out.</p></div>`;
+      <p class="summary">The first report is being written and will be posted here when it's done.</p></div>`;
     el.style.display = "block";
     return;
   }
@@ -274,37 +270,6 @@ function setupContact() {
   });
 }
 
-function setupSubscribe() {
-  const form = $("#subscribe");
-  if (!form) return;
-  const input = form.querySelector("input");
-  const button = form.querySelector("button");
-  const status = $("#subscribe-status");
-  const say = (msg) => { status.textContent = msg; };
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    if (!SITE.buttondownUsername) {
-      say(`Email sign-ups open soon. For now, email ${SITE.contactEmail} and I'll add you to the list.`);
-      return;
-    }
-    const endpoint = `https://buttondown.com/api/emails/embed-subscribe/${encodeURIComponent(SITE.buttondownUsername)}`;
-    button.disabled = true;
-    say("Subscribing…");
-    try {
-      // Buttondown's embed endpoint doesn't allow reading the response cross-site,
-      // so a completed request is treated as success.
-      await fetch(endpoint, { method: "POST", mode: "no-cors", body: new FormData(form) });
-      form.reset();
-      say("Thanks. Check your inbox for an email to confirm your subscription.");
-    } catch {
-      say(`That didn't go through. Check your connection and try again, or email ${SITE.contactEmail}.`);
-    } finally {
-      button.disabled = false;
-    }
-  });
-}
-
 let revealObserver;
 function observeReveals() {
   const items = document.querySelectorAll(".reveal:not(.in)");
@@ -324,7 +289,6 @@ function observeReveals() {
 document.addEventListener("DOMContentLoaded", () => {
   setupNav();
   setupContact();
-  setupSubscribe();
   renderLatest();
   renderRecent();
   renderArchive();
