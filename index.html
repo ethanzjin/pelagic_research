@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Pelagic Research — Independent Marine, Energy & Sustainability Equity Research</title>
-  <meta name="description" content="Independent equity research on marine, energy and sustainability stocks. One in-depth report published every month.">
+  <title>Pelagic Research</title>
+  <meta name="description" content="Independent equity research on marine, energy and sustainability companies. One report a month.">
   <meta name="theme-color" content="#4248ed">
-  <meta property="og:title" content="Pelagic Research — Independent Marine, Energy & Sustainability Equity Research">
-  <meta property="og:description" content="Independent equity research on marine, energy and sustainability stocks. One in-depth report published every month.">
+  <meta property="og:title" content="Pelagic Research">
+  <meta property="og:description" content="Independent equity research on marine, energy and sustainability companies. One report a month.">
   <meta property="og:image" content="assets/img/og-image.png">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
@@ -43,11 +43,11 @@
   <div class="container">
     <div>
       <span class="eyebrow">Independent equity research</span>
-      <h1>Deep-water research on the companies moving the blue economy.</h1>
-      <p class="lede">Pelagic Research publishes one in-depth equity report every month on listed companies across shipping &amp; ocean industries, energy, and the transition to a sustainable economy.</p>
+      <h1>Equity research on marine, energy and sustainability companies</h1>
+      <p class="lede">Pelagic Research publishes one report a month on a listed company in shipping, offshore, energy or clean technology. Each report ends with a rating and a 12-month price target.</p>
       <div class="hero-actions">
         <a class="btn btn-light" href="research.html">Browse research</a>
-        <a class="btn btn-ghost" href="#subscribe-section">Get the monthly report</a>
+        <a class="btn btn-ghost" href="#subscribe-section">Subscribe</a>
       </div>
     </div>
     <img class="hero-logo" src="assets/img/logo-white.png" alt="Pelagic Research manta ray logo" width="1200" height="625">
@@ -65,56 +65,39 @@
   <div class="container">
     <div class="section-head">
       <div>
-        <span class="eyebrow">Coverage</span>
-        <h2>Three currents, one ocean.</h2>
-        <p>We focus where we have an edge: industries tied to the sea, the energy that powers the world, and the capital flowing toward sustainability.</p>
+        <h2>Sectors covered</h2>
       </div>
     </div>
     <div class="sectors">
       <a class="sector marine reveal" href="research.html?sector=marine" style="text-decoration:none;color:inherit">
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18c1.5 1 3 1.5 4.5 1.5S9.5 19 11 18s3-1.5 4.5-1.5S18.5 17 20 18s1.5.8 2 1"/><path d="M4 15l-1-5h18l-2 5"/><path d="M12 10V4"/><path d="M8 10V7h8v3"/></svg></div>
         <h3>Marine</h3>
-        <p>Shipping, ports, offshore services, shipbuilding, aquaculture and the wider ocean economy.</p>
-        <ul><li>Tankers &amp; dry bulk</li><li>Containers</li><li>Offshore</li><li>Aquaculture</li></ul>
+        <p>Shipping, ports, offshore services, shipbuilding and aquaculture.</p>
+        <ul><li>Tankers and dry bulk</li><li>Containers</li><li>Offshore</li><li>Aquaculture</li></ul>
       </a>
       <a class="sector energy reveal" href="research.html?sector=energy" style="text-decoration:none;color:inherit">
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg></div>
         <h3>Energy</h3>
-        <p>Oil &amp; gas, LNG, utilities, power infrastructure and the services that keep energy flowing.</p>
+        <p>Oil and gas, LNG, utilities and power infrastructure.</p>
         <ul><li>LNG</li><li>Upstream</li><li>Midstream</li><li>Utilities</li></ul>
       </a>
       <a class="sector sustainability reveal" href="research.html?sector=sustainability" style="text-decoration:none;color:inherit">
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 4 13c0-5 4-9 16-10-1 12-5 16-10 16"/><path d="M4 21c3-5 6-8 10-10"/></svg></div>
         <h3>Sustainability</h3>
-        <p>Offshore wind, renewables, alternative fuels, carbon capture and decarbonisation technology.</p>
+        <p>Offshore wind, solar, alternative fuels and carbon capture.</p>
         <ul><li>Offshore wind</li><li>Green fuels</li><li>Storage</li><li>Carbon</li></ul>
       </a>
     </div>
   </div>
 </section>
 
-<section class="bg-abyss tight">
+<section class="bg-surface" id="recent-section">
   <div class="container">
     <div class="section-head">
       <div>
-        <span class="eyebrow" style="color:#9aa0ff">Publication log</span>
-        <h2>One report. Every month.</h2>
-        <p style="color:rgba(223,226,247,.7)">A rolling twelve-month record of what we've published. <span id="report-count">0</span> reports in the library so far.</p>
+        <h2>Earlier reports</h2>
       </div>
-    </div>
-    <div class="calendar" id="calendar"></div>
-    <div class="cal-legend"><span class="l-done">Published</span><span class="l-current">This month</span><span class="l-open">No report</span></div>
-  </div>
-</section>
-
-<section class="bg-surface">
-  <div class="container">
-    <div class="section-head">
-      <div>
-        <span class="eyebrow">Library</span>
-        <h2>Recent research</h2>
-      </div>
-      <a class="btn btn-outline" href="research.html">View all reports →</a>
+      <a class="btn btn-outline" href="research.html">All reports</a>
     </div>
     <div class="report-grid" id="recent"></div>
   </div>
@@ -124,15 +107,14 @@
   <div class="container">
     <div class="section-head">
       <div>
-        <span class="eyebrow">Process</span>
-        <h2>How each report comes together</h2>
+        <h2>How a report gets made</h2>
       </div>
     </div>
     <div class="steps">
-      <div class="step reveal"><h3>Screen</h3><p>Hunt for mispriced names across our three sectors — overlooked, misunderstood, or at an inflection point.</p></div>
-      <div class="step reveal"><h3>Dive</h3><p>Primary filings, industry data, fleet and asset-level analysis, and conversations with people in the industry.</p></div>
-      <div class="step reveal"><h3>Model</h3><p>Build an independent operating and valuation model with explicit bull, base and bear scenarios.</p></div>
-      <div class="step reveal"><h3>Publish</h3><p>A clear thesis, a price target, the key risks, and a full PDF — released once a month.</p></div>
+      <div class="step reveal"><h3>Pick a company</h3><p>Look for stocks where the price seems wrong, or where something about the business is about to change.</p></div>
+      <div class="step reveal"><h3>Research</h3><p>Read the annual reports and filings, collect industry data, and talk to people who work in the industry where possible.</p></div>
+      <div class="step reveal"><h3>Model</h3><p>Build a financial model with a bull, base and bear case.</p></div>
+      <div class="step reveal"><h3>Write it up</h3><p>Publish the report with a rating, a price target and the main risks, plus a PDF version.</p></div>
     </div>
   </div>
 </section>
@@ -142,15 +124,15 @@
     <div class="cta">
       <img src="assets/img/mark-white.png" alt="">
       <div>
-        <h2>Surface with us once a month.</h2>
-        <p>Get each new report in your inbox the day it's published. No spam, no noise — just the research.</p>
+        <h2>Get new reports by email</h2>
+        <p>You'll get one email when each report comes out, about once a month.</p>
       </div>
       <div>
         <form class="cta-form" id="subscribe">
           <input type="email" required placeholder="you@example.com" aria-label="Email address">
           <button class="btn btn-light" type="submit">Subscribe</button>
         </form>
-        <p class="cta-note">One email per month. Unsubscribe anytime.</p>
+        <p class="cta-note">You can unsubscribe at any time.</p>
       </div>
     </div>
   </div>
@@ -161,7 +143,7 @@
     <div class="footer-grid">
       <div>
         <img class="footer-logo" src="assets/img/logo-white.png" alt="Pelagic Research" width="220">
-        <p>Independent equity research on the companies working the open ocean, powering the world and building a more sustainable economy. One deep-dive report, every month.</p>
+        <p>Independent equity research on marine, energy and sustainability companies. One report a month.</p>
       </div>
       <div>
         <h4>Research</h4>

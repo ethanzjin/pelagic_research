@@ -325,28 +325,6 @@ section.tight { padding: 56px 0; }
 }
 .search:focus { outline: 2px solid var(--brand); outline-offset: 1px; }
 
-/* ---------- Publication calendar ---------- */
-
-.calendar { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; }
-.month {
-  aspect-ratio: 1 / 1.15; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .14);
-  display: flex; flex-direction: column; justify-content: space-between; padding: 10px;
-  font-size: .75rem; color: rgba(255, 255, 255, .55); text-decoration: none;
-  background: rgba(255, 255, 255, .03);
-}
-.month .m { font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
-.month .t { font-family: ui-monospace, Menlo, monospace; font-size: .72rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.month.done { background: var(--brand); border-color: var(--brand); color: #fff; }
-.month.done:hover { background: #5a5ff0; color: #fff; }
-.month.current { border: 1.5px dashed rgba(255, 255, 255, .55); color: #fff; }
-.month.future { opacity: .55; }
-@media (max-width: 760px) { .calendar { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; } .month { aspect-ratio: auto; min-height: 64px; padding: 8px; } }
-.cal-legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 16px; font-size: .82rem; color: rgba(223, 226, 247, .7); }
-.cal-legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
-.cal-legend .l-done::before { background: var(--brand); }
-.cal-legend .l-current::before { border: 1.5px dashed rgba(255, 255, 255, .6); }
-.cal-legend .l-open::before { border: 1px solid rgba(255, 255, 255, .25); }
-
 /* ---------- Process / about ---------- */
 
 .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; counter-reset: step; }

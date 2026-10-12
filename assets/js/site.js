@@ -21,8 +21,6 @@ const SECTORS = {
   sustainability: "Sustainability",
 };
 
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
 const reports = (window.PELAGIC_REPORTS || [])
   .slice()
   .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
@@ -100,7 +98,7 @@ function reportCard(r) {
       <p class="summary">${esc(r.summary)}</p>
       <div class="bottom">
         <span>${fmtDate(r.date)}</span>
-        <span>Read report →</span>
+        <span>Read report</span>
       </div>
     </a>`;
 }
@@ -117,8 +115,8 @@ function renderLatest() {
   const r = reports[0];
   if (!r) {
     el.innerHTML = `<div class="feature-body"><span class="eyebrow">Latest report</span>
-      <h2>Our first report is in the works.</h2>
-      <p class="summary">Check back soon — or subscribe below to get it the day it is published.</p></div>`;
+      <h2>No reports yet</h2>
+      <p class="summary">The first report is being written. Subscribe below to get it by email when it comes out.</p></div>`;
     el.style.display = "block";
     return;
   }
@@ -130,7 +128,7 @@ function renderLatest() {
       <h2>${esc(r.title)}</h2>
       <p class="summary">${esc(r.summary)}</p>
       <div class="hero-actions" style="margin-top:20px">
-        <a class="btn btn-primary" href="${reportUrl(r)}">Read the report →</a>
+        <a class="btn btn-primary" href="${reportUrl(r)}">Read the report</a>
         ${r.pdf ? `<a class="btn btn-outline" href="${esc(r.pdf)}" download>Download PDF</a>` : ""}
       </div>
     </div>
@@ -149,35 +147,9 @@ function renderRecent() {
   const el = $("#recent");
   if (!el) return;
   const list = reports.slice(1, 7);
-  el.innerHTML = list.length
-    ? list.map(reportCard).join("")
-    : emptyState("More reports will appear here as the library grows — one new report each month.");
-}
-
-function renderCalendar() {
-  const el = $("#calendar");
-  if (!el) return;
-  const now = new Date();
-  const cells = [];
-  // Rolling 12 months: 11 months back through the current month.
-  for (let i = 11; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-    const hit = reports.find((r) => r.date.startsWith(key));
-    const label = `${MONTHS[d.getMonth()]} ’${String(d.getFullYear()).slice(2)}`;
-    if (hit) {
-      cells.push(`<a class="month done" href="${reportUrl(hit)}" title="${esc(hit.title)}">
-        <span class="m">${label}</span><span class="t">${esc(hit.ticker)}</span></a>`);
-    } else if (i === 0) {
-      cells.push(`<div class="month current"><span class="m">${label}</span><span class="t">In progress</span></div>`);
-    } else {
-      cells.push(`<div class="month"><span class="m">${label}</span><span class="t">—</span></div>`);
-    }
-  }
-  el.innerHTML = cells.join("");
-
-  const count = $("#report-count");
-  if (count) count.textContent = reports.filter((r) => !r.sample).length;
+  // The newest report already has the feature card, so hide this section until there is an older one.
+  $("#recent-section").hidden = !list.length;
+  el.innerHTML = list.map(reportCard).join("");
 }
 
 /* ---------- archive ---------- */
@@ -204,7 +176,7 @@ function renderArchive() {
     if (countEl) countEl.textContent = `${list.length} report${list.length === 1 ? "" : "s"}`;
     el.innerHTML = list.length
       ? list.map(reportCard).join("")
-      : emptyState(reports.length ? "No reports match that filter." : "The first report is on its way.");
+      : emptyState(reports.length ? "No reports match this filter." : "No reports have been published yet.");
     observeReveals();
   }
 
@@ -231,17 +203,17 @@ function renderReport() {
   const hero = $("#report-hero");
 
   if (!r) {
-    hero.innerHTML = `<a class="back-link" href="research.html">← All research</a><h1>Report not found</h1>
-      <p>That report may have moved. Browse the full library instead.</p>`;
-    el.innerHTML = `<p><a class="btn btn-primary" href="research.html">Browse research</a></p>`;
+    hero.innerHTML = `<a class="back-link" href="research.html">← All reports</a><h1>Report not found</h1>
+      <p>This report may have moved. Try the full list of reports instead.</p>`;
+    el.innerHTML = `<p><a class="btn btn-primary" href="research.html">All reports</a></p>`;
     return;
   }
 
-  document.title = `${r.title} — Pelagic Research`;
+  document.title = `${r.title} | Pelagic Research`;
   const up = fmtUpside(r);
 
   hero.innerHTML = `
-    <a class="back-link" href="research.html">← All research</a>
+    <a class="back-link" href="research.html">← All reports</a>
     <div class="meta" style="color:rgba(255,255,255,.8)">${sectorTag(r.sector)} ${sampleTag(r)}<span>${fmtDate(r.date)}</span>${r.author ? `<span>by ${esc(r.author)}</span>` : ""}</div>
     <h1>${esc(r.title)}</h1>
     <p><span class="ticker" style="color:#fff">${esc(r.ticker)}</span> &nbsp;·&nbsp; ${esc(r.company)}</p>`;
@@ -277,7 +249,7 @@ function renderReport() {
         </div>
         ${r.pdf ? `<a class="btn btn-primary" style="justify-content:center" href="${esc(r.pdf)}" download>Download PDF</a>` : ""}
         <p class="muted" style="font-size:.8rem;line-height:1.5;margin:0">
-          For informational and educational purposes only. Not investment advice. See the
+          For information and education only. This is not investment advice. Read the
           <a href="about.html#disclaimer">full disclaimer</a>.
         </p>
       </aside>
@@ -343,7 +315,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupSubscribe();
   renderLatest();
   renderRecent();
-  renderCalendar();
   renderArchive();
   renderReport();
   document.querySelectorAll("[data-year]").forEach((n) => (n.textContent = new Date().getFullYear()));

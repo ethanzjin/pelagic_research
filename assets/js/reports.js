@@ -4,7 +4,7 @@
    To publish a new report:
      1. Drop the PDF into /reports  (e.g. reports/2026-11-ticker.pdf)
      2. Copy the template below to the TOP of the list and fill it in.
-     3. Commit & push. The homepage, archive, calendar and report
+     3. Commit & push. The homepage, archive and report
         page all update automatically.
 
    Field reference
@@ -23,8 +23,6 @@
      risks        array of key risks (optional)
      pdf          path to the PDF, or "" if not uploaded yet
      author       optional
-     sample       true = placeholder entry, shows a "Sample" badge.
-                  Delete the sample entry once your first report is live.
 
    Template:
    {
@@ -46,29 +44,5 @@
    ========================================================= */
 
 window.PELAGIC_REPORTS = [
-  {
-    id: "sample-initiation",
-    title: "Sample Initiation: How a Pelagic Report Is Laid Out",
-    company: "Example Shipping Co.",
-    ticker: "TICKER",
-    sector: "marine",
-    date: "2026-10-01",
-    rating: "Not Rated",
-    price: null,
-    target: null,
-    currency: "USD",
-    summary:
-      "Placeholder entry so you can see how a report appears across the site. Replace it with your first real report by editing assets/js/reports.js — the homepage, archive and publication calendar update automatically.",
-    thesis: [
-      "Your first thesis point — the core reason the market is mispricing the business.",
-      "Second point — a catalyst or structural shift (e.g. fleet renewal, IMO 2030 decarbonisation rules).",
-      "Third point — valuation: what the current price implies versus your estimate.",
-    ],
-    risks: [
-      "Key downside risk — e.g. freight-rate cyclicality or commodity-price exposure.",
-      "Regulatory, execution or balance-sheet risk.",
-    ],
-    pdf: "",
-    sample: true,
-  },
+  // Newest report goes here, at the top.
 ];
