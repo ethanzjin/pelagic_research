@@ -67,13 +67,22 @@
     </div>
 
     <div class="prose" style="margin-top:56px">
-      <h3>Ratings</h3>
-      <ul>
-        <li><span class="rating buy">Buy</span> &nbsp;The shares are expected to deliver a positive total return over the next 12 months.</li>
-        <li><span class="rating hold">Hold</span> &nbsp;The shares look fairly valued at the current price.</li>
-        <li><span class="rating sell">Sell</span> &nbsp;The shares are expected to fall or underperform over the next 12 months.</li>
-        <li><span class="rating nr">Not Rated</span> &nbsp;The report gives no recommendation, for example a report on an industry or theme.</li>
-      </ul>
+      <h3 id="ratings">Ratings</h3>
+      <p>Each rating is based on the expected return over the next 12 months, measured from the reference share price and date noted in the report.</p>
+      <div class="table-wrap">
+        <table class="ratings-table">
+          <thead>
+            <tr><th scope="col">Rating</th><th scope="col">Expected 12-month return</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="rating buy">Buy</span></td><td>Above +20%</td></tr>
+            <tr><td><span class="rating accumulate">Accumulate</span></td><td>+10% to +20%</td></tr>
+            <tr><td><span class="rating hold">Hold</span></td><td>&minus;10% to +10%</td></tr>
+            <tr><td><span class="rating sell">Sell</span></td><td>Below &minus;10%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted">Industry or thematic reports that don't recommend a specific stock are marked <span class="rating nr">Not Rated</span>.</p>
     </div>
   </div>
 </section>

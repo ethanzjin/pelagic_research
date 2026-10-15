@@ -14,8 +14,10 @@
      ticker       e.g. "NYSE: XYZ"
      sector       "marine" | "energy" | "sustainability"
      date         publication date, "YYYY-MM-DD"
-     rating       "Buy" | "Hold" | "Sell" | "Not Rated"
-     price        share price at publication (number, optional)
+     rating       "Buy" | "Accumulate" | "Hold" | "Sell" | "Not Rated"
+                  (thresholds are on the Methodology page)
+     price        reference share price the rating is based on (number, optional)
+     priceDate    date of that reference price, "YYYY-MM-DD" (optional)
      target       12-month price target (number, optional)
      currency     "USD", "EUR", "NOK", ... (optional, default USD)
      summary      2–3 sentence abstract shown on cards
@@ -34,6 +36,7 @@
      date: "2026-11-01",
      rating: "Buy",
      price: 0,
+     priceDate: "2026-11-01",
      target: 0,
      currency: "USD",
      summary: "",

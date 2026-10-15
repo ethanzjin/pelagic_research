@@ -20,6 +20,7 @@
   --sustainability: #2f9e6b;
 
   --buy: #1f9a5c;
+  --accumulate: #5f8f1c;
   --hold: #b98a12;
   --sell: #c8423b;
 
@@ -259,6 +260,7 @@ section.tight { padding: 56px 0; }
   padding: 4px 10px; border-radius: 6px; border: 1.5px solid currentColor; white-space: nowrap;
 }
 .rating.buy { color: var(--buy); }
+.rating.accumulate { color: var(--accumulate); }
 .rating.hold { color: var(--hold); }
 .rating.sell { color: var(--sell); }
 .rating.nr { color: var(--muted); }
@@ -429,3 +431,12 @@ section.tight { padding: 56px 0; }
   .contact { grid-template-columns: 1fr; padding: 36px 26px; gap: 24px; }
   .contact-links { justify-content: flex-start; }
 }
+
+/* ---------- Methodology: ratings table ---------- */
+
+.table-wrap { overflow-x: auto; margin: 0 0 1em; }
+.ratings-table { width: 100%; max-width: 520px; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.ratings-table th, .ratings-table td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+.ratings-table th { font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.ratings-table td:last-child { font-weight: 600; color: var(--abyss); }
+.ratings-table tbody tr:last-child td { border-bottom: 0; }
