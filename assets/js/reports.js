@@ -14,7 +14,8 @@
      ticker       e.g. "NYSE: XYZ"
      sector       "marine" | "energy" | "sustainability"
      date         publication date, "YYYY-MM-DD"
-     rating       "Buy" | "Hold" | "Sell" | "Not Rated"
+     rating       "Buy" | "Accumulate" | "Hold" | "Sell" | "Not Rated"
+                  (thresholds are on the Methodology page)
      price        share price at publication (number, optional)
      target       12-month price target (number, optional)
      currency     "USD", "EUR", "NOK", ... (optional, default USD)

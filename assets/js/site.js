@@ -62,6 +62,7 @@ function fmtUpside(r) {
 function ratingClass(rating = "") {
   const r = rating.toLowerCase();
   if (r.startsWith("buy") || r.includes("outperform")) return "buy";
+  if (r.startsWith("accumulate")) return "accumulate";
   if (r.startsWith("sell") || r.includes("underperform")) return "sell";
   if (r.startsWith("hold") || r.includes("neutral")) return "hold";
   return "nr";
