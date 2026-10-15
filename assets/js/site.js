@@ -238,7 +238,8 @@ function renderReport() {
           <div style="margin-top:14px">
             <div class="kv"><span>Ticker</span><span class="ticker">${esc(r.ticker)}</span></div>
             <div class="kv"><span>Sector</span><span>${esc(SECTORS[r.sector] || r.sector)}</span></div>
-            <div class="kv"><span>Price at publication</span><span>${fmtMoney(r.price, r.currency)}</span></div>
+            <div class="kv"><span>Reference price</span><span>${fmtMoney(r.price, r.currency)}</span></div>
+            ${r.priceDate ? `<div class="kv"><span>Price as of</span><span>${fmtDate(r.priceDate)}</span></div>` : ""}
             <div class="kv"><span>12-mo target</span><span>${fmtMoney(r.target, r.currency)}</span></div>
             <div class="kv"><span>Published</span><span>${fmtDate(r.date)}</span></div>
           </div>
