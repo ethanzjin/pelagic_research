@@ -68,7 +68,7 @@ window.PELAGIC_REPORTS = [
       "New York's Zero Emission Credit program now runs through 2049 and federal nuclear production tax credits run until 2032, giving earnings a policy-backed floor.",
       "Our estimates are conservative. We assume new contracts mostly start in 2029–2031 and enhanced margins stay near average, which puts our 2027 and 2028 EPS about 8% and 14% below consensus. Even our bull case sits below the Street.",
       "At $275.00, CEG trades at 18.8x our 2028E adjusted EPS of $14.65, below its five-year median of about 23x. Applying 22.5x gives a 12-month target of $329.63, so the upside comes from the multiple, not from beating estimates.",
-      "We rate CEG Accumulate rather than Buy because our estimates trail consensus and the recent dip in the share price doesn't appear to have come from a change in fundamentals.",
+      "We rate CEG Accumulate rather than Buy for two reasons: our estimates trail consensus, and the recent dip came without a real change in fundamentals. A stock that can fall that far on sentiment alone is volatile, which makes the path to our target less certain.",
     ],
     risks: [
       "Power prices: each $1/MWh change moves EPS by about $0.45, or roughly $10 per share at a 22.5x multiple.",
