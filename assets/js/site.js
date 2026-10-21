@@ -84,17 +84,17 @@ function reportUrl(r) {
 
 function reportCard(r) {
   return `
-    <a class="report-card reveal" href="${reportUrl(r)}">
+    <a class="report-card" href="${reportUrl(r)}">
       <div class="top">
         <div>${sectorTag(r.sector)} ${sampleTag(r)}</div>
         <span class="rating ${ratingClass(r.rating)}">${esc(r.rating || "Not Rated")}</span>
       </div>
-      <div class="company"><span class="ticker">${esc(r.ticker)}</span><span class="muted">${esc(r.company)}</span></div>
       <h3>${esc(r.title)}</h3>
+      <div class="company"><span class="ticker">${esc(r.ticker)}</span><span class="muted">${esc(r.company)}</span></div>
       <p class="summary">${esc(r.summary)}</p>
       <div class="bottom">
         <span>${fmtDate(r.date)}</span>
-        <span>Read report</span>
+        <span class="more">Read report</span>
       </div>
     </a>`;
 }
@@ -123,9 +123,9 @@ function renderLatest() {
       <div class="meta">${sectorTag(r.sector)} ${sampleTag(r)}<span>${fmtDate(r.date)}</span></div>
       <h2>${esc(r.title)}</h2>
       <p class="summary">${esc(r.summary)}</p>
-      <div class="hero-actions" style="margin-top:20px">
+      <div class="hero-actions">
         <a class="btn btn-primary" href="${reportUrl(r)}">Read the report</a>
-        ${r.pdf ? `<a class="btn btn-outline" href="${esc(r.pdf)}" download>Download PDF</a>` : ""}
+        ${r.pdf ? `<a class="more" href="${esc(r.pdf)}" download>Download PDF</a>` : ""}
       </div>
     </div>
     <div class="feature-side">
@@ -173,7 +173,6 @@ function renderArchive() {
     el.innerHTML = list.length
       ? list.map(reportCard).join("")
       : emptyState(reports.length ? "No reports match this filter." : "No reports have been published yet.");
-    observeReveals();
   }
 
   chips.forEach((c) =>
@@ -210,9 +209,9 @@ function renderReport() {
 
   hero.innerHTML = `
     <a class="back-link" href="research.html">← All reports</a>
-    <div class="meta" style="color:rgba(255,255,255,.8)">${sectorTag(r.sector)} ${sampleTag(r)}<span>${fmtDate(r.date)}</span>${r.author ? `<span>by ${esc(r.author)}</span>` : ""}</div>
+    <div class="meta">${sectorTag(r.sector)} ${sampleTag(r)}<span>${fmtDate(r.date)}</span>${r.author ? `<span>by ${esc(r.author)}</span>` : ""}</div>
     <h1>${esc(r.title)}</h1>
-    <p><span class="ticker" style="color:#fff">${esc(r.ticker)}</span> &nbsp;·&nbsp; ${esc(r.company)}</p>`;
+    <p><span class="ticker">${esc(r.ticker)}</span> &nbsp;·&nbsp; ${esc(r.company)}</p>`;
 
   const list = (items, cls = "") =>
     items && items.length ? `<ol class="thesis ${cls}">${items.map((t) => `<li>${esc(t)}</li>`).join("")}</ol>` : "";
@@ -227,7 +226,7 @@ function renderReport() {
         ${r.pdf
           ? `<h2>Full report</h2><object class="pdf-frame" data="${esc(r.pdf)}" type="application/pdf">
                <p>Your browser can't display the PDF inline. <a href="${esc(r.pdf)}">Download it here</a>.</p></object>`
-          : `<div class="empty" style="margin-top:2em">The full PDF for this report hasn't been uploaded yet.</div>`}
+          : `<div class="empty">The full PDF for this report hasn't been uploaded yet.</div>`}
       </article>
       <aside class="report-aside">
         <div class="card">
@@ -235,7 +234,7 @@ function renderReport() {
             <div class="stat"><div class="label">Rating</div><div class="value"><span class="rating ${ratingClass(r.rating)}">${esc(r.rating || "Not Rated")}</span></div></div>
             <div class="stat"><div class="label">Upside</div><div class="value ${up.cls}">${up.text}</div></div>
           </div>
-          <div style="margin-top:14px">
+          <div class="kv-list">
             <div class="kv"><span>Ticker</span><span class="ticker">${esc(r.ticker)}</span></div>
             <div class="kv"><span>Sector</span><span>${esc(SECTORS[r.sector] || r.sector)}</span></div>
             <div class="kv"><span>Reference price</span><span>${fmtMoney(r.price, r.currency)}</span></div>
@@ -244,8 +243,8 @@ function renderReport() {
             <div class="kv"><span>Published</span><span>${fmtDate(r.date)}</span></div>
           </div>
         </div>
-        ${r.pdf ? `<a class="btn btn-primary" style="justify-content:center" href="${esc(r.pdf)}" download>Download PDF</a>` : ""}
-        <p class="muted" style="font-size:.8rem;line-height:1.5;margin:0">
+        ${r.pdf ? `<a class="btn btn-primary" href="${esc(r.pdf)}" download>Download PDF</a>` : ""}
+        <p class="note">
           For information and education only. This is not investment advice. Read the
           <a href="about.html#disclaimer">full disclaimer</a>.
         </p>
@@ -272,22 +271,6 @@ function setupContact() {
   });
 }
 
-let revealObserver;
-function observeReveals() {
-  const items = document.querySelectorAll(".reveal:not(.in)");
-  if (!("IntersectionObserver" in window)) {
-    items.forEach((i) => i.classList.add("in"));
-    return;
-  }
-  revealObserver ||= new IntersectionObserver(
-    (entries) => entries.forEach((e) => {
-      if (e.isIntersecting) { e.target.classList.add("in"); revealObserver.unobserve(e.target); }
-    }),
-    { rootMargin: "0px 0px -40px 0px" }
-  );
-  items.forEach((i) => revealObserver.observe(i));
-}
-
 document.addEventListener("DOMContentLoaded", () => {
   setupNav();
   setupContact();
@@ -296,5 +279,4 @@ document.addEventListener("DOMContentLoaded", () => {
   renderArchive();
   renderReport();
   document.querySelectorAll("[data-year]").forEach((n) => (n.textContent = new Date().getFullYear()));
-  observeReveals();
 });

@@ -29,7 +29,7 @@ index.html        Home: hero, latest report, about me, sectors, earlier reports,
 research.html     Full archive with sector filter and search
 report.html       Report detail page (summary, thesis, risks, embedded PDF)
 about.html        Mission, methodology, rating definitions, disclaimer
-assets/css/       Styles (brand blue #4248ED is sampled from the logo)
+assets/css/       Styles (system type, deep-navy hero and footer; brand blue #4248ED from the logo)
 assets/js/        reports.js (your data) and site.js (rendering)
 assets/img/       Logo variants, favicon, social share image
 reports/          Report PDFs
