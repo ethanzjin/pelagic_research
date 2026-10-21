@@ -25,8 +25,10 @@ class Spring {
   }
 
   // Retarget from wherever the value is now, keeping its velocity unless one is handed in.
-  to(target, { damping = 1, response = 0.4, velocity, onRest } = {}) {
+  // restDelta: how close counts as arrived, in the value's units.
+  to(target, { damping = 1, response = 0.4, velocity, onRest, restDelta = 0.1 } = {}) {
     this.target = target;
+    this.restDelta = restDelta;
     this.damping = damping;
     this.response = response;
     this.onRest = onRest;
@@ -62,7 +64,7 @@ class Spring {
       this.velocity += force * h;
       this.value += this.velocity * h;
     }
-    if (Math.abs(this.velocity) < 2 && Math.abs(this.value - this.target) < 0.1) {
+    if (Math.abs(this.velocity) < this.restDelta * 20 && Math.abs(this.value - this.target) < this.restDelta) {
       this.value = this.target;
       this.velocity = 0;
       this.frame = 0;
@@ -194,11 +196,11 @@ function revealer() {
       if (el.getBoundingClientRect().top > vh * 0.92) return true;
       el.classList.add("is-revealed");
       // Hand the element back to its normal styles (press feedback, hover) once it has landed.
-      const delay = Number(el.style.getPropertyValue("--i")) * 70;
+      const delay = Number(el.style.getPropertyValue("--i")) * 30;
       setTimeout(() => {
         el.removeAttribute("data-reveal");
         el.classList.remove("is-revealed");
-      }, 1000 + delay);
+      }, 400 + delay);
       return false;
     });
   };
@@ -267,7 +269,8 @@ function setupManta() {
     drag = null;
     manta.classList.remove("is-dragging");
     const v = tracker.velocity();
-    // Thrown, so it carries the hand's velocity home with a little bounce.
+    // Thrown, so it carries the hand's velocity home with a little bounce. It's imagery,
+    // not interface chrome, so the overshoot is allowed here (see .ux-profile.md).
     x.to(0, { velocity: v.x, damping: 0.75, response: 0.55 });
     y.to(0, { velocity: v.y, damping: 0.75, response: 0.55 });
     r.to(0, { damping: 0.8, response: 0.4 });
@@ -352,7 +355,7 @@ function setupSegmented() {
     suppressClick = true;
     const v = tracker.velocity().x;
     const target = nearest(clamp(pos.value + project(v, 0.99), minX(), maxX()));
-    snap(target, { velocity: v, damping: Math.abs(v) > 300 ? 0.8 : 1 });
+    snap(target, { velocity: v }); // carries the flick's speed, but chrome never overshoots
     if (target !== pressed()) { haptic(); target.click(); }
   };
   group.addEventListener("pointerup", release);
@@ -366,10 +369,24 @@ function setupSegmented() {
 
 /* ---------- report sheet: slides up, pushes the page back, drag to dismiss ---------- */
 
+// Reading a whole report is a long task, so the open sheet has its own address:
+// report.html?id=…#full-report can be linked to, and Back closes it.
+const SHEET_HASH = "#full-report";
+
 function setupSheet() {
   const page = document.querySelector(".page");
   let sheet, scrim, bar, frame, titleEl, download, closeBtn, spring, opener;
   let isOpen = false;
+  let pushed = false; // whether we added the history entry (so closing can step back over it)
+
+  const markOpen = () => {
+    if (location.hash !== SHEET_HASH) { history.pushState(null, "", SHEET_HASH); pushed = true; }
+  };
+  const markClosed = () => {
+    if (location.hash !== SHEET_HASH) return;
+    if (pushed) { pushed = false; history.back(); }
+    else history.replaceState(null, "", location.pathname + location.search);
+  };
 
   function build() {
     scrim = document.createElement("div");
@@ -384,17 +401,26 @@ function setupSheet() {
         <span class="sheet-grabber" aria-hidden="true"></span>
         <div class="sheet-title" id="sheet-title"></div>
         <div class="sheet-actions">
-          <a class="more" download>Download</a>
-          <button class="sheet-close" type="button" aria-label="Close report">
+          <a class="more" download>Download PDF</a>
+          <button class="sheet-close" type="button" data-tooltip data-kbd="Esc" aria-label="Close report">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
           </button>
         </div>
       </div>
-      <iframe class="sheet-frame" title="Full report"></iframe>`;
+      <div class="sheet-body is-loading">
+        <div class="sheet-skeleton" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+        <p class="visually-hidden" role="status">Loading the report</p>
+        <iframe class="sheet-frame" title="Full report"></iframe>
+      </div>`;
     scrim.hidden = sheet.hidden = true;
     document.body.append(scrim, sheet);
     bar = sheet.querySelector(".sheet-bar");
     frame = sheet.querySelector(".sheet-frame");
+    const body = sheet.querySelector(".sheet-body");
+    frame.addEventListener("load", () => {
+      body.classList.remove("is-loading");
+      body.querySelector("[role=status]").textContent = "Report loaded";
+    });
     titleEl = sheet.querySelector(".sheet-title");
     download = sheet.querySelector("a[download]");
     closeBtn = sheet.querySelector(".sheet-close");
@@ -414,14 +440,16 @@ function setupSheet() {
     sheet.style.transform = `translate3d(0, ${y}px, 0)`;
     scrim.style.opacity = String(p * 0.45);
     page.style.transform = p ? `scale(${1 - 0.04 * p})` : "";
-    page.style.filter = p ? `brightness(${1 - 0.15 * p})` : "";
   }
 
   function open(trigger) {
     if (!sheet) build();
     opener = trigger;
     const src = trigger.dataset.sheet;
-    if (frame.getAttribute("src") !== src) frame.src = src;
+    if (frame.getAttribute("src") !== src) {
+      sheet.querySelector(".sheet-body").classList.add("is-loading");
+      frame.src = src;
+    }
     titleEl.textContent = trigger.dataset.sheetTitle || "Full report";
     download.href = src;
     page.style.transformOrigin = `50% ${window.scrollY + innerHeight / 2}px`;
@@ -429,10 +457,11 @@ function setupSheet() {
     scrim.hidden = sheet.hidden = false;
     page.inert = true;
     isOpen = true;
+    markOpen();
 
     if (reducedMotion.matches) {
       spring.set(0);
-      page.style.transform = page.style.filter = "";
+      page.style.transform = "";
       requestAnimationFrame(() => sheet.classList.add("is-shown"));
     } else {
       // If it's already partway (closing, or being reopened), carry on from there.
@@ -442,23 +471,25 @@ function setupSheet() {
     closeBtn.focus({ preventScroll: true });
   }
 
-  function close({ velocity, bounce } = {}) {
+  function close({ velocity } = {}) {
     if (!isOpen) return;
     isOpen = false;
+    markClosed();
     const finish = () => {
       scrim.hidden = sheet.hidden = true;
       page.inert = false;
-      page.style.transform = page.style.filter = "";
+      page.style.transform = "";
       document.documentElement.classList.remove("sheet-open");
       if (opener) opener.focus({ preventScroll: true });
     };
     if (reducedMotion.matches) {
       sheet.classList.remove("is-shown");
-      setTimeout(finish, 200);
+      setTimeout(finish, 150);
       return;
     }
     // Leave the way it came in: straight down.
-    spring.to(closedY(), { velocity, damping: bounce ? 0.8 : 1, response: 0.35, onRest: finish });
+    // Off-screen is close enough: hand the page back without waiting for sub-pixel settling.
+    spring.to(closedY(), { velocity, response: 0.35, onRest: finish, restDelta: 4 });
   }
 
   function setupDrag() {
@@ -468,7 +499,7 @@ function setupSheet() {
       if (e.target.closest("a, button") || e.button !== 0 || reducedMotion.matches) return;
       bar.setPointerCapture(e.pointerId);
       spring.stop(); // grab it wherever it is, even mid-animation
-      if (!isOpen) { isOpen = true; page.inert = true; }
+      if (!isOpen) { isOpen = true; page.inert = true; markOpen(); }
       drag = { grab: e.clientY - Math.max(spring.value, 0) };
       tracker.reset();
       tracker.add(0, spring.value);
@@ -488,9 +519,9 @@ function setupSheet() {
       const dismiss = Math.abs(v) > 400 ? v > 0 : spring.value + project(v) > closedY() / 2;
       if (dismiss) {
         haptic();
-        close({ velocity: v, bounce: Math.abs(v) > 400 });
+        close({ velocity: v });
       } else {
-        spring.to(0, { velocity: v, damping: Math.abs(v) > 400 ? 0.8 : 1, response: 0.3 });
+        spring.to(0, { velocity: v, response: 0.3 });
       }
     };
     bar.addEventListener("pointerup", release);
@@ -515,6 +546,17 @@ function setupSheet() {
     open(trigger);
   });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && isOpen) close(); });
+
+  // Back and Forward open and close it; a shared link opens it on arrival.
+  const openFromPage = () => {
+    const trigger = document.querySelector("[data-sheet]");
+    if (trigger && navigator.pdfViewerEnabled !== false) open(trigger);
+  };
+  addEventListener("popstate", () => {
+    if (location.hash === SHEET_HASH && !isOpen) openFromPage();
+    else if (location.hash !== SHEET_HASH && isOpen) { pushed = false; close(); }
+  });
+  if (location.hash === SHEET_HASH) openFromPage();
 }
 
 /* ---------- copy email: confirmation that grows out of the button ---------- */
@@ -526,9 +568,8 @@ function setupCopy() {
       const p = v / 100;
       bubble.style.opacity = String(p);
       if (!reducedMotion.matches) {
-        // Materialize: blur and scale arrive together, anchored to the button.
-        bubble.style.transform = `translate(-50%, ${(1 - p) * 6}px) scale(${0.85 + 0.15 * p})`;
-        bubble.style.filter = `blur(${(1 - p) * 6}px)`;
+        // A popover: fades in with a slight scale from the button it came from.
+        bubble.style.transform = `translate(-50%, 0) scale(${0.98 + 0.02 * p})`;
       }
       if (v <= 0.5 && spring.target === 0) bubble.hidden = true;
     };
@@ -550,8 +591,9 @@ function setupCopy() {
       }
       bubble.hidden = false;
       clearTimeout(timer);
-      spring.to(100, { response: 0.3 });
-      timer = setTimeout(() => spring.to(0, { response: 0.3 }), 1600);
+      const response = reducedMotion.matches ? 0.1 : 0.3;
+      spring.to(100, { response });
+      timer = setTimeout(() => spring.to(0, { response }), 1600);
     });
   });
 }

@@ -25,7 +25,7 @@
       <img src="assets/img/mark-white.png" alt="" width="68" height="34">
       <span>Pelagic Research</span>
     </a>
-    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
+    <button class="nav-toggle" data-tooltip aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 9h16M4 15h16"/></svg>
     </button>
     <nav class="nav" id="site-nav">
@@ -54,9 +54,12 @@
         <button class="chip" data-sector="energy" aria-pressed="false">Energy</button>
         <button class="chip" data-sector="sustainability" aria-pressed="false">Sustainability</button>
       </div>
-      <input class="search" id="search" type="search" placeholder="Search company or ticker" aria-label="Search reports">
+      <div class="search-field">
+        <label class="search-label" for="search">Search reports</label>
+        <input class="search" id="search" type="search" placeholder="e.g. CEG or Constellation" autocomplete="off">
+      </div>
     </div>
-    <p class="muted" id="archive-count" style="font-size:.85rem;margin-bottom:20px"></p>
+    <p class="muted archive-count" id="archive-count"></p>
     <div class="report-grid" id="archive" aria-live="polite"></div>
   </div>
 </section>

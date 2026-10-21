@@ -25,7 +25,7 @@
       <img src="assets/img/mark-white.png" alt="" width="68" height="34">
       <span>Pelagic Research</span>
     </a>
-    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
+    <button class="nav-toggle" data-tooltip aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 9h16M4 15h16"/></svg>
     </button>
     <nav class="nav" id="site-nav">
@@ -39,18 +39,20 @@
 
 <main id="main">
 <section class="hero">
-  <div class="container">
-    <div class="hero-copy">
-      <span class="eyebrow">Independent equity research</span>
-      <h1>Equity research on marine, energy and sustainability companies.</h1>
-      <p class="lede">One or two in-depth reports a month on listed companies, each ending with a rating and a 12-month price target.</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="research.html">Browse research</a>
-        <a class="more" href="#about">About me</a>
+  <div class="hero-stage">
+    <p class="hero-eyebrow">Independent equity research</p>
+    <div class="hero-mark">
+      <h1 class="hero-word">Pelagic<span class="visually-hidden"> Research</span></h1>
+      <div class="hero-art">
+        <img class="hero-logo" src="assets/img/manta-hero.png" alt="" width="1200" height="582" draggable="false">
       </div>
     </div>
-    <div class="hero-art">
-      <img class="hero-logo" src="assets/img/mark-white-large.png" alt="Pelagic Research manta ray logo" width="1200" height="582" draggable="false">
+    <div class="hero-copy">
+      <p class="lede">Equity research on marine, energy and sustainability companies. One or two in-depth reports a month, each ending with a rating and a 12-month price target.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="research.html">Browse research</a>
+        <a class="more" href="#about">Read about me</a>
+      </div>
     </div>
   </div>
 </section>
@@ -65,7 +67,7 @@
   <div class="container">
     <div class="section-head" data-reveal>
       <h2>Earlier reports</h2>
-      <a class="more" href="research.html">All reports</a>
+      <a class="more" href="research.html">See all reports</a>
     </div>
     <div class="report-grid" id="recent"></div>
   </div>
@@ -95,6 +97,13 @@
           <dd>Elphinstone Research Group<span>Equity Research Analyst, U.S. Energy</span></dd>
         </div>
         <div>
+          <dt>Extracurriculars</dt>
+          <dd>Beta Alpha Psi<span>Platinum Member</span></dd>
+          <dd>Consortium Research Group<span>Energy Team</span></dd>
+          <dd>Global Equity Management<span>Portfolio Team</span></dd>
+          <dd>Elphinstone Research Group<span>U.S. Energy Team</span></dd>
+        </div>
+        <div>
           <dt>Research</dt>
           <dd>Scripps Institution of Oceanography<span>Climate change and grazing in <em>Pyrosoma atlanticum</em></span></dd>
           <dd>UW Friday Harbor Labs<span>Warming and habitat selection in <em>Haminoea japonica</em></span></dd>
@@ -115,19 +124,19 @@
         <h3>Marine</h3>
         <p>Shipping, ports, offshore services, shipbuilding and aquaculture.</p>
         <p class="subs">Tankers and dry bulk · Containers · Offshore · Aquaculture</p>
-        <span class="more">Marine reports</span>
+        <span class="more">See marine reports</span>
       </a>
       <a class="sector" data-reveal href="research.html?sector=energy">
         <h3>Energy</h3>
         <p>Oil and gas, LNG, utilities and power infrastructure.</p>
         <p class="subs">LNG · Upstream · Midstream · Utilities</p>
-        <span class="more">Energy reports</span>
+        <span class="more">See energy reports</span>
       </a>
       <a class="sector" data-reveal href="research.html?sector=sustainability">
         <h3>Sustainability</h3>
         <p>Offshore wind, solar, alternative fuels and carbon capture.</p>
         <p class="subs">Offshore wind · Green fuels · Storage · Carbon</p>
-        <span class="more">Sustainability reports</span>
+        <span class="more">See sustainability reports</span>
       </a>
     </div>
   </div>
@@ -137,7 +146,7 @@
   <div class="container">
     <div class="section-head" data-reveal>
       <h2>How a report gets made</h2>
-      <a class="more" href="about.html">Methodology</a>
+      <a class="more" href="about.html">Read the methodology</a>
     </div>
     <div class="steps">
       <div class="step" data-reveal><h3>Pick a company</h3><p>Look for stocks where the price seems wrong, or where something about the business is about to change.</p></div>
@@ -154,9 +163,9 @@
       <h2>Get in touch</h2>
       <p>Questions about a report, an idea for a company to cover, or want to talk about shipping, energy or markets? Email me or reach out on LinkedIn.</p>
       <div class="contact-links">
-        <a class="btn btn-primary" href="#" data-contact="show">email</a>
+        <a class="btn btn-primary" href="#" data-contact="link">Email me</a>
         <span class="copy-wrap"><button class="text-btn" type="button" data-copy-email>Copy email</button></span>
-        <a class="more" href="https://www.linkedin.com/in/ethanzjin" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="more" href="https://www.linkedin.com/in/ethanzjin" target="_blank" rel="noopener">Connect on LinkedIn</a>
       </div>
     </div>
   </div>

@@ -104,8 +104,9 @@ function sheetButton(r) {
   return `<a class="btn btn-primary" href="${esc(r.pdf)}" data-sheet="${esc(r.pdf)}" data-sheet-title="${esc(r.title)}">Read the full report</a>`;
 }
 
-function emptyState(msg) {
-  return `<div class="empty">${msg}</div>`;
+// Empty states say what belongs here, why it's empty, and what to do next.
+function emptyState({ title, body, action = "" }) {
+  return `<div class="empty"><h3>${title}</h3><p>${body}</p>${action}</div>`;
 }
 
 /* ---------- homepage ---------- */
@@ -117,7 +118,8 @@ function renderLatest() {
   if (!r) {
     el.innerHTML = `<div class="feature-body"><span class="eyebrow">Latest report</span>
       <h2>No reports yet</h2>
-      <p class="summary">The first report is being written and will be posted here when it's done.</p></div>`;
+      <p class="summary">The first report is being written and will be posted here when it's done.</p>
+      <div class="hero-actions"><a class="btn btn-primary" href="#contact">Ask to be notified</a></div></div>`;
     el.style.display = "block";
     return;
   }
@@ -177,7 +179,17 @@ function renderArchive() {
     if (countEl) countEl.textContent = `${list.length} report${list.length === 1 ? "" : "s"}`;
     el.innerHTML = list.length
       ? list.map(reportCard).join("")
-      : emptyState(reports.length ? "No reports match this filter." : "No reports have been published yet.");
+      : reports.length
+        ? emptyState({
+            title: "No matching reports",
+            body: "Nothing published so far matches this sector and search. Clear them to see every report.",
+            action: `<button class="btn btn-primary" type="button" data-clear-filters>Clear filters</button>`,
+          })
+        : emptyState({
+            title: "No reports yet",
+            body: "The first report is being written and will appear here when it's published.",
+            action: `<a class="btn btn-primary" href="index.html#contact">Ask to be notified</a>`,
+          });
   }
 
   chips.forEach((c) =>
@@ -190,6 +202,13 @@ function renderArchive() {
     })
   );
   if (search) search.addEventListener("input", (e) => { query = e.target.value; draw(); });
+  el.addEventListener("click", (e) => {
+    if (!e.target.closest("[data-clear-filters]")) return;
+    query = "";
+    if (search) search.value = "";
+    chips[0].click(); // "All": resets the sector and the URL, then redraws
+    if (search) search.focus();
+  });
   draw();
 }
 
@@ -205,7 +224,7 @@ function renderReport() {
   if (!r) {
     hero.innerHTML = `<a class="back-link" href="research.html">← All reports</a><h1>Report not found</h1>
       <p>This report may have moved. Try the full list of reports instead.</p>`;
-    el.innerHTML = `<p><a class="btn btn-primary" href="research.html">All reports</a></p>`;
+    el.innerHTML = `<p><a class="btn btn-primary" href="research.html">See all reports</a></p>`;
     return;
   }
 
@@ -237,7 +256,11 @@ function renderReport() {
                  <a class="more" href="${esc(r.pdf)}" download>Download PDF</a>
                </div>
              </div>`
-          : `<div class="empty">The full PDF for this report hasn't been uploaded yet.</div>`}
+          : emptyState({
+              title: "PDF coming soon",
+              body: "The full PDF for this report hasn't been uploaded yet. The summary, thesis and risks above are complete.",
+              action: `<a class="btn btn-primary" href="research.html">See all reports</a>`,
+            })}
       </article>
       <aside class="report-aside">
         <div class="card">
