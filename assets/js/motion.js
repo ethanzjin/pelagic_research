@@ -148,7 +148,7 @@ function setupScroll() {
     const vh = innerHeight;
     reveal(vh);
 
-    // Hero: 0 at the top of the page, 1 once it has scrolled out of view.
+    // Hero: 0 at the top of the page, 1 once it has scrolled out of view (drives the photo parallax).
     if (hero) {
       const p = clamp(window.scrollY / hero.offsetHeight, 0, 1);
       if (p !== update.heroP) { root.style.setProperty("--hero-p", p.toFixed(4)); update.heroP = p; }
@@ -204,80 +204,6 @@ function revealer() {
       return false;
     });
   };
-}
-
-/* ---------- hero manta: follows the pointer, can be thrown ---------- */
-
-function setupManta() {
-  const manta = document.querySelector(".hero-logo");
-  const hero = document.querySelector(".hero");
-  if (!manta || !hero || reducedMotion.matches) return;
-
-  const render = () => {
-    manta.style.transform = `translate3d(${x.value}px, ${y.value}px, 0) rotate(${r.value}deg)`;
-  };
-  // X and Y are separate springs so a diagonal throw settles naturally on both axes.
-  const x = new Spring(0, render);
-  const y = new Spring(0, render);
-  const r = new Spring(0, render);
-  const tracker = velocityTracker();
-  let drag = null;
-
-  // Undo the rubber band so a mid-flight grab continues from what's on screen.
-  const unband = (v, d, c = 0.55) => (v * d) / (c * (d - Math.min(Math.abs(v), d - 1)));
-
-  hero.addEventListener("pointermove", (e) => {
-    if (drag || e.pointerType !== "mouse") return;
-    const box = hero.getBoundingClientRect();
-    const dx = (e.clientX - box.left) / box.width - 0.5;
-    const dy = (e.clientY - box.top) / box.height - 0.5;
-    // Lean gently toward the pointer: slow response, no overshoot.
-    x.to(dx * 28, { response: 1.2 });
-    y.to(dy * 14, { response: 1.2 });
-    r.to(dx * 4, { response: 1.2 });
-  });
-  hero.addEventListener("pointerleave", () => {
-    if (drag) return;
-    x.to(0, { response: 1 });
-    y.to(0, { response: 1 });
-    r.to(0, { response: 1 });
-  });
-
-  manta.addEventListener("pointerdown", (e) => {
-    if (e.button !== 0) return;
-    manta.setPointerCapture(e.pointerId);
-    x.stop(); y.stop(); r.stop();
-    // Respect where it was grabbed, including if it was still moving.
-    drag = {
-      startX: e.clientX - unband(x.value, 360),
-      startY: e.clientY - unband(y.value, 240),
-    };
-    tracker.reset();
-    tracker.add(x.value, y.value);
-    manta.classList.add("is-dragging");
-  });
-  manta.addEventListener("pointermove", (e) => {
-    if (!drag) return;
-    x.set(rubberband(e.clientX - drag.startX, 360));
-    y.set(rubberband(e.clientY - drag.startY, 240));
-    tracker.add(x.value, y.value);
-    // Bank into the direction of travel.
-    r.to(clamp(tracker.velocity().x / 90, -14, 14), { damping: 0.8, response: 0.4 });
-  });
-  const release = () => {
-    if (!drag) return;
-    drag = null;
-    manta.classList.remove("is-dragging");
-    const v = tracker.velocity();
-    // Thrown, so it carries the hand's velocity home with a little bounce. It's imagery,
-    // not interface chrome, so the overshoot is allowed here (see .ux-profile.md).
-    x.to(0, { velocity: v.x, damping: 0.75, response: 0.55 });
-    y.to(0, { velocity: v.y, damping: 0.75, response: 0.55 });
-    r.to(0, { damping: 0.8, response: 0.4 });
-  };
-  manta.addEventListener("pointerup", release);
-  manta.addEventListener("pointercancel", release);
-  manta.addEventListener("dragstart", (e) => e.preventDefault());
 }
 
 /* ---------- segmented control: sliding, draggable thumb ---------- */
@@ -601,7 +527,6 @@ function setupCopy() {
 document.addEventListener("DOMContentLoaded", () => {
   setupHeader();
   setupScroll();
-  setupManta();
   setupSegmented();
   setupSheet();
   setupCopy();

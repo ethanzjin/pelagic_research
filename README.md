@@ -32,6 +32,7 @@ about.html        Mission, methodology, rating definitions, disclaimer
 assets/css/       Styles (system type, deep-navy hero and footer; brand blue #4248ED from the logo)
 assets/js/        reports.js (your data), site.js (rendering), motion.js (springs and gestures)
 assets/img/       Logo variants, favicon, social share image
+assets/img/photos Ocean and sector photographs (Unsplash License; credited in the footer)
 reports/          Report PDFs
 ```
 

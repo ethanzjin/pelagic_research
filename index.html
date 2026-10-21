@@ -39,20 +39,18 @@
 
 <main id="main">
 <section class="hero">
-  <div class="hero-stage">
+  <div class="hero-media" aria-hidden="true">
+    <img src="assets/img/photos/hero-manta-2400.jpg"
+         srcset="assets/img/photos/hero-manta-1200.jpg 1200w, assets/img/photos/hero-manta-2400.jpg 2400w"
+         sizes="100vw" alt="" width="2400" height="1600" fetchpriority="high">
+  </div>
+  <div class="container hero-content">
     <p class="hero-eyebrow">Independent equity research</p>
-    <div class="hero-mark">
-      <h1 class="hero-word">Pelagic<span class="visually-hidden"> Research</span></h1>
-      <div class="hero-art">
-        <img class="hero-logo" src="assets/img/manta-hero.png" alt="" width="1200" height="582" draggable="false">
-      </div>
-    </div>
-    <div class="hero-copy">
-      <p class="lede">Equity research on marine, energy and sustainability companies. One or two in-depth reports a month, each ending with a rating and a 12-month price target.</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="research.html">Browse research</a>
-        <a class="more" href="#about">Read about me</a>
-      </div>
+    <h1>Equity research on marine, energy and sustainability companies.</h1>
+    <p class="lede">One or two in-depth reports a month, each ending with a rating and a 12-month price target.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="research.html">Browse research</a>
+      <a class="more" href="#about">Read about me</a>
     </div>
   </div>
 </section>
@@ -94,7 +92,6 @@
           <dd>Geode Health (backed by KKR)<span>Corporate Development Intern</span></dd>
           <dd>Logan Growth Advisors<span>Investment Banking Intern</span></dd>
           <dd>Heron Peak Capital<span>Investment Analyst Intern, lower-middle-market search fund</span></dd>
-          <dd>Elphinstone Research Group<span>Equity Research Analyst, U.S. Energy</span></dd>
         </div>
         <div>
           <dt>Extracurriculars</dt>
@@ -121,28 +118,37 @@
     </div>
     <div class="sectors">
       <a class="sector" data-reveal href="research.html?sector=marine">
-        <h3>Marine</h3>
-        <p>Shipping, ports, offshore services, shipbuilding and aquaculture.</p>
-        <p class="subs">Tankers and dry bulk · Containers · Offshore · Aquaculture</p>
-        <span class="more">See marine reports</span>
+        <div class="sector-media"><img src="assets/img/photos/marine.jpg" alt="Container ship at sea, seen from above" width="900" height="675" loading="lazy"></div>
+        <div class="sector-body">
+          <h3>Marine</h3>
+          <p>Shipping, ports, offshore services, shipbuilding and aquaculture.</p>
+          <p class="subs">Tankers and dry bulk · Containers · Offshore · Aquaculture</p>
+          <span class="more">See marine reports</span>
+        </div>
       </a>
       <a class="sector" data-reveal href="research.html?sector=energy">
-        <h3>Energy</h3>
-        <p>Oil and gas, LNG, utilities and power infrastructure.</p>
-        <p class="subs">LNG · Upstream · Midstream · Utilities</p>
-        <span class="more">See energy reports</span>
+        <div class="sector-media"><img src="assets/img/photos/energy.jpg" alt="Nuclear plant cooling towers releasing steam" width="900" height="675" loading="lazy"></div>
+        <div class="sector-body">
+          <h3>Energy</h3>
+          <p>Oil and gas, LNG, utilities and power infrastructure.</p>
+          <p class="subs">LNG · Upstream · Midstream · Utilities</p>
+          <span class="more">See energy reports</span>
+        </div>
       </a>
       <a class="sector" data-reveal href="research.html?sector=sustainability">
-        <h3>Sustainability</h3>
-        <p>Offshore wind, solar, alternative fuels and carbon capture.</p>
-        <p class="subs">Offshore wind · Green fuels · Storage · Carbon</p>
-        <span class="more">See sustainability reports</span>
+        <div class="sector-media"><img src="assets/img/photos/sustainability.jpg" alt="Offshore wind turbines in open water" width="900" height="675" loading="lazy"></div>
+        <div class="sector-body">
+          <h3>Sustainability</h3>
+          <p>Offshore wind, solar, alternative fuels and carbon capture.</p>
+          <p class="subs">Offshore wind · Green fuels · Storage · Carbon</p>
+          <span class="more">See sustainability reports</span>
+        </div>
       </a>
     </div>
   </div>
 </section>
 
-<section>
+<section class="bg-deep" id="process">
   <div class="container">
     <div class="section-head" data-reveal>
       <h2>How a report gets made</h2>
@@ -157,13 +163,18 @@
   </div>
 </section>
 
-<section class="bg-shade" id="contact">
+<section class="contact-band" id="contact">
+  <div class="contact-media" aria-hidden="true">
+    <img src="assets/img/photos/contact-manta-2000.jpg"
+         srcset="assets/img/photos/contact-manta-1000.jpg 1000w, assets/img/photos/contact-manta-2000.jpg 2000w"
+         sizes="100vw" alt="" width="2000" height="1500" loading="lazy">
+  </div>
   <div class="container">
     <div class="contact" data-reveal>
       <h2>Get in touch</h2>
       <p>Questions about a report, an idea for a company to cover, or want to talk about shipping, energy or markets? Email me or reach out on LinkedIn.</p>
       <div class="contact-links">
-        <a class="btn btn-primary" href="#" data-contact="link">Email me</a>
+        <a class="btn btn-light" href="#" data-contact="link">Email me</a>
         <span class="copy-wrap"><button class="text-btn" type="button" data-copy-email>Copy email</button></span>
         <a class="more" href="https://www.linkedin.com/in/ethanzjin" target="_blank" rel="noopener">Connect on LinkedIn</a>
       </div>
@@ -199,6 +210,7 @@
     </div>
     <div class="disclaimer">
       © <span data-year></span> Pelagic Research. All content is published for informational and educational purposes only and does not constitute investment advice, an offer, or a solicitation to buy or sell any security. Pelagic Research is an independent, personal research publication and is not a registered investment adviser or broker-dealer. The author may hold positions in securities discussed. Do your own research and consult a licensed professional before making investment decisions. <a href="about.html#disclaimer">Full disclaimer</a>.
+      <span class="credits">Photos from <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a> by Nott Peera, Swanson Chan, Venti Views, Lukáš Lehotský, Jesse De Meulenaere and Digital Reach.</span>
     </div>
   </div>
 </footer>
