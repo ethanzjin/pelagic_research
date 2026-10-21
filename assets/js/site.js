@@ -16,6 +16,13 @@ const SECTORS = {
   sustainability: "Sustainability",
 };
 
+// Card and panel photography per sector; a report can override it with an `image` field.
+const SECTOR_PHOTOS = {
+  marine: "assets/img/photos/marine.jpg",
+  energy: "assets/img/photos/energy.jpg",
+  sustainability: "assets/img/photos/sustainability.jpg",
+};
+
 const reports = (window.PELAGIC_REPORTS || [])
   .slice()
   .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
@@ -82,24 +89,91 @@ function reportUrl(r) {
 
 /* ---------- components ---------- */
 
+function reportPhoto(r) {
+  return r.image || SECTOR_PHOTOS[r.sector] || "";
+}
+
+const isNum = (v) => typeof v === "number" && isFinite(v) && v > 0;
+
+// Where the price sits against the target and the bear/bull cases: one horizontal scale,
+// the bear-to-bull band, the gap from price up to target, and a marker for each.
+// compact (and any narrow screen): price and target labelled on the chart, bear and bull
+// in a caption below, so labels never collide.
+function scenarioRange(r, { compact = false } = {}) {
+  if (!isNum(r.price) || !isNum(r.target)) return "";
+  const hasCases = isNum(r.bear) && isNum(r.bull);
+  const points = [r.price, r.target].concat(hasCases ? [r.bear, r.bull] : []);
+  const lo = Math.min(...points);
+  const hi = Math.max(...points);
+  const pad = (hi - lo) * 0.04 || hi * 0.05;
+  const pos = (v) => (((v - (lo - pad)) / (hi - lo + 2 * pad)) * 100).toFixed(2);
+  const money = (v) => fmtMoney(v, r.currency);
+  const span = (a, b) => `left:${pos(Math.min(a, b))}%;right:${(100 - pos(Math.max(a, b))).toFixed(2)}%`;
+  const up = fmtUpside(r);
+  const said = `Price ${money(r.price)}, 12-month target ${money(r.target)} (${up.text})` +
+    (hasCases ? `, bear case ${money(r.bear)}, bull case ${money(r.bull)}` : "") + ".";
+  const at = (v, cls, text) => `<span class="range-label ${cls}" style="--x:${pos(v)}">${text}</span>`;
+  return `
+    <figure class="range${compact ? " is-compact" : ""}" role="img" aria-label="${esc(said)}">
+      <div class="range-row range-above">${at(r.price, "is-price", `Price <b>${money(r.price)}</b>`)}</div>
+      <div class="range-track">
+        ${hasCases ? `<span class="range-band" style="${span(r.bear, r.bull)}"></span>` : ""}
+        <span class="range-gap ${up.cls}" style="${span(r.price, r.target)}"></span>
+        ${hasCases ? `<span class="range-end" style="--x:${pos(r.bear)}"></span><span class="range-end" style="--x:${pos(r.bull)}"></span>` : ""}
+        <span class="range-target" style="--x:${pos(r.target)}"></span>
+        <span class="range-price" style="--x:${pos(r.price)}"></span>
+      </div>
+      <div class="range-row range-below">
+        ${at(r.target, "is-target", `Target <b>${money(r.target)}</b>`)}
+        ${hasCases && !compact ? at(r.bear, "is-bear", `Bear <b>${money(r.bear)}</b>`) + at(r.bull, "is-bull", `Bull <b>${money(r.bull)}</b>`) : ""}
+      </div>
+      ${hasCases ? `<figcaption>Bear ${money(r.bear)} · Bull ${money(r.bull)}</figcaption>` : ""}
+    </figure>`;
+}
+
+// Labels are measured, not guessed: if any two overlap at this width, the bear and bull
+// labels give way to the caption line under the chart.
+function fitRanges() {
+  document.querySelectorAll(".range:not(.is-compact)").forEach((fig) => {
+    fig.classList.remove("is-tight");
+    const boxes = [...fig.querySelectorAll(".range-label")].map((l) => l.getBoundingClientRect());
+    const track = fig.querySelector(".range-track").getBoundingClientRect();
+    const clash = boxes.some((a, i) => boxes.some((b, j) =>
+      j > i && a.top < b.bottom && b.top < a.bottom && a.left < b.right + 8 && b.left < a.right + 8));
+    const spills = boxes.some((b) => b.left < track.left - 4 || b.right > track.right + 4);
+    fig.classList.toggle("is-tight", clash || spills);
+  });
+}
+
 function reportCard(r) {
+  const photo = reportPhoto(r);
+  const up = fmtUpside(r);
   return `
     <a class="report-card" href="${reportUrl(r)}">
-      <div class="top">
-        <div>${sectorTag(r.sector)} ${sampleTag(r)}</div>
-        <span class="rating ${ratingClass(r.rating)}">${esc(r.rating || "Not Rated")}</span>
+      <div class="card-media">
+        ${photo ? `<img src="${esc(photo)}" alt="" loading="lazy" width="900" height="675">` : ""}
+        <div class="card-media-meta">
+          <span class="ticker">${esc(r.ticker)}</span>
+          <span class="rating-on-photo">${esc(r.rating || "Not Rated")}</span>
+        </div>
       </div>
-      <h3>${esc(r.title)}</h3>
-      <div class="company"><span class="ticker">${esc(r.ticker)}</span><span class="muted">${esc(r.company)}</span></div>
-      <p class="summary">${esc(r.summary)}</p>
-      <div class="bottom">
-        <span>${fmtDate(r.date)}</span>
-        <span class="more">Read report</span>
+      <div class="card-body">
+        <div class="top">
+          <div>${sectorTag(r.sector)} ${sampleTag(r)}</div>
+          <span class="muted">${fmtDate(r.date)}</span>
+        </div>
+        <h3>${esc(r.title)}</h3>
+        <p class="summary">${esc(r.summary)}</p>
+        ${scenarioRange(r, { compact: true })}
+        <div class="bottom">
+          <span>Upside <b class="upside ${up.cls}">${up.text}</b></span>
+          <span class="more">Read report</span>
+        </div>
       </div>
     </a>`;
 }
 
-// Opens the PDF in a sheet (motion.js); falls back to the file itself.
+// Opens the PDF in a sheet (motion.js); without JavaScript it links to the file itself.
 function sheetButton(r) {
   return `<a class="btn btn-primary" href="${esc(r.pdf)}" data-sheet="${esc(r.pdf)}" data-sheet-title="${esc(r.title)}">Read the full report</a>`;
 }
@@ -136,13 +210,16 @@ function renderLatest() {
       </div>
     </div>
     <div class="feature-side">
+      ${reportPhoto(r) ? `<img class="feature-photo" src="${esc(reportPhoto(r))}" alt="" loading="lazy" width="900" height="675">` : ""}
       <div class="company"><span class="ticker">${esc(r.ticker)}</span> <span class="muted">${esc(r.company)}</span></div>
       <div class="stat-row">
         <div class="stat"><div class="label">Rating</div><div class="value"><span class="rating ${ratingClass(r.rating)}">${esc(r.rating || "Not Rated")}</span></div></div>
         <div class="stat"><div class="label">Upside</div><div class="value ${up.cls}">${up.text}</div></div>
+      </div>
+      ${scenarioRange(r) || `<div class="stat-row">
         <div class="stat"><div class="label">Price</div><div class="value">${fmtMoney(r.price, r.currency)}</div></div>
         <div class="stat"><div class="label">Target</div><div class="value">${fmtMoney(r.target, r.currency)}</div></div>
-      </div>
+      </div>`}
     </div>`;
 }
 
@@ -268,6 +345,7 @@ function renderReport() {
             <div class="stat"><div class="label">Rating</div><div class="value"><span class="rating ${ratingClass(r.rating)}">${esc(r.rating || "Not Rated")}</span></div></div>
             <div class="stat"><div class="label">Upside</div><div class="value ${up.cls}">${up.text}</div></div>
           </div>
+          ${scenarioRange(r, { compact: true })}
           <div class="kv-list">
             <div class="kv"><span>Ticker</span><span class="ticker">${esc(r.ticker)}</span></div>
             <div class="kv"><span>Sector</span><span>${esc(SECTORS[r.sector] || r.sector)}</span></div>
@@ -329,4 +407,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderArchive();
   renderReport();
   document.querySelectorAll("[data-year]").forEach((n) => (n.textContent = new Date().getFullYear()));
+  fitRanges();
+  addEventListener("resize", fitRanges);
 });

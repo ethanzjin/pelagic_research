@@ -310,7 +310,7 @@ section.tight { padding: var(--space-16) 0; }
 
 .feature {
   background: var(--shade); border: 1px solid var(--hairline); border-radius: 24px;
-  display: grid; grid-template-columns: 1.5fr 1fr; overflow: hidden;
+  display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); overflow: hidden;
 }
 .feature-body { padding: var(--space-12); }
 .feature-body h2 { font-size: var(--step-4); }
@@ -318,19 +318,30 @@ section.tight { padding: var(--space-16) 0; }
 .feature-body .hero-actions { margin-top: var(--space-6); }
 /* Brand-blue panel, the same treatment as the sidebar on page one of each report PDF. */
 .feature-side {
-  padding: var(--space-12);
-  display: flex; flex-direction: column; justify-content: center; gap: var(--space-4);
+  position: relative; isolation: isolate;
+  padding: var(--space-12) var(--space-8);
+  display: flex; flex-direction: column; justify-content: center; gap: var(--space-6);
   background: var(--brand); color: #fff;
 }
+/* The sector photograph, toned into the brand blue (a duotone), so the panel has depth. */
+.feature-photo {
+  position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; object-fit: cover;
+  mix-blend-mode: multiply; opacity: .5; filter: grayscale(1) contrast(1.1);
+}
+.feature-side .stat-row { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-8); }
+.feature-side .stat-row .stat { border-top: 0; padding: 0; }
+.feature-side .stat .value { font-size: var(--step-4); }
 .feature-side .company, .feature-side .ticker, .feature-side .muted { color: #fff; }
 .feature-side .muted { opacity: .8; }
 .feature-side .stat { border-top-color: rgba(255, 255, 255, .28); }
 .feature-side .stat .label { color: rgba(255, 255, 255, .8); }
 .feature-side .stat .value, .feature-side .stat .value.up, .feature-side .stat .value.down, .feature-side .stat .value .rating { color: #fff; }
 @media (max-width: 767.98px) {
-  .feature { grid-template-columns: 1fr; border-radius: var(--radius); }
+  .feature { grid-template-columns: minmax(0, 1fr); border-radius: var(--radius); }
+  .feature-side .stat .value { font-size: var(--step-3); }
   .feature-body { padding: var(--space-8) var(--space-6) var(--space-2); }
   .feature-side { padding: var(--space-8) var(--space-6); }
+
 }
 
 .stat-row { display: grid; grid-template-columns: repeat(2, 1fr); }
@@ -371,30 +382,73 @@ section.tight { padding: var(--space-16) 0; }
 .sector-media img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--motion-300) var(--ease-out); }
 @media (hover: hover) { .sector:hover .sector-media img { transform: scale(1.02); } }
 .sector-body { padding: var(--space-6) var(--space-6) var(--space-4); display: flex; flex-direction: column; flex: 1; }
-.sector, .report-card { transition: border-color var(--motion-150) ease, transform var(--motion-100) var(--ease-out); }
-.sector:hover, .report-card:hover { border-color: rgba(0, 0, 0, .16); text-decoration: none; color: inherit; }
-.sector:active, .report-card:active { transform: scale(.985); }
-.sector:hover .more, .report-card:hover .more { text-decoration: underline; text-underline-offset: 3px; }
-.sector h3 { margin-bottom: var(--space-2); }
-.sector p { color: var(--ink-soft); margin-bottom: var(--space-3); }
-.sector .subs { color: var(--muted); font-size: var(--text-secondary); line-height: 1.5; flex: 1; margin-bottom: var(--space-2); }
-.sector .more { color: var(--brand-deep); }
-@media (max-width: 767.98px) { .sectors { grid-template-columns: 1fr; gap: var(--space-4); } }
-
-/* ---------- Report cards ---------- */
-
-.report-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: var(--space-6); }
+.sector, .report-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: var(--space-6); }
 .report-card {
-  background: var(--shade); border: 1px solid var(--hairline); border-radius: var(--radius);
-  padding: var(--space-8); display: flex; flex-direction: column; gap: var(--space-3);
+  background: var(--paper); border: 1px solid var(--hairline); border-radius: var(--radius);
+  display: flex; flex-direction: column; overflow: hidden;
   color: inherit;
 }
-.bg-shade .report-card { background: var(--paper); }
+.card-media { position: relative; aspect-ratio: 16 / 7; overflow: hidden; background: var(--deep); }
+.card-media img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--motion-300) var(--ease-out); }
+@media (hover: hover) { .report-card:hover .card-media img { transform: scale(1.02); } }
+/* Ticker and rating sit on a navy scrim at the bottom of the photo, white only. */
+.card-media-meta {
+  position: absolute; inset: auto 0 0 0;
+  display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3);
+  padding: var(--space-8) var(--space-6) var(--space-4);
+  background: linear-gradient(0deg, rgba(5, 13, 36, .85), rgba(5, 13, 36, 0));
+  color: #fff;
+}
+.card-media-meta .ticker { color: #fff; font-size: var(--text-secondary); }
+.rating-on-photo { font-weight: 600; font-size: var(--text-secondary); }
+.card-body { padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-3); flex: 1; }
 .report-card .top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3); font-size: var(--text-secondary); }
-.report-card h3 { margin: var(--space-1) 0 0; }
-.report-card .summary { color: var(--ink-soft); font-size: var(--text-secondary); line-height: 1.5; margin: 0; flex: 1; }
-.report-card .bottom { display: flex; justify-content: space-between; align-items: center; margin-top: var(--space-2); font-size: var(--text-secondary); color: var(--muted); }
+.report-card h3 { margin: 0; }
+/* Three lines is a teaser; the full summary is one click away. */
+.report-card .summary {
+  color: var(--ink-soft); font-size: var(--text-secondary); line-height: 1.5; margin: 0;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.report-card .range { margin-top: var(--space-2); }
+.report-card .bottom { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: var(--space-3); border-top: 1px solid var(--hairline); font-size: var(--text-secondary); color: var(--muted); }
+.report-card .bottom b { font-weight: 600; color: var(--ink); }
 .report-card .more { color: var(--brand-deep); font-size: var(--text-secondary); }
+.upside.up { color: var(--buy) !important; }
+.upside.down { color: var(--sell) !important; }
+
+/* ---------- Scenario range: price against target and the bear/bull cases ---------- */
+
+/* One hue in lightness steps: track < bear–bull band < price-to-target gap; text stays in ink. */
+.range { --track: #e6e7ef; --band: #a3a7f6; --gap: var(--brand); --mark: var(--brand-deep); --ring: var(--paper);
+  margin: 0; font-size: var(--text-meta); line-height: 1.4; color: var(--muted); }
+.range b { font-weight: 600; color: var(--ink); }
+.range-row { position: relative; height: 1.25rem; }
+.range-label { position: absolute; left: calc(var(--x) * 1%); translate: -50% 0; white-space: nowrap; }
+.range-label.is-bear { translate: 0 0; left: calc(var(--x) * 1% - 2px); }
+.range-label.is-bull { translate: -100% 0; left: calc(var(--x) * 1% + 2px); }
+.range-track { position: relative; height: 6px; margin: var(--space-2) 0; border-radius: 3px; background: var(--track); }
+.range-band { position: absolute; top: 0; bottom: 0; border-radius: 3px; background: var(--band); }
+.range-gap { position: absolute; top: 0; bottom: 0; background: var(--gap); }
+.range-gap.down { background: var(--sell); }
+.range-end { position: absolute; top: -3px; width: 2px; height: 12px; left: calc(var(--x) * 1%); translate: -50% 0; border-radius: 1px; background: var(--band); }
+.range-target { position: absolute; top: -5px; width: 2px; height: 16px; left: calc(var(--x) * 1%); translate: -50% 0; border-radius: 1px; background: var(--ink); }
+.range-price {
+  position: absolute; top: 50%; width: 12px; height: 12px; left: calc(var(--x) * 1%); translate: -50% -50%;
+  border-radius: 50%; background: var(--mark); box-shadow: 0 0 0 2px var(--ring);
+}
+.range figcaption { margin-top: var(--space-1); }
+/* When the bear and bull labels would collide (site.js measures), they move to the caption. */
+.range:not(.is-compact):not(.is-tight) figcaption { display: none; }
+.range.is-tight .range-label.is-bear, .range.is-tight .range-label.is-bull { display: none; }
+.range.is-compact .range-row { height: 1.125rem; }
+
+/* On the brand-blue panel: the same ramp in white. */
+.feature-side .range { --track: rgba(255, 255, 255, .2); --band: rgba(255, 255, 255, .45); --gap: #fff; --mark: #fff; --ring: var(--brand);
+  color: rgba(255, 255, 255, .85); font-size: var(--text-secondary); }
+.feature-side .range b { color: #fff; }
+.feature-side .range-target { background: #fff; }
+.feature-side .range-gap.down { background: #fff; }
+.feature-side .range-row { height: 1.5rem; }
 
 /* Blocks rise into place the first time they reach the screen (motion.js adds .is-revealed).
    Hidden only once the script has run, so the page never depends on it. */
@@ -480,11 +534,31 @@ html.js-reveal [data-reveal].is-revealed { opacity: 1; transform: none; }
 .prose ul { padding-left: 1.2em; color: var(--ink-soft); }
 .prose li { margin-bottom: .5em; }
 
-.profile dl { margin: 0; display: grid; gap: var(--space-6); }
+/* Résumé card: a brand-blue header like the report panel, then the groups on white. */
+.profile {
+  background: var(--paper); border: 1px solid var(--hairline); border-radius: 24px;
+  box-shadow: var(--shadow-soft); overflow: hidden;
+}
+.profile-head {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: var(--space-4);
+  padding: var(--space-6) var(--space-8);
+  background: var(--brand); color: #fff;
+}
+.profile-head img { width: 56px; height: auto; }
+.profile-head p { margin: 0; }
+.profile-title { font-family: var(--display); font-size: var(--step-1); font-weight: 600; line-height: 1.25; }
+.profile-sub { font-size: var(--text-secondary); color: rgba(255, 255, 255, .86); }
+.profile-head .more { color: #fff; font-size: var(--text-secondary); }
+.profile dl { margin: 0; padding: var(--space-8); display: grid; gap: var(--space-6); }
+@media (max-width: 767.98px) {
+  .profile-head { grid-template-columns: auto 1fr; padding: var(--space-6); }
+  .profile-head .more { grid-column: 1 / -1; }
+  .profile dl { padding: var(--space-6); }
+}
 .profile dl > div { display: grid; gap: var(--space-3); }
 .profile dl > div + div { padding-top: var(--space-6); border-top: 1px solid var(--line); }
-.profile dt { font-size: var(--text-secondary); font-weight: 600; color: var(--muted); }
-.profile dd { margin: 0; font-weight: 600; line-height: 1.5; }
+.profile dt { font-size: var(--text-secondary); font-weight: 600; color: var(--brand-deep); }
+.profile dd { margin: 0; font-weight: 600; line-height: 1.5; padding-left: var(--space-4); border-left: 2px solid var(--shade); }
 .profile dd span { display: block; font-weight: 400; font-size: var(--text-secondary); line-height: 1.5; color: var(--muted); margin-top: var(--space-1); }
 
 /* ---------- Report detail ---------- */
@@ -554,9 +628,19 @@ html.js-reveal [data-reveal].is-revealed { opacity: 1; transform: none; }
 .sheet-close:hover { background: var(--shade); }
 .sheet-close:active { transform: scale(.98); }
 .sheet-close svg { width: 16px; height: 16px; }
-.sheet-body { position: relative; flex: 1; display: flex; background: var(--shade); }
-.sheet-frame { flex: 1; width: 100%; border: 0; background: transparent; transition: opacity var(--motion-150) ease; }
-.sheet-body.is-loading .sheet-frame { opacity: 0; }
+.sheet-body { position: relative; flex: 1; min-height: 0; display: flex; background: var(--shade); }
+.sheet-pages {
+  flex: 1; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
+  display: flex; flex-direction: column; align-items: center; gap: var(--space-4);
+  padding: var(--space-4) var(--space-4) var(--space-12);
+}
+.sheet-page { width: 100%; max-width: 840px; height: auto; background: #fff; border: 1px solid var(--hairline); border-radius: 4px; box-shadow: var(--shadow-soft); }
+.sheet-error { display: none; margin: auto; max-width: 28em; padding: var(--space-8) var(--space-6); text-align: center; color: var(--ink-soft); }
+.sheet-error h3 { margin-bottom: var(--space-2); }
+.sheet-error p { margin: 0 0 var(--space-6); }
+.sheet-error .hero-actions { justify-content: center; margin-top: 0; }
+.sheet-body.has-error .sheet-pages { display: none; }
+.sheet-body.has-error .sheet-error { display: block; }
 /* Shown while the PDF loads: the shape of a report page, not a spinner. */
 .sheet-skeleton {
   position: absolute; top: var(--space-8); left: 50%; translate: -50% 0;

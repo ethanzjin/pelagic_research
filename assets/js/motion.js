@@ -293,6 +293,25 @@ function setupSegmented() {
   }, true);
 }
 
+/* ---------- PDF.js, loaded the first time a report is opened ---------- */
+
+const PDFJS = "assets/vendor/pdfjs/";
+let pdfjsLoading = null;
+function loadPdfjs() {
+  if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+  pdfjsLoading ||= new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = PDFJS + "pdf.min.js";
+    script.onload = () => {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS + "pdf.worker.min.js";
+      resolve(window.pdfjsLib);
+    };
+    script.onerror = () => { pdfjsLoading = null; reject(new Error("PDF.js did not load")); };
+    document.head.append(script);
+  });
+  return pdfjsLoading;
+}
+
 /* ---------- report sheet: slides up, pushes the page back, drag to dismiss ---------- */
 
 // Reading a whole report is a long task, so the open sheet has its own address:
@@ -301,7 +320,7 @@ const SHEET_HASH = "#full-report";
 
 function setupSheet() {
   const page = document.querySelector(".page");
-  let sheet, scrim, bar, frame, titleEl, download, closeBtn, spring, opener;
+  let sheet, scrim, bar, pages, titleEl, closeBtn, spring, opener;
   let isOpen = false;
   let pushed = false; // whether we added the history entry (so closing can step back over it)
 
@@ -336,19 +355,21 @@ function setupSheet() {
       <div class="sheet-body is-loading">
         <div class="sheet-skeleton" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
         <p class="visually-hidden" role="status">Loading the report</p>
-        <iframe class="sheet-frame" title="Full report"></iframe>
+        <div class="sheet-pages" tabindex="0" aria-label="Report pages"></div>
+        <div class="sheet-error">
+          <h3>The report couldn't open here</h3>
+          <p>The preview didn't load, but the PDF itself is fine. Open it in a new tab or download it to read the full report.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" data-pdf-link target="_blank" rel="noopener">Open in a new tab</a>
+            <a class="more" download>Download PDF</a>
+          </div>
+        </div>
       </div>`;
     scrim.hidden = sheet.hidden = true;
     document.body.append(scrim, sheet);
     bar = sheet.querySelector(".sheet-bar");
-    frame = sheet.querySelector(".sheet-frame");
-    const body = sheet.querySelector(".sheet-body");
-    frame.addEventListener("load", () => {
-      body.classList.remove("is-loading");
-      body.querySelector("[role=status]").textContent = "Report loaded";
-    });
+    pages = sheet.querySelector(".sheet-pages");
     titleEl = sheet.querySelector(".sheet-title");
-    download = sheet.querySelector("a[download]");
     closeBtn = sheet.querySelector(".sheet-close");
     spring = new Spring(0, render);
 
@@ -356,6 +377,47 @@ function setupSheet() {
     scrim.addEventListener("click", () => close());
     sheet.addEventListener("keydown", trapFocus);
     setupDrag();
+  }
+
+  // The pages are drawn with PDF.js rather than the browser's PDF viewer, which is missing on
+  // most Android phones and refuses to run inside sandboxed frames ("blocked by Chrome").
+  async function renderPdf(src) {
+    if (pages.dataset.src === src) return;
+    const body = sheet.querySelector(".sheet-body");
+    const status = sheet.querySelector("[role=status]");
+    pages.dataset.src = src;
+    pages.replaceChildren();
+    body.classList.remove("has-error");
+    body.classList.add("is-loading");
+    status.textContent = "Loading the report";
+    try {
+      const lib = await loadPdfjs();
+      const doc = await lib.getDocument(src).promise;
+      const cssWidth = Math.min(pages.clientWidth - 32, 840);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      for (let n = 1; n <= doc.numPages; n++) {
+        if (pages.dataset.src !== src) return; // a different report was opened meanwhile
+        const pdfPage = await doc.getPage(n);
+        const viewport = pdfPage.getViewport({ scale: (cssWidth / pdfPage.getViewport({ scale: 1 }).width) * dpr });
+        const canvas = document.createElement("canvas");
+        canvas.className = "sheet-page";
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        canvas.setAttribute("role", "img");
+        canvas.setAttribute("aria-label", `Page ${n} of ${doc.numPages}`);
+        pages.append(canvas);
+        await pdfPage.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+        if (n === 1) {
+          body.classList.remove("is-loading");
+          status.textContent = `Report loaded, ${doc.numPages} pages`;
+        }
+      }
+    } catch {
+      pages.dataset.src = "";
+      body.classList.remove("is-loading");
+      body.classList.add("has-error");
+      status.textContent = "The report couldn't open here. Download the PDF to read it.";
+    }
   }
 
   const closedY = () => sheet.offsetHeight - 100 + 24; // 100px of the sheet sits below the viewport for overshoot
@@ -372,18 +434,15 @@ function setupSheet() {
     if (!sheet) build();
     opener = trigger;
     const src = trigger.dataset.sheet;
-    if (frame.getAttribute("src") !== src) {
-      sheet.querySelector(".sheet-body").classList.add("is-loading");
-      frame.src = src;
-    }
     titleEl.textContent = trigger.dataset.sheetTitle || "Full report";
-    download.href = src;
+    sheet.querySelectorAll("a[download], a[data-pdf-link]").forEach((a) => { a.href = src; });
     page.style.transformOrigin = `50% ${window.scrollY + innerHeight / 2}px`;
     document.documentElement.classList.add("sheet-open");
     scrim.hidden = sheet.hidden = false;
     page.inert = true;
     isOpen = true;
     markOpen();
+    renderPdf(src);
 
     if (reducedMotion.matches) {
       spring.set(0);
@@ -457,7 +516,7 @@ function setupSheet() {
   function trapFocus(e) {
     if (e.key === "Escape") { e.preventDefault(); close(); return; }
     if (e.key !== "Tab") return;
-    const items = [download, closeBtn, frame];
+    const items = [...sheet.querySelectorAll("a[download], a[data-pdf-link], .sheet-close, .sheet-pages")].filter((el) => el.offsetParent);
     const i = items.indexOf(document.activeElement);
     if (e.shiftKey && i <= 0) { e.preventDefault(); items[items.length - 1].focus(); }
     else if (!e.shiftKey && i === items.length - 1) { e.preventDefault(); items[0].focus(); }
@@ -466,8 +525,6 @@ function setupSheet() {
   document.addEventListener("click", (e) => {
     const trigger = e.target.closest("[data-sheet]");
     if (!trigger) return;
-    // Phones that can't show a PDF inline get the file itself instead of an empty sheet.
-    if (navigator.pdfViewerEnabled === false) return void window.open(trigger.dataset.sheet, "_blank", "noopener");
     e.preventDefault();
     open(trigger);
   });
@@ -476,7 +533,7 @@ function setupSheet() {
   // Back and Forward open and close it; a shared link opens it on arrival.
   const openFromPage = () => {
     const trigger = document.querySelector("[data-sheet]");
-    if (trigger && navigator.pdfViewerEnabled !== false) open(trigger);
+    if (trigger) open(trigger);
   };
   addEventListener("popstate", () => {
     if (location.hash === SHEET_HASH && !isOpen) openFromPage();
