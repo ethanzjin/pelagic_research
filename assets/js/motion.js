@@ -8,6 +8,9 @@
 
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 
+// Hide reveal targets only when this script is running, so the page never depends on it.
+document.documentElement.classList.add("js-reveal");
+
 /* ---------- physics ---------- */
 
 // A spring described the way Apple does: damping ratio (1 = no overshoot)
@@ -127,6 +130,78 @@ function setupHeader() {
     if (!queued) { queued = true; requestAnimationFrame(update); }
   }, { passive: true });
   update();
+}
+
+/* ---------- scrolling: tied 1:1 to the scroll position, never on a timer ---------- */
+
+function setupScroll() {
+  const root = document.documentElement;
+  const hero = document.querySelector(".hero");
+  const stepGroups = [...document.querySelectorAll(".steps")];
+  const reveal = revealer();
+  let queued = false;
+
+  function update() {
+    queued = false;
+    const vh = innerHeight;
+    reveal(vh);
+
+    // Hero: 0 at the top of the page, 1 once it has scrolled out of view.
+    if (hero) {
+      const p = clamp(window.scrollY / hero.offsetHeight, 0, 1);
+      if (p !== update.heroP) { root.style.setProperty("--hero-p", p.toFixed(4)); update.heroP = p; }
+    }
+
+    // Process steps: the line fills step by step as the section moves up the screen.
+    stepGroups.forEach((group) => {
+      const steps = [...group.children];
+      const inRow = steps.every((st) => st.offsetTop === steps[0].offsetTop);
+      steps.forEach((step, i) => {
+        let fill;
+        if (inRow) {
+          const top = group.getBoundingClientRect().top;
+          const p = clamp((vh * 0.85 - top) / (vh * 0.45), 0, 1);
+          fill = clamp(p * steps.length - i, 0, 1);
+        } else {
+          const top = step.getBoundingClientRect().top;
+          fill = clamp((vh * 0.85 - top) / (vh * 0.25), 0, 1);
+        }
+        step.style.setProperty("--fill", fill.toFixed(3));
+        step.classList.toggle("is-done", fill >= 1);
+      });
+    });
+  }
+
+  const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+  addEventListener("scroll", queue, { passive: true });
+  addEventListener("resize", queue);
+  update();
+}
+
+// Each block rises into place the first time it reaches the lower part of the screen.
+// Checked on every scroll frame rather than with an observer, so a jump past a section
+// (an anchor link, a hard fling) still reveals it.
+function revealer() {
+  if (!document.documentElement.classList.contains("js-reveal")) return () => {};
+  let pending = [...document.querySelectorAll("[data-reveal]")];
+  pending.forEach((el) => {
+    const siblings = [...el.parentElement.children].filter((c) => c.hasAttribute("data-reveal"));
+    el.style.setProperty("--i", siblings.indexOf(el));
+  });
+  return (vh) => {
+    if (!pending.length) return;
+    pending = pending.filter((el) => {
+      if (el.getBoundingClientRect().top > vh * 0.92) return true;
+      el.classList.add("is-revealed");
+      // Hand the element back to its normal styles (press feedback, hover) once it has landed.
+      const delay = Number(el.style.getPropertyValue("--i")) * 70;
+      setTimeout(() => {
+        el.removeAttribute("data-reveal");
+        el.classList.remove("is-revealed");
+      }, 1000 + delay);
+      return false;
+    });
+  };
 }
 
 /* ---------- hero manta: follows the pointer, can be thrown ---------- */
@@ -483,6 +558,7 @@ function setupCopy() {
 
 document.addEventListener("DOMContentLoaded", () => {
   setupHeader();
+  setupScroll();
   setupManta();
   setupSegmented();
   setupSheet();

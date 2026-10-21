@@ -281,6 +281,15 @@ function setupNav() {
   });
 }
 
+// Start every newly opened page at the top. Browsers already do this, but a page shown
+// inside another frame (like a preview) can inherit the outer scroll position instead.
+function resetScroll() {
+  const nav = performance.getEntriesByType("navigation")[0];
+  if (location.hash || (nav && nav.type !== "navigate")) return;
+  window.scrollTo({ top: 0, behavior: "instant" }); // not the smooth scroll used for in-page links
+  document.documentElement.scrollIntoView({ block: "start", behavior: "instant" });
+}
+
 function setupContact() {
   document.querySelectorAll("[data-contact]").forEach((a) => {
     a.href = `mailto:${SITE.contactEmail}`;
@@ -289,6 +298,7 @@ function setupContact() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  resetScroll();
   setupNav();
   setupContact();
   renderLatest();
