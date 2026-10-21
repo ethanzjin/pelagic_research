@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Pelagic Research</title>
   <meta name="description" content="Independent equity research on marine, energy and sustainability companies. One to two reports a month.">
-  <meta name="theme-color" content="#4248ed">
+  <meta name="theme-color" content="#050d24">
+  <meta name="color-scheme" content="light">
   <meta property="og:title" content="Pelagic Research">
   <meta property="og:description" content="Independent equity research on marine, energy and sustainability companies. One to two reports a month.">
   <meta property="og:image" content="assets/img/og-image.png">
@@ -13,12 +14,10 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/png" href="assets/img/favicon.png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+<div class="page">
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="container">
@@ -26,11 +25,10 @@
       <img src="assets/img/mark-white.png" alt="" width="68" height="34">
       <span>Pelagic Research</span>
     </a>
-    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    <button class="nav-toggle" data-tooltip aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 9h16M4 15h16"/></svg>
     </button>
     <nav class="nav" id="site-nav">
-      <a href="index.html" aria-current="page">Home</a>
       <a href="research.html">Research</a>
       <a href="index.html#about">About</a>
       <a href="about.html">Methodology</a>
@@ -41,30 +39,41 @@
 
 <main id="main">
 <section class="hero">
-  <div class="container">
-    <div>
-      <span class="eyebrow">Independent equity research</span>
-      <h1>Equity research on marine, energy and sustainability companies</h1>
-      <p class="lede">I'm Ethan, an undergraduate studying Finance, Sustainable Business and Environmental Studies at NYU Stern. Each month, I publish one or two in-depth reports on listed companies in the marine, energy and sustainability sectors. Each report walks through the business model, growth drivers, financials, valuation and key risks, and ends with a rating and a 12-month price target.</p>
-      <div class="hero-actions">
-        <a class="btn btn-light" href="research.html">Browse research</a>
-        <a class="btn btn-ghost" href="#about">About me</a>
-      </div>
-    </div>
-    <img class="hero-logo" src="assets/img/mark-white-large.png" alt="Pelagic Research manta ray logo" width="1200" height="582">
+  <div class="hero-media" aria-hidden="true">
+    <img src="assets/img/photos/hero-manta-2400.jpg"
+         srcset="assets/img/photos/hero-manta-1200.jpg 1200w, assets/img/photos/hero-manta-2400.jpg 2400w"
+         sizes="100vw" alt="" width="2400" height="1600" fetchpriority="high">
   </div>
-  <svg class="wave" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M0,40 C240,80 480,0 720,30 C960,60 1200,10 1440,36 L1440,70 L0,70 Z" fill="#f7f7f3"/>
-  </svg>
+  <div class="container hero-content">
+    <p class="hero-eyebrow">Independent equity research</p>
+    <h1>Equity research on marine, energy and sustainability companies.</h1>
+    <p class="lede">One or two in-depth reports a month, each ending with a rating and a 12-month price target.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="research.html">Browse research</a>
+      <a class="more" href="#about">Read about me</a>
+    </div>
+  </div>
 </section>
 
-<div class="container">
-  <div class="feature" id="latest" aria-live="polite"></div>
-</div>
+<section id="latest-section">
+  <div class="container">
+    <div class="feature" id="latest" data-reveal aria-live="polite"></div>
+  </div>
+</section>
 
-<section class="bg-surface" id="about">
+<section class="bg-shade" id="recent-section">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <h2>Earlier reports</h2>
+      <a class="more" href="research.html">See all reports</a>
+    </div>
+    <div class="report-grid" id="recent"></div>
+  </div>
+</section>
+
+<section id="about">
   <div class="container split">
-    <div class="prose">
+    <div class="prose" data-reveal>
       <span class="eyebrow">About me</span>
       <h2 class="mt-0">Ethan Jin</h2>
       <p>I'm an undergraduate at NYU's Stern School of Business, studying Finance, Sustainable Business and Environmental Studies. I started Pelagic Research to write about the companies I find most interesting: the ones that depend on the ocean, on energy markets and on climate policy. "Pelagic" means relating to the open sea.</p>
@@ -72,8 +81,12 @@
       <p>Before finance, you could find me in a lab or on a beach. I've done biological and environmental research at the Scripps Institution of Oceanography, UW Friday Harbor Labs and Penn Vet. At Scripps and UW, my theses focused on how climate change and warming ocean temperatures affect the behavior of marine invertebrates. At Penn, I studied the epigenetic regulation of meiosis in mice. I try to bring the same habits from research to each report: start from primary sources and dive in with an open mind.</p>
       <p>Outside of school I dive, hike, swim and lift, I've gone dog mushing, and I keep a long list of restaurants ranked on Beli. My favorite trips so far have been to Iceland, New Zealand and Norway.</p>
     </div>
-    <aside class="profile">
-      <img class="profile-mark" src="assets/img/mark-white.png" alt="">
+    <aside class="profile" data-reveal>
+      <div class="profile-head">
+        <img src="assets/img/mark-white.png" alt="" width="68" height="34">
+        <p class="profile-title">Résumé</p>
+        <a class="more" href="https://www.linkedin.com/in/ethanzjin" target="_blank" rel="noopener">View on LinkedIn</a>
+      </div>
       <dl>
         <div>
           <dt>Education</dt>
@@ -83,8 +96,14 @@
           <dt>Experience</dt>
           <dd>Geode Health (backed by KKR)<span>Corporate Development Intern</span></dd>
           <dd>Logan Growth Advisors<span>Investment Banking Intern</span></dd>
-          <dd>Heron Peak Capital<span>Investment Analyst Intern, lower-middle-market search fund</span></dd>
-          <dd>Elphinstone Research Group<span>Equity Research Analyst, U.S. Energy</span></dd>
+          <dd>Heron Peak Capital<span>Investment Analyst Intern</span></dd>
+        </div>
+        <div>
+          <dt>Extracurriculars</dt>
+          <dd>Beta Alpha Psi – Mu Chapter<span>Platinum Member</span></dd>
+          <dd>Consortium Research Group<span>Energy Team</span></dd>
+          <dd>Global Equity Management<span>Portfolio Team</span></dd>
+          <dd>Elphinstone Research Group<span>U.S. Energy Team</span></dd>
         </div>
         <div>
           <dt>Research</dt>
@@ -92,84 +111,77 @@
           <dd>UW Friday Harbor Labs<span>Warming and habitat selection in <em>Haminoea japonica</em></span></dd>
           <dd>Penn Vet<span>Epigenetic regulation of meiosis in mice</span></dd>
         </div>
-        <div>
-          <dt>Contact</dt>
-          <dd><a href="#" data-contact="show">email</a><span><a href="https://www.linkedin.com/in/ethanzjin" target="_blank" rel="noopener">LinkedIn</a></span></dd>
-        </div>
       </dl>
     </aside>
   </div>
 </section>
 
-<section id="coverage">
+<section class="bg-shade" id="coverage">
   <div class="container">
-    <div class="section-head">
-      <div>
-        <h2>Sectors covered</h2>
-      </div>
+    <div class="section-head" data-reveal>
+      <h2>Sectors covered</h2>
     </div>
     <div class="sectors">
-      <a class="sector marine reveal" href="research.html?sector=marine" style="text-decoration:none;color:inherit">
-        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18c1.5 1 3 1.5 4.5 1.5S9.5 19 11 18s3-1.5 4.5-1.5S18.5 17 20 18s1.5.8 2 1"/><path d="M4 15l-1-5h18l-2 5"/><path d="M12 10V4"/><path d="M8 10V7h8v3"/></svg></div>
-        <h3>Marine</h3>
-        <p>Shipping, ports, offshore services, shipbuilding and aquaculture.</p>
-        <ul><li>Tankers and dry bulk</li><li>Containers</li><li>Offshore</li><li>Aquaculture</li></ul>
+      <a class="sector" data-reveal href="research.html?sector=marine">
+        <div class="sector-media"><img src="assets/img/photos/marine.jpg" alt="Container ship at sea, seen from above" width="900" height="675" loading="lazy"></div>
+        <div class="sector-body">
+          <h3>Marine</h3>
+          <p>Shipping, ports, offshore services, shipbuilding and aquaculture.</p>
+          <p class="subs">Tankers and dry bulk · Containers · Offshore · Aquaculture</p>
+          <span class="more">See marine reports</span>
+        </div>
       </a>
-      <a class="sector energy reveal" href="research.html?sector=energy" style="text-decoration:none;color:inherit">
-        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg></div>
-        <h3>Energy</h3>
-        <p>Oil and gas, LNG, utilities and power infrastructure.</p>
-        <ul><li>LNG</li><li>Upstream</li><li>Midstream</li><li>Utilities</li></ul>
+      <a class="sector" data-reveal href="research.html?sector=energy">
+        <div class="sector-media"><img src="assets/img/photos/energy.jpg" alt="Nuclear plant cooling towers releasing steam" width="900" height="675" loading="lazy"></div>
+        <div class="sector-body">
+          <h3>Energy</h3>
+          <p>Oil and gas, LNG, utilities and power infrastructure.</p>
+          <p class="subs">LNG · Upstream · Midstream · Utilities</p>
+          <span class="more">See energy reports</span>
+        </div>
       </a>
-      <a class="sector sustainability reveal" href="research.html?sector=sustainability" style="text-decoration:none;color:inherit">
-        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 4 13c0-5 4-9 16-10-1 12-5 16-10 16"/><path d="M4 21c3-5 6-8 10-10"/></svg></div>
-        <h3>Sustainability</h3>
-        <p>Offshore wind, solar, alternative fuels and carbon capture.</p>
-        <ul><li>Offshore wind</li><li>Green fuels</li><li>Storage</li><li>Carbon</li></ul>
+      <a class="sector" data-reveal href="research.html?sector=sustainability">
+        <div class="sector-media"><img src="assets/img/photos/sustainability.jpg" alt="Offshore wind turbines in open water" width="900" height="675" loading="lazy"></div>
+        <div class="sector-body">
+          <h3>Sustainability</h3>
+          <p>Offshore wind, solar, alternative fuels and carbon capture.</p>
+          <p class="subs">Offshore wind · Green fuels · Storage · Carbon</p>
+          <span class="more">See sustainability reports</span>
+        </div>
       </a>
     </div>
   </div>
 </section>
 
-<section class="bg-surface" id="recent-section">
+<section class="bg-deep" id="process">
   <div class="container">
-    <div class="section-head">
-      <div>
-        <h2>Earlier reports</h2>
-      </div>
-      <a class="btn btn-outline" href="research.html">All reports</a>
-    </div>
-    <div class="report-grid" id="recent"></div>
-  </div>
-</section>
-
-<section class="bg-surface">
-  <div class="container">
-    <div class="section-head">
-      <div>
-        <h2>How a report gets made</h2>
-      </div>
+    <div class="section-head" data-reveal>
+      <h2>How a report gets made</h2>
+      <a class="more" href="about.html">Read the methodology</a>
     </div>
     <div class="steps">
-      <div class="step reveal"><h3>Pick a company</h3><p>Look for stocks where the price seems wrong, or where something about the business is about to change.</p></div>
-      <div class="step reveal"><h3>Research</h3><p>Read the annual reports and filings, collect industry data, and talk to people who work in the industry where possible.</p></div>
-      <div class="step reveal"><h3>Model</h3><p>Build a financial model with a bull, base and bear case.</p></div>
-      <div class="step reveal"><h3>Write it up</h3><p>Publish the report with a rating, a price target and the main risks, plus a PDF version.</p></div>
+      <div class="step" data-reveal><h3>Pick a company</h3><p>Look for stocks where the price seems wrong, or where something about the business is about to change.</p></div>
+      <div class="step" data-reveal><h3>Research</h3><p>Read the annual reports and filings, collect industry data, and talk to people who work in the industry where possible.</p></div>
+      <div class="step" data-reveal><h3>Model</h3><p>Build a financial model with a bull, base and bear case.</p></div>
+      <div class="step" data-reveal><h3>Write it up</h3><p>Publish the report with a rating, a price target and the main risks, plus a PDF version.</p></div>
     </div>
   </div>
 </section>
 
-<section class="tight" id="contact" style="padding-bottom:96px">
+<section class="contact-band" id="contact">
+  <div class="contact-media" aria-hidden="true">
+    <img src="assets/img/photos/contact-manta-2000.jpg"
+         srcset="assets/img/photos/contact-manta-1000.jpg 1000w, assets/img/photos/contact-manta-2000.jpg 2000w"
+         sizes="100vw" alt="" width="2000" height="1500" loading="lazy">
+  </div>
   <div class="container">
-    <div class="contact">
-      <img src="assets/img/mark-white.png" alt="">
-      <div class="contact-text">
-        <h2>Get in touch</h2>
-        <p>Questions about a report, an idea for a company to cover, or want to talk about shipping, energy or markets? Email me or reach out on LinkedIn.</p>
-      </div>
+    <div class="contact" data-reveal>
+      <h2>Get in touch</h2>
+      <p>Questions about a report, an idea for a company to cover, or want to talk about shipping, energy or markets? Email me or reach out on LinkedIn.</p>
       <div class="contact-links">
-        <a class="btn btn-light" href="#" data-contact="show">email</a>
-        <a class="btn btn-ghost" href="https://www.linkedin.com/in/ethanzjin" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn btn-light" href="#" data-contact="link">Email me</a>
+        <span class="copy-wrap"><button class="text-btn" type="button" data-copy-email>Copy email</button></span>
+        <a class="more" href="https://www.linkedin.com/in/ethanzjin" target="_blank" rel="noopener">Connect on LinkedIn</a>
       </div>
     </div>
   </div>
@@ -179,7 +191,7 @@
   <div class="container">
     <div class="footer-grid">
       <div>
-        <img class="footer-logo" src="assets/img/logo-white.png" alt="Pelagic Research" width="220">
+        <img class="footer-logo" src="assets/img/logo-white.png" alt="Pelagic Research" width="180">
         <p>Independent equity research on marine, energy and sustainability companies. One to two reports a month.</p>
       </div>
       <div>
@@ -203,10 +215,13 @@
     </div>
     <div class="disclaimer">
       © <span data-year></span> Pelagic Research. All content is published for informational and educational purposes only and does not constitute investment advice, an offer, or a solicitation to buy or sell any security. Pelagic Research is an independent, personal research publication and is not a registered investment adviser or broker-dealer. The author may hold positions in securities discussed. Do your own research and consult a licensed professional before making investment decisions. <a href="about.html#disclaimer">Full disclaimer</a>.
+      <span class="credits">Photos from <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a> by Nott Peera, Swanson Chan, Venti Views, Lukáš Lehotský, Jesse De Meulenaere and Digital Reach.</span>
     </div>
   </div>
 </footer>
+</div>
 <script src="assets/js/reports.js"></script>
 <script src="assets/js/site.js"></script>
+<script src="assets/js/motion.js"></script>
 </body>
 </html>

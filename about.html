@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Methodology | Pelagic Research</title>
   <meta name="description" content="How Pelagic Research reports are put together, what the ratings mean, and the disclaimer.">
-  <meta name="theme-color" content="#4248ed">
+  <meta name="theme-color" content="#050d24">
+  <meta name="color-scheme" content="light">
   <meta property="og:title" content="Methodology | Pelagic Research">
   <meta property="og:description" content="How Pelagic Research reports are put together, what the ratings mean, and the disclaimer.">
   <meta property="og:image" content="assets/img/og-image.png">
@@ -13,12 +14,10 @@
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/png" href="assets/img/favicon.png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+<div class="page">
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="container">
@@ -26,11 +25,10 @@
       <img src="assets/img/mark-white.png" alt="" width="68" height="34">
       <span>Pelagic Research</span>
     </a>
-    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    <button class="nav-toggle" data-tooltip aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 9h16M4 15h16"/></svg>
     </button>
     <nav class="nav" id="site-nav">
-      <a href="index.html">Home</a>
       <a href="research.html">Research</a>
       <a href="index.html#about">About</a>
       <a href="about.html" aria-current="page">Methodology</a>
@@ -41,16 +39,14 @@
 
 <main id="main">
 <section class="page-hero">
+  <div class="page-hero-media" aria-hidden="true"><img src="assets/img/photos/light-2000.jpg" srcset="assets/img/photos/light-1000.jpg 1000w, assets/img/photos/light-2000.jpg 2000w" sizes="100vw" alt="" width="2000" height="1335"></div>
   <div class="container">
     <h1>Methodology</h1>
     <p>How each report is put together, what the ratings mean, and the legal disclaimer.</p>
   </div>
-  <svg class="wave" viewBox="0 0 1440 70" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M0,40 C240,80 480,0 720,30 C960,60 1200,10 1440,36 L1440,70 L0,70 Z" fill="#f7f7f3"/>
-  </svg>
 </section>
 
-<section id="methodology" style="padding-top:48px">
+<section id="methodology">
   <div class="container">
     <div class="section-head">
       <div>
@@ -66,7 +62,7 @@
       <div class="step"><h3>Risks</h3><p>The main things that could make the thesis wrong.</p></div>
     </div>
 
-    <div class="prose" style="margin-top:56px">
+    <div class="prose ratings-block">
       <h3 id="ratings">Ratings</h3>
       <p>Each rating is based on the expected return over the next 12 months, measured from the reference share price and date noted in the report.</p>
       <div class="table-wrap">
@@ -87,8 +83,9 @@
   </div>
 </section>
 
-<section class="bg-surface" id="disclaimer">
-  <div class="container prose">
+<section class="bg-shade" id="disclaimer">
+  <div class="container">
+  <div class="prose">
     <h2 class="mt-0">Disclaimer</h2>
     <p>Pelagic Research is an independent, personal research publication. All content on this website and in any report is provided for informational and educational purposes only and reflects the author's opinion at the time of publication.</p>
     <ul>
@@ -102,13 +99,14 @@
     <h2>Contact</h2>
     <p>For questions, feedback or suggestions for companies to cover, email me at <a href="#" data-contact="show">email</a>.</p>
   </div>
+  </div>
 </section>
 </main>
 <footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
       <div>
-        <img class="footer-logo" src="assets/img/logo-white.png" alt="Pelagic Research" width="220">
+        <img class="footer-logo" src="assets/img/logo-white.png" alt="Pelagic Research" width="180">
         <p>Independent equity research on marine, energy and sustainability companies. One to two reports a month.</p>
       </div>
       <div>
@@ -132,10 +130,13 @@
     </div>
     <div class="disclaimer">
       © <span data-year></span> Pelagic Research. All content is published for informational and educational purposes only and does not constitute investment advice, an offer, or a solicitation to buy or sell any security. Pelagic Research is an independent, personal research publication and is not a registered investment adviser or broker-dealer. The author may hold positions in securities discussed. Do your own research and consult a licensed professional before making investment decisions. <a href="about.html#disclaimer">Full disclaimer</a>.
+      <span class="credits">Photos from <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a> by Nott Peera, Swanson Chan, Venti Views, Lukáš Lehotský, Jesse De Meulenaere and Digital Reach.</span>
     </div>
   </div>
 </footer>
+</div>
 <script src="assets/js/reports.js"></script>
 <script src="assets/js/site.js"></script>
+<script src="assets/js/motion.js"></script>
 </body>
 </html>

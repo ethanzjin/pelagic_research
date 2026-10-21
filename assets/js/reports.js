@@ -19,6 +19,8 @@
      price        reference share price the rating is based on (number, optional)
      priceDate    date of that reference price, "YYYY-MM-DD" (optional)
      target       12-month price target (number, optional)
+     bear, bull   bear- and bull-case price targets (numbers, optional);
+                  with price and target they draw the scenario range chart
      currency     "USD", "EUR", "NOK", ... (optional, default USD)
      summary      2–3 sentence abstract shown on cards
      thesis       array of key thesis points (optional)
@@ -38,6 +40,8 @@
      price: 0,
      priceDate: "2026-11-01",
      target: 0,
+     bear: 0,
+     bull: 0,
      currency: "USD",
      summary: "",
      thesis: [],
@@ -59,6 +63,8 @@ window.PELAGIC_REPORTS = [
     price: 275.00,
     priceDate: "2026-10-15",
     target: 329.63,
+    bear: 239.58,
+    bull: 408.00,
     currency: "USD",
     summary:
       "Constellation is the largest nuclear operator in the U.S., with contracted base earnings set to grow about 23% a year through 2029. Our 2027 and 2028 EPS estimates sit about 8% and 14% below consensus, but our upside doesn't depend on beating the Street: at 18.8x our 2028E EPS, the stock trades below its roughly 23x median forward P/E since 2022, and a return to 22.5x implies about 20% upside.",

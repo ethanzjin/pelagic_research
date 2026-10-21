@@ -14,6 +14,8 @@ python3 -m http.server 8000   # then visit http://localhost:8000
 2. Open `assets/js/reports.js` and add an entry to the **top** of the list (a template and a field guide are in the comment at the top of that file).
 3. Commit and push.
 
+Optional `bear` and `bull` prices (with `price` and `target`) draw the scenario range chart on the cards and report page.
+
 The homepage "Latest report" card, the list of earlier reports, the research archive (with sector filters and search) and the report page (`report.html?id=<your-id>`) all update from that single file.
 
 ## Settings
@@ -29,9 +31,11 @@ index.html        Home: hero, latest report, about me, sectors, earlier reports,
 research.html     Full archive with sector filter and search
 report.html       Report detail page (summary, thesis, risks, embedded PDF)
 about.html        Mission, methodology, rating definitions, disclaimer
-assets/css/       Styles (brand blue #4248ED is sampled from the logo)
-assets/js/        reports.js (your data) and site.js (rendering)
+assets/css/       Styles (system type, deep-navy hero and footer; brand blue #4248ED from the logo)
+assets/js/        reports.js (your data), site.js (rendering), motion.js (springs and gestures)
+assets/vendor/    PDF.js 3.11.174 (Mozilla, Apache-2.0), loaded when a report PDF is opened
 assets/img/       Logo variants, favicon, social share image
+assets/img/photos Ocean and sector photographs (Unsplash License; credited in the footer)
 reports/          Report PDFs
 ```
 
