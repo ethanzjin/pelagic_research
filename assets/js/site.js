@@ -99,6 +99,11 @@ function reportCard(r) {
     </a>`;
 }
 
+// Opens the PDF in a sheet (motion.js); falls back to the file itself.
+function sheetButton(r) {
+  return `<a class="btn btn-primary" href="${esc(r.pdf)}" data-sheet="${esc(r.pdf)}" data-sheet-title="${esc(r.title)}">Read the full report</a>`;
+}
+
 function emptyState(msg) {
   return `<div class="empty">${msg}</div>`;
 }
@@ -224,8 +229,14 @@ function renderReport() {
         ${r.thesis && r.thesis.length ? `<h2>Investment thesis</h2>${list(r.thesis)}` : ""}
         ${r.risks && r.risks.length ? `<h2>Key risks</h2>${list(r.risks, "risks")}` : ""}
         ${r.pdf
-          ? `<h2>Full report</h2><object class="pdf-frame" data="${esc(r.pdf)}" type="application/pdf">
-               <p>Your browser can't display the PDF inline. <a href="${esc(r.pdf)}">Download it here</a>.</p></object>`
+          ? `<h2>Full report</h2>
+             <div class="report-open">
+               <p>The complete report is a PDF. Read it here, or download it to keep.</p>
+               <div class="hero-actions">
+                 ${sheetButton(r)}
+                 <a class="more" href="${esc(r.pdf)}" download>Download PDF</a>
+               </div>
+             </div>`
           : `<div class="empty">The full PDF for this report hasn't been uploaded yet.</div>`}
       </article>
       <aside class="report-aside">
@@ -243,7 +254,7 @@ function renderReport() {
             <div class="kv"><span>Published</span><span>${fmtDate(r.date)}</span></div>
           </div>
         </div>
-        ${r.pdf ? `<a class="btn btn-primary" href="${esc(r.pdf)}" download>Download PDF</a>` : ""}
+        ${r.pdf ? `${sheetButton(r)}<a class="more center" href="${esc(r.pdf)}" download>Download PDF</a>` : ""}
         <p class="note">
           For information and education only. This is not investment advice. Read the
           <a href="about.html#disclaimer">full disclaimer</a>.
@@ -258,9 +269,15 @@ function setupNav() {
   const toggle = $(".nav-toggle");
   const nav = $(".nav");
   if (!toggle || !nav) return;
-  toggle.addEventListener("click", () => {
-    const open = nav.classList.toggle("open");
+  const set = (open) => {
+    nav.classList.toggle("open", open);
     toggle.setAttribute("aria-expanded", String(open));
+    toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  };
+  toggle.addEventListener("click", () => set(!nav.classList.contains("open")));
+  nav.addEventListener("click", (e) => { if (e.target.closest("a")) set(false); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && nav.classList.contains("open")) { set(false); toggle.focus(); }
   });
 }
 

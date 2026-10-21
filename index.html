@@ -6,6 +6,7 @@
   <title>Pelagic Research</title>
   <meta name="description" content="Independent equity research on marine, energy and sustainability companies. One to two reports a month.">
   <meta name="theme-color" content="#050d24">
+  <meta name="color-scheme" content="light dark">
   <meta property="og:title" content="Pelagic Research">
   <meta property="og:description" content="Independent equity research on marine, energy and sustainability companies. One to two reports a month.">
   <meta property="og:image" content="assets/img/og-image.png">
@@ -16,6 +17,7 @@
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+<div class="page">
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="container">
@@ -45,7 +47,7 @@
       <a class="btn btn-primary" href="research.html">Browse research</a>
       <a class="more" href="#about">About me</a>
     </div>
-    <img class="hero-logo" src="assets/img/mark-white-large.png" alt="Pelagic Research manta ray logo" width="1200" height="582">
+    <img class="hero-logo" src="assets/img/mark-white-large.png" alt="Pelagic Research manta ray logo" width="1200" height="582" draggable="false">
   </div>
 </section>
 
@@ -149,6 +151,7 @@
       <p>Questions about a report, an idea for a company to cover, or want to talk about shipping, energy or markets? Email me or reach out on LinkedIn.</p>
       <div class="contact-links">
         <a class="btn btn-primary" href="#" data-contact="show">email</a>
+        <span class="copy-wrap"><button class="text-btn" type="button" data-copy-email>Copy email</button></span>
         <a class="more" href="https://www.linkedin.com/in/ethanzjin" target="_blank" rel="noopener">LinkedIn</a>
       </div>
     </div>
@@ -186,7 +189,9 @@
     </div>
   </div>
 </footer>
+</div>
 <script src="assets/js/reports.js"></script>
 <script src="assets/js/site.js"></script>
+<script src="assets/js/motion.js"></script>
 </body>
 </html>

@@ -1,0 +1,490 @@
+/* =========================================================
+   Pelagic Research — motion
+   Springs and gestures after Apple's "Designing Fluid Interfaces":
+   every animation starts from the value on screen, inherits the
+   pointer's velocity, and can be grabbed again mid-flight.
+   No dependencies.
+   ========================================================= */
+
+const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+
+/* ---------- physics ---------- */
+
+// A spring described the way Apple does: damping ratio (1 = no overshoot)
+// and response (roughly how many seconds it takes to get there).
+class Spring {
+  constructor(value, onUpdate) {
+    this.value = value;
+    this.target = value;
+    this.velocity = 0;
+    this.onUpdate = onUpdate;
+    this.frame = 0;
+  }
+
+  // Retarget from wherever the value is now, keeping its velocity unless one is handed in.
+  to(target, { damping = 1, response = 0.4, velocity, onRest } = {}) {
+    this.target = target;
+    this.damping = damping;
+    this.response = response;
+    this.onRest = onRest;
+    if (velocity !== undefined) this.velocity = velocity;
+    if (!this.frame) {
+      this.last = performance.now();
+      this.frame = requestAnimationFrame(this.step);
+    }
+  }
+
+  // Jump with no animation, e.g. while a finger is tracking 1:1.
+  set(value) {
+    this.stop();
+    this.value = this.target = value;
+    this.velocity = 0;
+    this.onUpdate(value);
+  }
+
+  stop() {
+    cancelAnimationFrame(this.frame);
+    this.frame = 0;
+  }
+
+  step = (now) => {
+    const dt = Math.min((now - this.last) / 1000, 1 / 30);
+    this.last = now;
+    const stiffness = (2 * Math.PI / this.response) ** 2;
+    const friction = (4 * Math.PI * this.damping) / this.response;
+    const n = Math.max(1, Math.ceil(dt * 240));
+    const h = dt / n;
+    for (let i = 0; i < n; i++) {
+      const force = -stiffness * (this.value - this.target) - friction * this.velocity;
+      this.velocity += force * h;
+      this.value += this.velocity * h;
+    }
+    if (Math.abs(this.velocity) < 2 && Math.abs(this.value - this.target) < 0.1) {
+      this.value = this.target;
+      this.velocity = 0;
+      this.frame = 0;
+      this.onUpdate(this.value);
+      const done = this.onRest;
+      this.onRest = null;
+      if (done) done();
+      return;
+    }
+    this.onUpdate(this.value);
+    this.frame = requestAnimationFrame(this.step);
+  };
+}
+
+// Where a flick would come to rest (Apple's sample code, exponential decay).
+function project(velocity, deceleration = 0.998) {
+  return ((velocity / 1000) * deceleration) / (1 - deceleration);
+}
+
+// Progressive resistance past a boundary.
+function rubberband(overshoot, dimension, constant = 0.55) {
+  return (overshoot * dimension * constant) / (dimension + constant * Math.abs(overshoot));
+}
+
+// Velocity from the last ~100ms of pointer history, in px/s.
+function velocityTracker() {
+  let points = [];
+  return {
+    reset() { points = []; },
+    add(x, y) {
+      const t = performance.now();
+      points.push({ x, y, t });
+      points = points.filter((p) => t - p.t < 100);
+    },
+    velocity() {
+      const now = performance.now();
+      const recent = points.filter((p) => now - p.t < 100);
+      if (recent.length < 2) return { x: 0, y: 0 };
+      const a = recent[0];
+      const b = recent[recent.length - 1];
+      const dt = (b.t - a.t) / 1000 || 1 / 60;
+      return { x: (b.x - a.x) / dt, y: (b.y - a.y) / dt };
+    },
+  };
+}
+
+// A light tick on devices that support it, fired on the same frame as the visual it confirms.
+function haptic() {
+  if (navigator.vibrate && !reducedMotion.matches) navigator.vibrate(8);
+}
+
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+/* ---------- header: material appears only once content is underneath ---------- */
+
+function setupHeader() {
+  const header = document.querySelector(".site-header");
+  if (!header) return;
+  let queued = false;
+  const update = () => {
+    queued = false;
+    header.classList.toggle("is-scrolled", window.scrollY > 8);
+  };
+  addEventListener("scroll", () => {
+    if (!queued) { queued = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  update();
+}
+
+/* ---------- hero manta: follows the pointer, can be thrown ---------- */
+
+function setupManta() {
+  const manta = document.querySelector(".hero-logo");
+  const hero = document.querySelector(".hero");
+  if (!manta || !hero || reducedMotion.matches) return;
+
+  const render = () => {
+    manta.style.transform = `translate3d(${x.value}px, ${y.value}px, 0) rotate(${r.value}deg)`;
+  };
+  // X and Y are separate springs so a diagonal throw settles naturally on both axes.
+  const x = new Spring(0, render);
+  const y = new Spring(0, render);
+  const r = new Spring(0, render);
+  const tracker = velocityTracker();
+  let drag = null;
+
+  // Undo the rubber band so a mid-flight grab continues from what's on screen.
+  const unband = (v, d, c = 0.55) => (v * d) / (c * (d - Math.min(Math.abs(v), d - 1)));
+
+  hero.addEventListener("pointermove", (e) => {
+    if (drag || e.pointerType !== "mouse") return;
+    const box = hero.getBoundingClientRect();
+    const dx = (e.clientX - box.left) / box.width - 0.5;
+    const dy = (e.clientY - box.top) / box.height - 0.5;
+    // Lean gently toward the pointer: slow response, no overshoot.
+    x.to(dx * 28, { response: 1.2 });
+    y.to(dy * 14, { response: 1.2 });
+    r.to(dx * 4, { response: 1.2 });
+  });
+  hero.addEventListener("pointerleave", () => {
+    if (drag) return;
+    x.to(0, { response: 1 });
+    y.to(0, { response: 1 });
+    r.to(0, { response: 1 });
+  });
+
+  manta.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0) return;
+    manta.setPointerCapture(e.pointerId);
+    x.stop(); y.stop(); r.stop();
+    // Respect where it was grabbed, including if it was still moving.
+    drag = {
+      startX: e.clientX - unband(x.value, 360),
+      startY: e.clientY - unband(y.value, 240),
+    };
+    tracker.reset();
+    tracker.add(x.value, y.value);
+    manta.classList.add("is-dragging");
+  });
+  manta.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    x.set(rubberband(e.clientX - drag.startX, 360));
+    y.set(rubberband(e.clientY - drag.startY, 240));
+    tracker.add(x.value, y.value);
+    // Bank into the direction of travel.
+    r.to(clamp(tracker.velocity().x / 90, -14, 14), { damping: 0.8, response: 0.4 });
+  });
+  const release = () => {
+    if (!drag) return;
+    drag = null;
+    manta.classList.remove("is-dragging");
+    const v = tracker.velocity();
+    // Thrown, so it carries the hand's velocity home with a little bounce.
+    x.to(0, { velocity: v.x, damping: 0.75, response: 0.55 });
+    y.to(0, { velocity: v.y, damping: 0.75, response: 0.55 });
+    r.to(0, { damping: 0.8, response: 0.4 });
+  };
+  manta.addEventListener("pointerup", release);
+  manta.addEventListener("pointercancel", release);
+  manta.addEventListener("dragstart", (e) => e.preventDefault());
+}
+
+/* ---------- segmented control: sliding, draggable thumb ---------- */
+
+function setupSegmented() {
+  const group = document.querySelector(".chips");
+  if (!group) return;
+  const chips = [...group.querySelectorAll(".chip")];
+  const thumb = document.createElement("span");
+  thumb.className = "chips-thumb";
+  thumb.setAttribute("aria-hidden", "true");
+  group.prepend(thumb);
+  group.classList.add("has-thumb");
+
+  const render = () => {
+    thumb.style.transform = `translate3d(${pos.value}px, 0, 0)`;
+    thumb.style.width = `${width.value}px`;
+  };
+  const pos = new Spring(0, render);
+  const width = new Spring(0, render);
+  const pressed = () => chips.find((c) => c.getAttribute("aria-pressed") === "true") || chips[0];
+  const nearest = (left) => chips.reduce((best, c) =>
+    Math.abs(c.offsetLeft - left) < Math.abs(best.offsetLeft - left) ? c : best);
+
+  const snap = (chip, opts = {}) => {
+    if (reducedMotion.matches) { pos.set(chip.offsetLeft); width.set(chip.offsetWidth); return; }
+    pos.to(chip.offsetLeft, { response: 0.35, ...opts });
+    width.to(chip.offsetWidth, { response: 0.35 });
+  };
+  pos.set(pressed().offsetLeft);
+  width.set(pressed().offsetWidth);
+
+  // Follow aria-pressed, whoever changed it.
+  new MutationObserver(() => { if (!drag) snap(pressed()); })
+    .observe(group, { attributes: true, subtree: true, attributeFilter: ["aria-pressed"] });
+  addEventListener("resize", () => { pos.set(pressed().offsetLeft); width.set(pressed().offsetWidth); });
+
+  // Drag the selected segment like iOS: grab the thumb, slide, release.
+  const tracker = velocityTracker();
+  let drag = null;
+  let suppressClick = false;
+  const minX = () => chips[0].offsetLeft;
+  const maxX = () => chips[chips.length - 1].offsetLeft + chips[chips.length - 1].offsetWidth - width.value;
+
+  group.addEventListener("pointerdown", (e) => {
+    const chip = e.target.closest(".chip");
+    if (!chip || chip !== pressed() || e.button !== 0 || reducedMotion.matches) return;
+    group.setPointerCapture(e.pointerId);
+    pos.stop();
+    drag = { startX: e.clientX, from: pos.value, moved: false };
+    tracker.reset();
+  });
+  group.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.startX;
+    if (!drag.moved && Math.abs(dx) < 10) return; // hysteresis: a tap stays a tap
+    drag.moved = true;
+    group.classList.add("is-dragging");
+    let next = drag.from + dx;
+    if (next < minX()) next = minX() + rubberband(next - minX(), group.offsetWidth);
+    if (next > maxX()) next = maxX() + rubberband(next - maxX(), group.offsetWidth);
+    pos.set(next);
+    tracker.add(next, 0);
+    const under = nearest(next);
+    chips.forEach((c) => c.classList.toggle("is-under", c === under));
+    width.to(under.offsetWidth, { response: 0.3 });
+  });
+  const release = () => {
+    if (!drag) return;
+    const { moved } = drag;
+    drag = null;
+    group.classList.remove("is-dragging");
+    chips.forEach((c) => c.classList.remove("is-under"));
+    if (!moved) return;
+    suppressClick = true;
+    const v = tracker.velocity().x;
+    const target = nearest(clamp(pos.value + project(v, 0.99), minX(), maxX()));
+    snap(target, { velocity: v, damping: Math.abs(v) > 300 ? 0.8 : 1 });
+    if (target !== pressed()) { haptic(); target.click(); }
+  };
+  group.addEventListener("pointerup", release);
+  group.addEventListener("pointercancel", release);
+  // A drag ends in a click on the original chip; it isn't a selection.
+  group.addEventListener("click", (e) => {
+    if (suppressClick && e.isTrusted) { e.stopPropagation(); e.preventDefault(); }
+    suppressClick = false;
+  }, true);
+}
+
+/* ---------- report sheet: slides up, pushes the page back, drag to dismiss ---------- */
+
+function setupSheet() {
+  const page = document.querySelector(".page");
+  let sheet, scrim, bar, frame, titleEl, download, closeBtn, spring, opener;
+  let isOpen = false;
+
+  function build() {
+    scrim = document.createElement("div");
+    scrim.className = "sheet-scrim";
+    sheet = document.createElement("div");
+    sheet.className = "sheet";
+    sheet.setAttribute("role", "dialog");
+    sheet.setAttribute("aria-modal", "true");
+    sheet.setAttribute("aria-labelledby", "sheet-title");
+    sheet.innerHTML = `
+      <div class="sheet-bar">
+        <span class="sheet-grabber" aria-hidden="true"></span>
+        <div class="sheet-title" id="sheet-title"></div>
+        <div class="sheet-actions">
+          <a class="more" download>Download</a>
+          <button class="sheet-close" type="button" aria-label="Close report">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
+      </div>
+      <iframe class="sheet-frame" title="Full report"></iframe>`;
+    scrim.hidden = sheet.hidden = true;
+    document.body.append(scrim, sheet);
+    bar = sheet.querySelector(".sheet-bar");
+    frame = sheet.querySelector(".sheet-frame");
+    titleEl = sheet.querySelector(".sheet-title");
+    download = sheet.querySelector("a[download]");
+    closeBtn = sheet.querySelector(".sheet-close");
+    spring = new Spring(0, render);
+
+    closeBtn.addEventListener("click", () => close());
+    scrim.addEventListener("click", () => close());
+    sheet.addEventListener("keydown", trapFocus);
+    setupDrag();
+  }
+
+  const closedY = () => sheet.offsetHeight - 100 + 24; // 100px of the sheet sits below the viewport for overshoot
+
+  // Everything follows the sheet's position, so a drag drives the scrim and the page 1:1.
+  function render(y) {
+    const p = clamp(1 - y / closedY(), 0, 1);
+    sheet.style.transform = `translate3d(0, ${y}px, 0)`;
+    scrim.style.opacity = String(p * 0.45);
+    page.style.transform = p ? `scale(${1 - 0.04 * p})` : "";
+    page.style.filter = p ? `brightness(${1 - 0.15 * p})` : "";
+  }
+
+  function open(trigger) {
+    if (!sheet) build();
+    opener = trigger;
+    const src = trigger.dataset.sheet;
+    if (frame.getAttribute("src") !== src) frame.src = src;
+    titleEl.textContent = trigger.dataset.sheetTitle || "Full report";
+    download.href = src;
+    page.style.transformOrigin = `50% ${window.scrollY + innerHeight / 2}px`;
+    document.documentElement.classList.add("sheet-open");
+    scrim.hidden = sheet.hidden = false;
+    page.inert = true;
+    isOpen = true;
+
+    if (reducedMotion.matches) {
+      spring.set(0);
+      page.style.transform = page.style.filter = "";
+      requestAnimationFrame(() => sheet.classList.add("is-shown"));
+    } else {
+      // If it's already partway (closing, or being reopened), carry on from there.
+      if (!spring.frame && spring.value === 0) spring.set(closedY());
+      spring.to(0, { damping: 1, response: 0.4 });
+    }
+    closeBtn.focus({ preventScroll: true });
+  }
+
+  function close({ velocity, bounce } = {}) {
+    if (!isOpen) return;
+    isOpen = false;
+    const finish = () => {
+      scrim.hidden = sheet.hidden = true;
+      page.inert = false;
+      page.style.transform = page.style.filter = "";
+      document.documentElement.classList.remove("sheet-open");
+      if (opener) opener.focus({ preventScroll: true });
+    };
+    if (reducedMotion.matches) {
+      sheet.classList.remove("is-shown");
+      setTimeout(finish, 200);
+      return;
+    }
+    // Leave the way it came in: straight down.
+    spring.to(closedY(), { velocity, damping: bounce ? 0.8 : 1, response: 0.35, onRest: finish });
+  }
+
+  function setupDrag() {
+    const tracker = velocityTracker();
+    let drag = null;
+    bar.addEventListener("pointerdown", (e) => {
+      if (e.target.closest("a, button") || e.button !== 0 || reducedMotion.matches) return;
+      bar.setPointerCapture(e.pointerId);
+      spring.stop(); // grab it wherever it is, even mid-animation
+      if (!isOpen) { isOpen = true; page.inert = true; }
+      drag = { grab: e.clientY - Math.max(spring.value, 0) };
+      tracker.reset();
+      tracker.add(0, spring.value);
+    });
+    bar.addEventListener("pointermove", (e) => {
+      if (!drag) return;
+      const y = e.clientY - drag.grab;
+      // Pulling up past fully open resists instead of hitting a wall.
+      spring.set(y < 0 ? rubberband(y, 120) : y); // stays within the 100px tucked below the fold
+      tracker.add(0, spring.value);
+    });
+    const release = () => {
+      if (!drag) return;
+      drag = null;
+      const v = tracker.velocity().y;
+      // A real flick decides by direction; otherwise by where it would have coasted to.
+      const dismiss = Math.abs(v) > 400 ? v > 0 : spring.value + project(v) > closedY() / 2;
+      if (dismiss) {
+        haptic();
+        close({ velocity: v, bounce: Math.abs(v) > 400 });
+      } else {
+        spring.to(0, { velocity: v, damping: Math.abs(v) > 400 ? 0.8 : 1, response: 0.3 });
+      }
+    };
+    bar.addEventListener("pointerup", release);
+    bar.addEventListener("pointercancel", release);
+  }
+
+  function trapFocus(e) {
+    if (e.key === "Escape") { e.preventDefault(); close(); return; }
+    if (e.key !== "Tab") return;
+    const items = [download, closeBtn, frame];
+    const i = items.indexOf(document.activeElement);
+    if (e.shiftKey && i <= 0) { e.preventDefault(); items[items.length - 1].focus(); }
+    else if (!e.shiftKey && i === items.length - 1) { e.preventDefault(); items[0].focus(); }
+  }
+
+  document.addEventListener("click", (e) => {
+    const trigger = e.target.closest("[data-sheet]");
+    if (!trigger) return;
+    // Phones that can't show a PDF inline get the file itself instead of an empty sheet.
+    if (navigator.pdfViewerEnabled === false) return void window.open(trigger.dataset.sheet, "_blank", "noopener");
+    e.preventDefault();
+    open(trigger);
+  });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && isOpen) close(); });
+}
+
+/* ---------- copy email: confirmation that grows out of the button ---------- */
+
+function setupCopy() {
+  document.querySelectorAll("[data-copy-email]").forEach((btn) => {
+    let bubble, spring, timer;
+    const render = (v) => {
+      const p = v / 100;
+      bubble.style.opacity = String(p);
+      if (!reducedMotion.matches) {
+        // Materialize: blur and scale arrive together, anchored to the button.
+        bubble.style.transform = `translate(-50%, ${(1 - p) * 6}px) scale(${0.85 + 0.15 * p})`;
+        bubble.style.filter = `blur(${(1 - p) * 6}px)`;
+      }
+      if (v <= 0.5 && spring.target === 0) bubble.hidden = true;
+    };
+    btn.addEventListener("click", async () => {
+      if (!bubble) {
+        bubble = document.createElement("span");
+        bubble.className = "copy-bubble";
+        bubble.setAttribute("role", "status");
+        btn.parentElement.append(bubble); // beside the button, so its accessible name stays "Copy email"
+        spring = new Spring(0, render);
+      }
+      const email = typeof SITE !== "undefined" ? SITE.contactEmail : "";
+      try {
+        await navigator.clipboard.writeText(email);
+        bubble.textContent = "Copied";
+        haptic();
+      } catch {
+        bubble.textContent = email;
+      }
+      bubble.hidden = false;
+      clearTimeout(timer);
+      spring.to(100, { response: 0.3 });
+      timer = setTimeout(() => spring.to(0, { response: 0.3 }), 1600);
+    });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  setupHeader();
+  setupManta();
+  setupSegmented();
+  setupSheet();
+  setupCopy();
+});

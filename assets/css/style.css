@@ -3,11 +3,14 @@
    Quiet, type-led layout. The ocean lives in two places only:
    the deep-water hero at the top and the footer at the bottom.
    Brand blue is sampled from the logo (#4248ED).
+   Springs and gestures live in motion.js; CSS handles press
+   feedback and the reduced-motion fallbacks.
    ========================================================= */
 
 :root {
   --brand: #4248ed;
-  --brand-deep: #2f35d6;
+  --brand-deep: #2f35d6;    /* links and text-weight blue */
+  --brand-press: #2f35d6;   /* filled button hover, same in both themes */
   --deep: #050d24;          /* deep water: hero, footer */
   --deep-2: #0c1d4f;        /* shallower water, top of the hero */
 
@@ -18,6 +21,7 @@
   --shade: #f5f5f7;
   --line: #d2d2d7;
   --hairline: rgba(0, 0, 0, .08);
+  --raised: #ffffff;        /* selected segment, sheet */
 
   --buy: #1d8348;
   --accumulate: #4f7d12;
@@ -31,11 +35,39 @@
   --radius: 18px;
   --max: 1080px;
   --nav-h: 52px;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --brand-deep: #8f95ff;
+    --ink: #f5f5f7;
+    --ink-soft: #d2d2d7;
+    --muted: #98989d;
+    --paper: #000000;
+    --shade: #1c1c1e;
+    --raised: #3a3a3c;
+    --line: #38383a;
+    --hairline: rgba(255, 255, 255, .1);
+    --buy: #32d74b;
+    --accumulate: #a6dc5a;
+    --hold: #ffd60a;
+    --sell: #ff6961;
+  }
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; background: var(--paper); }
+html.sheet-open { overflow: hidden; background: #000; }
+html.sheet-open body { background: #000; }
+
+/* Wraps everything but the sheet, so the sheet can push it back. */
+.page { background: var(--paper); transform-origin: 50% 0; }
+html.sheet-open .page { will-change: transform, filter; }
+
+/* No 300ms tap delay; no grey flash on tap. */
+a, button, .chip { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 
 body {
   margin: 0;
@@ -91,6 +123,11 @@ p { margin: 0 0 1em; }
 .site-header {
   position: sticky; top: 0; z-index: 50;
   margin-bottom: calc(-1 * var(--nav-h)); /* overlay the hero so it scrolls under the bar */
+  background: rgba(5, 13, 36, 0);
+  transition: background-color .3s ease, -webkit-backdrop-filter .3s ease, backdrop-filter .3s ease;
+}
+/* Material appears only once content is actually underneath, instead of a hard divider. */
+.site-header.is-scrolled, .site-header:has(.nav.open) {
   background: rgba(5, 13, 36, .72);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   backdrop-filter: saturate(180%) blur(20px);
@@ -159,7 +196,12 @@ p { margin: 0 0 1em; }
 .hero h1 { max-width: 14em; margin: 0 auto .4em; }
 .hero .lede { font-size: clamp(1.1rem, 2vw, 1.3rem); line-height: 1.45; color: rgba(255, 255, 255, .72); max-width: 32em; margin: 0 auto; }
 .hero-actions { display: flex; gap: 1.75rem; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 2rem; }
-.hero-logo { width: 100%; max-width: 560px; margin: 4rem auto 0; }
+.hero-logo {
+  width: 100%; max-width: 560px; margin: 4rem auto 0;
+  cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none;
+  will-change: transform;
+}
+.hero-logo.is-dragging { cursor: grabbing; }
 
 #latest-section { padding-bottom: 0; }
 
@@ -183,7 +225,7 @@ p { margin: 0 0 1em; }
 .btn:hover { text-decoration: none; }
 .btn:active { transform: scale(.97); }
 .btn-primary, .btn-light { background: var(--brand); color: #fff; }
-.btn-primary:hover, .btn-light:hover { background: var(--brand-deep); color: #fff; }
+.btn-primary:hover, .btn-light:hover { background: var(--brand-press); color: #fff; }
 .btn-outline { border-color: var(--brand-deep); color: var(--brand-deep); background: transparent; }
 .btn-outline:hover { background: var(--brand-deep); color: #fff; }
 .btn-ghost { border-color: rgba(255, 255, 255, .5); color: #fff; }
@@ -289,23 +331,40 @@ section.tight { padding: 4.5rem 0; }
 .report-card .bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; font-size: .85rem; color: var(--muted); }
 .report-card .more { color: var(--brand-deep); font-size: .95rem; }
 
+#archive .report-card { animation: card-in .35s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes card-in { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+
 .empty { text-align: center; padding: 4rem 1.5rem; border-radius: var(--radius); color: var(--muted); background: var(--shade); }
 
 /* ---------- Filters ---------- */
 
 .filters { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
 .chips {
-  display: inline-flex; flex-wrap: wrap; gap: 2px;
+  position: relative; isolation: isolate;
+  display: inline-flex; flex-wrap: nowrap; gap: 2px; max-width: 100%;
   background: var(--shade); border-radius: 10px; padding: 0.1875rem;
+  user-select: none; -webkit-user-select: none;
 }
+/* The thumb is moved by springs in motion.js; it can be dragged like iOS. */
+.chips-thumb {
+  position: absolute; z-index: -1; top: 0.1875rem; bottom: 0.1875rem; left: 0;
+  border-radius: 8px; background: var(--raised);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 0 0 .5px rgba(0, 0, 0, .04);
+  will-change: transform;
+}
+.chips.has-thumb .chip[aria-pressed="true"] { background: transparent; box-shadow: none; cursor: grab; }
+.chips.is-dragging, .chips.is-dragging .chip { cursor: grabbing; }
+.chips.is-dragging .chip { color: var(--ink-soft); }
+.chips.is-dragging .chip.is-under { color: var(--ink); }
 .chip {
-  border: 0; background: transparent; color: var(--ink);
+  white-space: nowrap; font-weight: 500;
+  border: 0; background: transparent; color: var(--ink-soft);
   padding: 0.4375rem 1rem; border-radius: 8px; font: inherit; font-size: .9rem; cursor: pointer;
   min-height: 36px;
 }
-.chip:hover { color: var(--ink); background: rgba(0, 0, 0, .04); }
-.chip:active { background: rgba(0, 0, 0, .08); }
-.chip[aria-pressed="true"] { background: var(--paper); font-weight: 600; box-shadow: 0 1px 3px rgba(0, 0, 0, .12); }
+.chip:not([aria-pressed="true"]):hover { color: var(--ink); }
+.chip:not([aria-pressed="true"]):active { opacity: .6; }
+.chip[aria-pressed="true"] { color: var(--ink); background: var(--raised); box-shadow: 0 1px 3px rgba(0, 0, 0, .12); }
 .search {
   flex: 1; min-width: 220px; max-width: 320px; min-height: 42px;
   border: 1px solid transparent; background: var(--shade); border-radius: 10px;
@@ -353,8 +412,11 @@ section.tight { padding: 4.5rem 0; }
 .kv { display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.625rem 0; border-top: 1px solid var(--line); font-size: .9rem; }
 .kv span:first-child { color: var(--muted); }
 .kv span:last-child { font-weight: 500; color: var(--ink); text-align: right; }
+.report-aside .more.center { align-self: center; }
+.report-open { background: var(--shade); border-radius: var(--radius); padding: 1.75rem 2rem; }
+.report-open p { margin: 0; color: var(--ink-soft); }
+.report-open .hero-actions { justify-content: flex-start; margin-top: 1.25rem; }
 .report-aside .note { font-size: .8rem; line-height: 1.5; color: var(--muted); margin: 0; }
-.pdf-frame { width: 100%; height: 80vh; min-height: 560px; border: 0; border-radius: var(--radius); background: var(--shade); }
 .thesis { list-style: none; padding: 0; margin: 0 0 1.5em; counter-reset: t; }
 .thesis li { position: relative; padding: 1rem 0 1rem 2.5rem; border-top: 1px solid var(--hairline); color: var(--ink-soft); }
 .thesis li:first-child { border-top: 0; }
@@ -374,12 +436,64 @@ section.tight { padding: 4.5rem 0; }
 .back-link { color: rgba(255, 255, 255, .6); font-size: .9rem; display: inline-block; margin-bottom: 1.5rem; }
 .back-link:hover { color: #fff; }
 
+/* ---------- Report sheet ---------- */
+
+.sheet-scrim { position: fixed; inset: 0; z-index: 90; background: #000; opacity: 0; }
+.sheet {
+  /* 100px extra below the fold, so a bouncy settle never shows a gap */
+  position: fixed; z-index: 91; left: 0; right: 0; bottom: -100px;
+  max-width: 1000px; margin: 0 auto;
+  height: calc(100dvh - 2.5rem + 100px); padding-bottom: 100px;
+  display: flex; flex-direction: column;
+  background: var(--raised); border-radius: 16px 16px 0 0; overflow: hidden;
+  box-shadow: 0 -12px 48px rgba(0, 0, 0, .3);
+  will-change: transform;
+}
+.sheet[hidden], .sheet-scrim[hidden] { display: none; }
+.sheet-bar {
+  position: relative; display: flex; align-items: center; gap: 1rem;
+  padding: 1.25rem 1rem 0.75rem 1.5rem;
+  cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none;
+}
+.sheet-bar:active { cursor: grabbing; }
+.sheet-grabber { position: absolute; top: 6px; left: 50%; width: 36px; height: 5px; margin-left: -18px; border-radius: 3px; background: var(--line); }
+.sheet-title { flex: 1; min-width: 0; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sheet-actions { display: flex; align-items: center; gap: 1rem; }
+.sheet-close {
+  width: 36px; height: 36px; border-radius: 50%; border: 0; cursor: pointer;
+  display: grid; place-items: center; background: var(--shade); color: var(--ink-soft);
+  transition: transform .1s ease-out;
+}
+.sheet-close:active { transform: scale(.92); }
+.sheet-close svg { width: 16px; height: 16px; }
+.sheet-frame { flex: 1; width: 100%; border: 0; background: var(--shade); }
+@media (max-width: 760px) {
+  .sheet { height: calc(100dvh - 0.75rem + 100px); border-radius: 12px 12px 0 0; }
+  .sheet-bar { padding-left: 1rem; }
+}
+
 /* ---------- Contact ---------- */
 
 .contact { text-align: center; max-width: 40em; margin: 0 auto; }
 .contact p { color: var(--muted); font-size: 1.15rem; margin: 0 auto; }
 .contact-links { display: flex; flex-wrap: wrap; gap: 1rem 1.75rem; justify-content: center; align-items: center; margin-top: 2rem; }
 .contact-links .btn { overflow-wrap: anywhere; }
+.text-btn {
+  border: 0; background: none; padding: 0.625rem 0; cursor: pointer;
+  font: inherit; color: var(--brand-deep);
+}
+.text-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
+.text-btn:active { opacity: .6; }
+.copy-wrap { position: relative; display: inline-block; }
+/* Grows out of the button that caused it (motion.js animates it). */
+.copy-bubble {
+  position: absolute; left: 50%; bottom: calc(100% + 6px);
+  transform: translate(-50%, 6px) scale(.85); transform-origin: 50% 100%;
+  opacity: 0; white-space: nowrap; pointer-events: none;
+  padding: 0.375rem 0.75rem; border-radius: 8px;
+  font-size: .8rem; font-weight: 600; letter-spacing: .01em;
+  background: var(--ink); color: var(--paper);
+}
 
 /* ---------- Footer (the sea floor) ---------- */
 
@@ -403,16 +517,29 @@ section.tight { padding: 4.5rem 0; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   /* keep the cross-fades, drop the movement */
-  .btn:active, .sector:active, .report-card:active { transform: none; }
+  .btn:active, .sector:active, .report-card:active, .sheet-close:active { transform: none; }
   .nav { transform: none !important; }
+  .hero-logo { cursor: auto; }
+  #archive .report-card { animation-name: card-fade; }
+  /* sheet cross-fades in place instead of sliding */
+  .sheet { opacity: 0; transition: opacity .2s ease; }
+  .sheet.is-shown { opacity: 1; }
+  .sheet-bar { cursor: auto; }
 }
+@keyframes card-fade { from { opacity: 0; } }
 @media (prefers-reduced-transparency: reduce) {
-  .site-header { background: var(--deep); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .site-header.is-scrolled, .site-header:has(.nav.open) { background: var(--deep); -webkit-backdrop-filter: none; backdrop-filter: none; }
 }
 @media (prefers-contrast: more) {
-  .site-header, .nav { background: #000; -webkit-backdrop-filter: none; backdrop-filter: none; border-bottom: 1px solid #fff; }
+  .site-header.is-scrolled, .site-header:has(.nav.open), .nav { background: #000; -webkit-backdrop-filter: none; backdrop-filter: none; border-bottom: 1px solid #fff; }
   .nav a { color: #fff; }
+  .sheet { border: 1px solid var(--ink); }
+}
+@media (prefers-contrast: more) and (prefers-color-scheme: light) {
   :root { --muted: #48484a; --line: #8e8e93; }
+}
+@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+  :root { --muted: #c7c7cc; --line: #8e8e93; }
 }
 
 /* ---------- Methodology: ratings table ---------- */
