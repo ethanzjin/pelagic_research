@@ -18,6 +18,13 @@ Optional `bear` and `bull` prices (with `price` and `target`) draw the scenario 
 
 The homepage "Latest report" card, the list of earlier reports, the research archive (with sector filters and search) and the report page (`report.html?id=<your-id>`) all update from that single file.
 
+## Releasing style or script changes
+
+The pages load `assets/css/style.css` and the scripts in `assets/js/` with a version
+query (`?v=20261021`). After changing any of those files, bump the version in all four
+HTML pages (search for `?v=`) so browsers fetch the new files instead of reusing a
+cached copy. `reports.js` is covered too, so bump it when you publish a report.
+
 ## Settings
 
 At the top of `assets/js/site.js`:
