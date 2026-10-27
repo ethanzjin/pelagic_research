@@ -392,7 +392,9 @@ function setupSheet() {
     status.textContent = "Loading the report";
     try {
       const lib = await loadPdfjs();
-      const doc = await lib.getDocument(src).promise;
+      // isEvalSupported: false closes CVE-2024-4367 (script execution via a crafted font)
+      // in this PDF.js version; it only costs a little font-rendering speed.
+      const doc = await lib.getDocument({ url: src, isEvalSupported: false }).promise;
       const cssWidth = Math.min(pages.clientWidth - 32, 840);
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       for (let n = 1; n <= doc.numPages; n++) {
