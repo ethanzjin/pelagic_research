@@ -27,6 +27,9 @@
      risks        array of key risks (optional)
      pdf          path to the PDF, or "" if not uploaded yet
      author       optional, e.g. "Ethan Jin"
+     format       optional; "pitch" marks a slide-deck pitch rather than a
+                  written report (adds a "Pitch deck" tag and button labels)
+     note         optional author's note shown above the summary
 
    Template:
    {
@@ -52,6 +55,41 @@
 
 window.PELAGIC_REPORTS = [
   // Newest report goes here, at the top.
+  {
+    id: "2026-11-fslr-pitch",
+    title: "First Solar: Policy Tailwinds Behind America's Largest Solar Maker",
+    company: "First Solar",
+    ticker: "NASDAQ: FSLR",
+    sector: "energy",
+    date: "2026-11-07",
+    rating: "Accumulate",
+    price: 201.14,
+    priceDate: "2026-11-06",
+    target: 234.72,
+    bear: 156.00,
+    bull: 280.21,
+    currency: "USD",
+    format: "pitch",
+    note:
+      "This is a stock pitch, not a full report. A pitch only takes a side, Long or Short, so the deck's call is Long. On Pelagic's rating scale, 16.7% upside to the $234.72 target is Accumulate, which is the rating shown here. The full written report on First Solar is coming.",
+    summary:
+      "First Solar is the only U.S.-headquartered company among the world's largest solar manufacturers, and its thin-film modules use no Chinese polysilicon. Federal 45X manufacturing credits, FEOC rules and the Section 232 import floor all favor its U.S. production. Holding today's 5.94x NTM EV/EBITDA on our 2028E EBITDA gives a 12-month target of $234.72, about 17% above the $201.14 close on November 6, 2026.",
+    thesis: [
+      "45X manufacturing credits are worth up to $0.17/W on a fully U.S.-made module, against a production cost of about $0.267/W. They made up about $1.5B, or roughly 82%, of gross profit in the first nine months of 2026, and run at full value through 2029.",
+      "First Solar's cadmium telluride modules use no Chinese polysilicon, so FEOC rules that threaten rivals' credits barely touch it. U.S. silicon assemblers are also short of cells, with about 65 GW of module capacity on only 3.2 GW of cell capacity.",
+      "From December 4, 2026, Section 232 sets a minimum import price of $0.38/W for modules plus a 15% tariff, putting imports at about $0.42–$0.44/W. That gives First Solar room to lift prices from about $0.36/W toward $0.40–$0.42/W without higher costs.",
+      "Q3 2026 EPS of $5.30 rose 25% year over year. Sales guidance was cut, but gross profit guidance held at $2.4–$2.6B because the lost volume was mostly international, where no credits are earned.",
+      "At 5.94x NTM EV/EBITDA, First Solar trades at about half its peer median of 11.5x. Our DCF of $159.55–$178.80 is a longer-term floor, since it assumes the credits phase out on schedule and growth fades.",
+    ],
+    risks: [
+      "Post-credit pricing (high): once 45X phases out, profit depends on price per watt alone. Backlog sits at about $0.31/W; if prices stay there, value stays near the DCF.",
+      "Developer tax credits (medium-high): projects that missed the July 4, 2026, construction start no longer qualify for 48E and 45Y credits, so demand after about 2029 is uncertain.",
+      "Multiple compression (medium): investors may pay less per dollar of EBITDA as the 2030 phase-down nears. One turn of multiple moves the stock about $34.",
+      "Credit policy and trade (low): changes to 45X or a weaker Section 232 floor would cut cash flow or let cheaper imports back in.",
+    ],
+    pdf: "reports/2026-11-fslr-pitch.pdf",
+    author: "Ethan Jin",
+  },
   {
     id: "2026-10-ceg",
     title: "Constellation Energy: Upside Without Beating the Street",

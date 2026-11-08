@@ -359,6 +359,7 @@ section.tight { padding: var(--space-16) 0; }
 
 .tag { font-size: var(--text-secondary); font-weight: 600; color: var(--brand-deep); white-space: nowrap; }
 .tag.sample { color: var(--sell); }
+.tag.pitch { color: var(--ink-soft); }
 
 .rating { font-weight: 600; white-space: nowrap; }
 .rating.buy { color: var(--buy); }
@@ -587,6 +588,7 @@ html.js-reveal [data-reveal].is-revealed { opacity: 1; transform: none; }
 .report-open { background: var(--shade); border: 1px solid var(--hairline); border-radius: var(--radius); padding: var(--space-8); }
 .report-open p { margin: 0; color: var(--ink-soft); }
 .report-open .hero-actions { margin-top: var(--space-4); }
+.report-note { margin: 0 0 var(--space-8); padding: var(--space-4) var(--space-6); border-left: 3px solid var(--brand-deep); background: var(--shade); border-radius: 0 var(--radius) var(--radius) 0; color: var(--ink-soft); font-size: var(--text-secondary); line-height: 1.5; }
 .report-aside .note { font-size: var(--text-meta); line-height: 1.4; color: var(--muted); margin: 0; }
 .thesis { list-style: none; padding: 0; margin: 0 0 1.5em; counter-reset: t; }
 .thesis li { position: relative; padding: var(--space-4) 0 var(--space-4) var(--space-8); border-top: 1px solid var(--hairline); color: var(--ink-soft); }
