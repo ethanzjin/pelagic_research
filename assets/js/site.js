@@ -83,6 +83,18 @@ function sampleTag(r) {
   return r.sample ? `<span class="tag sample">Sample</span>` : "";
 }
 
+// A pitch is a slide deck, not a written report, so it gets its own tag and button labels.
+const isPitch = (r) => r.format === "pitch";
+
+function formatTag(r) {
+  return isPitch(r) ? `<span class="tag pitch">Pitch deck</span>` : "";
+}
+
+// Optional author's note shown above the summary, e.g. how a pitch's Long/Short call maps to a rating.
+function reportNote(r) {
+  return r.note ? `<p class="report-note">${esc(r.note)}</p>` : "";
+}
+
 function reportUrl(r) {
   return `report.html?id=${encodeURIComponent(r.id)}`;
 }
@@ -159,7 +171,7 @@ function reportCard(r) {
       </div>
       <div class="card-body">
         <div class="top">
-          <div>${sectorTag(r.sector)} ${sampleTag(r)}</div>
+          <div>${sectorTag(r.sector)} ${formatTag(r)} ${sampleTag(r)}</div>
           <span class="muted">${fmtDate(r.date)}</span>
         </div>
         <h3>${esc(r.title)}</h3>
@@ -167,7 +179,7 @@ function reportCard(r) {
         ${scenarioRange(r, { compact: true })}
         <div class="bottom">
           <span>Upside <b class="upside ${up.cls}">${up.text}</b></span>
-          <span class="more">Read report</span>
+          <span class="more">${isPitch(r) ? "View pitch" : "Read report"}</span>
         </div>
       </div>
     </a>`;
@@ -175,7 +187,7 @@ function reportCard(r) {
 
 // Opens the PDF in a sheet (motion.js); without JavaScript it links to the file itself.
 function sheetButton(r) {
-  return `<a class="btn btn-primary" href="${esc(r.pdf)}" data-sheet="${esc(r.pdf)}" data-sheet-title="${esc(r.title)}">Read the full report</a>`;
+  return `<a class="btn btn-primary" href="${esc(r.pdf)}" data-sheet="${esc(r.pdf)}" data-sheet-title="${esc(r.title)}">${isPitch(r) ? "View the pitch deck" : "Read the full report"}</a>`;
 }
 
 // Empty states say what belongs here, why it's empty, and what to do next.
@@ -201,11 +213,11 @@ function renderLatest() {
   el.innerHTML = `
     <div class="feature-body">
       <span class="eyebrow">Latest report</span>
-      <div class="meta">${sectorTag(r.sector)} ${sampleTag(r)}<span>${fmtDate(r.date)}</span></div>
+      <div class="meta">${sectorTag(r.sector)} ${formatTag(r)} ${sampleTag(r)}<span>${fmtDate(r.date)}</span></div>
       <h2>${esc(r.title)}</h2>
       <p class="summary">${esc(r.summary)}</p>
       <div class="hero-actions">
-        <a class="btn btn-primary" href="${reportUrl(r)}">Read the report</a>
+        <a class="btn btn-primary" href="${reportUrl(r)}">${isPitch(r) ? "View the pitch" : "Read the report"}</a>
         ${r.pdf ? `<a class="more" href="${esc(r.pdf)}" download>Download PDF</a>` : ""}
       </div>
     </div>
@@ -310,7 +322,7 @@ function renderReport() {
 
   hero.innerHTML = `
     <a class="back-link" href="research.html">← All reports</a>
-    <div class="meta">${sectorTag(r.sector)} ${sampleTag(r)}<span>${fmtDate(r.date)}</span>${r.author ? `<span>by ${esc(r.author)}</span>` : ""}</div>
+    <div class="meta">${sectorTag(r.sector)} ${formatTag(r)} ${sampleTag(r)}<span>${fmtDate(r.date)}</span>${r.author ? `<span>by ${esc(r.author)}</span>` : ""}</div>
     <h1>${esc(r.title)}</h1>
     <p><span class="ticker">${esc(r.ticker)}</span> &nbsp;·&nbsp; ${esc(r.company)}</p>`;
 
@@ -320,14 +332,17 @@ function renderReport() {
   el.innerHTML = `
     <div class="report-layout">
       <article class="prose">
+        ${reportNote(r)}
         <h2 class="mt-0">Summary</h2>
         <p>${esc(r.summary)}</p>
         ${r.thesis && r.thesis.length ? `<h2>Investment thesis</h2>${list(r.thesis)}` : ""}
         ${r.risks && r.risks.length ? `<h2>Key risks</h2>${list(r.risks, "risks")}` : ""}
         ${r.pdf
-          ? `<h2>Full report</h2>
+          ? `<h2>${isPitch(r) ? "Pitch deck" : "Full report"}</h2>
              <div class="report-open">
-               <p>The complete report is a PDF. Read it here, or download it to keep.</p>
+               <p>${isPitch(r)
+                 ? "The pitch is a slide deck saved as a PDF. View it here, or download it to keep."
+                 : "The complete report is a PDF. Read it here, or download it to keep."}</p>
                <div class="hero-actions">
                  ${sheetButton(r)}
                  <a class="more" href="${esc(r.pdf)}" download>Download PDF</a>
