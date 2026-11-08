@@ -90,6 +90,12 @@ function formatTag(r) {
   return isPitch(r) ? `<span class="tag pitch">Pitch deck</span>` : "";
 }
 
+// Issue number, journal style: the oldest report is No. 01. `reports` is sorted newest first.
+function issueTag(r) {
+  const n = reports.length - reports.indexOf(r);
+  return `<span class="issue">No. ${String(n).padStart(2, "0")}</span>`;
+}
+
 // Optional author's note shown above the summary, e.g. how a pitch's Long/Short call maps to a rating.
 function reportNote(r) {
   return r.note ? `<p class="report-note">${esc(r.note)}</p>` : "";
@@ -171,7 +177,7 @@ function reportCard(r) {
       </div>
       <div class="card-body">
         <div class="top">
-          <div>${sectorTag(r.sector)} ${formatTag(r)} ${sampleTag(r)}</div>
+          <div>${issueTag(r)} ${sectorTag(r.sector)} ${formatTag(r)} ${sampleTag(r)}</div>
           <span class="muted">${fmtDate(r.date)}</span>
         </div>
         <h3>${esc(r.title)}</h3>
@@ -212,7 +218,7 @@ function renderLatest() {
   const up = fmtUpside(r);
   el.innerHTML = `
     <div class="feature-body">
-      <span class="eyebrow">Latest report</span>
+      <span class="eyebrow">${issueTag(r)}<span>Latest report</span></span>
       <div class="meta">${sectorTag(r.sector)} ${formatTag(r)} ${sampleTag(r)}<span>${fmtDate(r.date)}</span></div>
       <h2>${esc(r.title)}</h2>
       <p class="summary">${esc(r.summary)}</p>
@@ -222,16 +228,17 @@ function renderLatest() {
       </div>
     </div>
     <div class="feature-side">
-      ${reportPhoto(r) ? `<img class="feature-photo" src="${esc(reportPhoto(r))}" alt="" loading="lazy" width="900" height="675">` : ""}
-      <div class="company"><span class="ticker">${esc(r.ticker)}</span> <span class="muted">${esc(r.company)}</span></div>
-      <div class="stat-row">
-        <div class="stat"><div class="label">Rating</div><div class="value"><span class="rating ${ratingClass(r.rating)}">${esc(r.rating || "Not Rated")}</span></div></div>
-        <div class="stat"><div class="label">Upside</div><div class="value ${up.cls}">${up.text}</div></div>
+      <div class="card-head">
+        <div class="company"><span class="ticker">${esc(r.ticker)}</span> <span class="muted">${esc(r.company)}</span></div>
+        <span class="stamp ${ratingClass(r.rating)}"><span class="visually-hidden">Rating: </span>${esc(r.rating || "Not Rated")}</span>
       </div>
-      ${scenarioRange(r) || `<div class="stat-row">
-        <div class="stat"><div class="label">Price</div><div class="value">${fmtMoney(r.price, r.currency)}</div></div>
-        <div class="stat"><div class="label">Target</div><div class="value">${fmtMoney(r.target, r.currency)}</div></div>
-      </div>`}
+      <dl class="specimen">
+        <div><dt>Upside</dt><dd class="upside ${up.cls}">${up.text}</dd></div>
+        <div><dt>12-mo target</dt><dd>${fmtMoney(r.target, r.currency)}</dd></div>
+        <div><dt>Reference price</dt><dd>${fmtMoney(r.price, r.currency)}</dd></div>
+        <div><dt>Logged</dt><dd>${fmtDate(r.date)}</dd></div>
+      </dl>
+      ${scenarioRange(r)}
     </div>`;
 }
 
@@ -241,7 +248,45 @@ function renderRecent() {
   const list = reports.slice(1, 7);
   // The newest report already has the feature card, so hide this section until there is an older one.
   $("#recent-section").hidden = !list.length;
-  el.innerHTML = list.map(reportCard).join("");
+  // A ledger (on the homepage) lists entries as ruled rows; anywhere else they stay cards.
+  el.innerHTML = el.classList.contains("ledger")
+    ? `<div class="ledger-head" aria-hidden="true"><span>No.</span><span>Logged</span><span>Company</span><span>Rating</span><span>Upside</span></div>${list.map(ledgerRow).join("")}`
+    : list.map(reportCard).join("");
+}
+
+// One ruled line of the report log: issue, date, company and title, rating, upside.
+function ledgerRow(r) {
+  const up = fmtUpside(r);
+  return `
+    <a class="ledger-row" href="${reportUrl(r)}" data-reveal>
+      <span class="ledger-no">${issueTag(r)}</span>
+      <span class="ledger-date">${fmtDate(r.date)}</span>
+      <span class="ledger-main">
+        <span class="ledger-company">${esc(r.company)} <span class="ticker">${esc(r.ticker)}</span></span>
+        <span class="ledger-title">${esc(r.title)}</span>
+      </span>
+      <span class="ledger-rating"><span class="rating ${ratingClass(r.rating)}">${esc(r.rating || "Not Rated")}</span></span>
+      <span class="ledger-upside upside ${up.cls}">${up.text}</span>
+    </a>`;
+}
+
+/* ---------- masthead: volume, issue and month, like a journal's cover line ---------- */
+
+function toRoman(n) {
+  const table = [[10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
+  let out = "";
+  for (const [value, numeral] of table) while (n >= value) { out += numeral; n -= value; }
+  return out;
+}
+
+function renderMasthead() {
+  const el = $("[data-masthead]");
+  if (!el || !reports.length) return;
+  const first = parseDate(reports[reports.length - 1].date).getFullYear();
+  const latest = parseDate(reports[0].date);
+  const volume = toRoman(latest.getFullYear() - first + 1);
+  const month = latest.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  el.textContent = `Vol. ${volume} · No. ${String(reports.length).padStart(2, "0")} · ${month}`;
 }
 
 /* ---------- archive ---------- */
@@ -322,7 +367,7 @@ function renderReport() {
 
   hero.innerHTML = `
     <a class="back-link" href="research.html">← All reports</a>
-    <div class="meta">${sectorTag(r.sector)} ${formatTag(r)} ${sampleTag(r)}<span>${fmtDate(r.date)}</span>${r.author ? `<span>by ${esc(r.author)}</span>` : ""}</div>
+    <div class="meta">${issueTag(r)} ${sectorTag(r.sector)} ${formatTag(r)} ${sampleTag(r)}<span>${fmtDate(r.date)}</span>${r.author ? `<span>by ${esc(r.author)}</span>` : ""}</div>
     <h1>${esc(r.title)}</h1>
     <p><span class="ticker">${esc(r.ticker)}</span> &nbsp;·&nbsp; ${esc(r.company)}</p>`;
 
@@ -417,6 +462,7 @@ document.addEventListener("DOMContentLoaded", () => {
   resetScroll();
   setupNav();
   setupContact();
+  renderMasthead();
   renderLatest();
   renderRecent();
   renderArchive();
