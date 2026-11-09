@@ -23,6 +23,8 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&display=swap">
   <link rel="stylesheet" href="assets/css/style.css?v=20261108">
   <link rel="stylesheet" href="assets/css/journal.css?v=20261108">
+  <link rel="stylesheet" href="assets/css/about-me.css?v=20261109g">
+  <link rel="stylesheet" href="assets/css/method.css?v=20261109">
 </head>
 <body>
 <div class="page">
@@ -46,67 +48,126 @@
 </header>
 
 <main id="main">
-<section class="page-hero">
-  <div class="page-hero-media" aria-hidden="true"><img src="assets/img/photos/light-2000.jpg" srcset="assets/img/photos/light-1000.jpg 1000w, assets/img/photos/light-2000.jpg 2000w" sizes="100vw" alt="" width="2000" height="1335"></div>
+<section class="page-hero method-hero">
   <div class="container">
     <h1>Methodology</h1>
     <p>How each report is put together, what the ratings mean, and the legal disclaimer.</p>
+    <svg class="sounding" viewBox="0 0 80 170" aria-hidden="true">
+      <g class="sounding-line">
+        <path d="M40 0V128" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M34 34h12M34 68h12M34 102h12" stroke="currentColor" stroke-width="1.4"/>
+        <text x="52" y="37" font-size="9" fill="currentColor">5</text>
+        <text x="52" y="71" font-size="9" fill="currentColor">10</text>
+        <text x="52" y="105" font-size="9" fill="currentColor">15</text>
+        <path d="M33 128h14l-3 26h-8z" fill="var(--pen)"/>
+        <ellipse cx="40" cy="154" rx="4" ry="1.4" fill="var(--ink)"/>
+      </g>
+    </svg>
   </div>
 </section>
 
-<section id="methodology">
-  <div class="container">
-    <div class="section-head">
-      <div>
-        <h2>About the publication</h2>
-        <p>Pelagic Research covers listed companies in marine industries, energy and sustainability. Companies in these sectors tend to need a lot of capital, their earnings move with the cycle, and regulation affects them heavily. That makes them hard to value, and the market sometimes gets the price wrong.</p>
-        <p>One or two reports come out each month, and each one covers a single company. Every report follows the same structure, so they are easy to compare.</p>
-      </div>
-    </div>
-    <div class="steps">
-      <div class="step"><h3>Business and industry</h3><p>How the company makes money, how it compares with competitors, and the state of supply and demand in its industry.</p></div>
-      <div class="step"><h3>Thesis</h3><p>Why the share price looks wrong, and what could cause it to change.</p></div>
-      <div class="step"><h3>Valuation</h3><p>A financial model with bull, base and bear cases, and a 12-month price target.</p></div>
-      <div class="step"><h3>Risks</h3><p>The main things that could make the thesis wrong.</p></div>
-    </div>
-
-    <div class="prose ratings-block">
-      <h3 id="ratings">Ratings</h3>
-      <p>Each rating is based on the expected return over the next 12 months, measured from the reference share price and date noted in the report.</p>
-      <div class="table-wrap">
-        <table class="ratings-table">
-          <thead>
-            <tr><th scope="col">Rating</th><th scope="col">Expected 12-month return</th><th scope="col">What it means</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><span class="rating buy">Buy</span></td><td>Above +20%</td><td>I expect the stock to rise substantially. The share price looks well below what the business is worth.</td></tr>
-            <tr><td><span class="rating accumulate">Accumulate</span></td><td>+10% to +20%</td><td>I expect a solid gain, with less upside than a Buy. The stock looks undervalued, but by a smaller margin.</td></tr>
-            <tr><td><span class="rating hold">Hold</span></td><td>&minus;10% to +10%</td><td>I see the stock as roughly fairly valued. The price could move either way, with no strong case in one direction.</td></tr>
-            <tr><td><span class="rating sell">Sell</span></td><td>Below &minus;10%</td><td>I expect the stock to fall significantly. The share price looks higher than the business is worth.</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="muted">Industry or thematic reports that don't recommend a specific stock are marked <span class="rating nr">Not Rated</span>.</p>
-    </div>
+<section class="tight" id="methodology">
+  <div class="container method-spread">
+    <article class="ruled-page" data-reveal>
+      <h2 class="mt-0">About the publication</h2>
+      <p class="dropcap">Pelagic Research covers listed companies in marine industries, energy and sustainability. Companies in these sectors tend to need a lot of capital, their earnings move with the cycle, and regulation affects them heavily. That makes them hard to value, and the market sometimes gets the price wrong.</p>
+      <p>One or two reports come out each month, and each one covers a single company. Every report follows the same structure, so they are easy to compare.</p>
+    </article>
+    <dl class="specimen-label method-label" data-reveal>
+      <div class="label-head"><span>At a glance</span></div>
+      <div><dt>Coverage</dt><dd>Marine, energy and sustainability</dd></div>
+      <div><dt>Cadence</dt><dd>One to two reports a month</dd></div>
+      <div><dt>Scope</dt><dd>One company per report</dd></div>
+      <div><dt>Horizon</dt><dd>12-month price target</dd></div>
+      <div><dt>Formats</dt><dd>Full reports and stock pitches</dd></div>
+    </dl>
   </div>
 </section>
 
-<section class="bg-shade" id="disclaimer">
+<section class="tight" aria-labelledby="route-head">
   <div class="container">
-  <div class="prose">
-    <h2 class="mt-0">Disclaimer</h2>
-    <p>Pelagic Research is an independent, personal research publication. All content on this website and in any report is provided for informational and educational purposes only and reflects the author's opinion at the time of publication.</p>
-    <ul>
-      <li>Nothing published by Pelagic Research constitutes investment, financial, tax or legal advice, or an offer or solicitation to buy or sell any security.</li>
-      <li>Pelagic Research is not a registered investment adviser, broker-dealer or financial institution.</li>
-      <li>Information is obtained from sources believed to be reliable, but its accuracy and completeness are not guaranteed. Opinions, estimates and price targets are subject to change without notice.</li>
-      <li>The author may hold, or may in future take, positions in securities discussed. Any such positions will be disclosed in the relevant report.</li>
-      <li>Past performance is not indicative of future results. Investing involves risk, including the possible loss of principal.</li>
-      <li>Always do your own research and consult a qualified, licensed professional before making any investment decision.</li>
+    <div class="wave-rule" aria-hidden="true" data-reveal><div class="wave-track wave-back"></div><div class="wave-track wave-front"></div></div>
+    <h2 class="mt-0" id="route-head">Every report, the same route</h2>
+    <ol class="route" data-reveal>
+      <li class="waypoint">
+        <span class="waypoint-mark">I</span>
+        <svg class="waypoint-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M5 30h38l-5 9H10z"/><path d="M11 30v-7h9v7M20 30V18h9v12M29 30v-5h7v5"/><path d="M3 44q4-2 8 0t8 0 8 0 8 0 8 0"/></svg>
+        <h3>Business and industry</h3>
+        <p>How the company makes money, how it compares with competitors, and the state of supply and demand in its industry.</p>
+      </li>
+      <li class="waypoint">
+        <span class="waypoint-mark">II</span>
+        <svg class="waypoint-icon" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="18"/><circle cx="24" cy="24" r="14" opacity=".4"/><path d="M28 10 26.5 25 20 38 21.5 23z"/><circle cx="24" cy="24" r="1.6" class="dot"/><path d="M24 2v4M24 42v4M2 24h4M42 24h4"/></svg>
+        <h3>Thesis</h3>
+        <p>Why the share price looks wrong, and what could cause it to change.</p>
+      </li>
+      <li class="waypoint">
+        <span class="waypoint-mark">III</span>
+        <svg class="waypoint-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M5 42h38"/><path d="M9 42V32h6v10M21 42V25h6v17M33 42V18h6v24"/><path d="M7 22 18 14l8 5L41 7"/><path d="M35 6h6v6"/></svg>
+        <h3>Valuation</h3>
+        <p>A financial model with bull, base and bear cases, and a 12-month price target.</p>
+      </li>
+      <li class="waypoint">
+        <span class="waypoint-mark">IV</span>
+        <svg class="waypoint-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M13 24a7 7 0 0 1 1-14 10 10 0 0 1 19 1 6.5 6.5 0 0 1 1 13z"/><path d="M25 24l-4 7h6l-4 8"/><path d="M3 42q4-2 8 0t8 0 8 0 8 0 8 0"/></svg>
+        <h3>Risks</h3>
+        <p>The main things that could make the thesis wrong.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="bg-shade" aria-labelledby="ratings">
+  <div class="container">
+    <h2 class="mt-0" id="ratings">Ratings</h2>
+    <p class="ratings-lede">Each rating is based on the expected return over the next 12 months, measured from the reference share price and date noted in the report.</p>
+
+    <figure class="return-scale" data-reveal>
+      <div class="scale-bar" aria-hidden="true">
+        <span class="seg sell">Sell</span>
+        <span class="seg hold">Hold</span>
+        <span class="seg accumulate" data-short="Acc.">Accumulate</span>
+        <span class="seg buy">Buy</span>
+      </div>
+      <div class="scale-ticks" aria-hidden="true">
+        <span style="--at: 20%">&minus;10%</span>
+        <span style="--at: 40%">0</span>
+        <span style="--at: 60%">+10%</span>
+        <span style="--at: 80%">+20%</span>
+      </div>
+      <figcaption class="visually-hidden">Expected 12-month return: below &minus;10% is Sell, &minus;10% to +10% is Hold, +10% to +20% is Accumulate, above +20% is Buy.</figcaption>
+    </figure>
+
+    <ul class="rating-cards">
+      <li data-reveal><span class="stamp buy">Buy</span><span class="band">Above +20%</span><p>I expect the stock to rise substantially. The share price looks well below what the business is worth.</p></li>
+      <li data-reveal><span class="stamp accumulate">Accumulate</span><span class="band">+10% to +20%</span><p>I expect a solid gain, with less upside than a Buy. The stock looks undervalued, but by a smaller margin.</p></li>
+      <li data-reveal><span class="stamp hold">Hold</span><span class="band">&minus;10% to +10%</span><p>I see the stock as roughly fairly valued. The price could move either way, with no strong case in one direction.</p></li>
+      <li data-reveal><span class="stamp sell">Sell</span><span class="band">Below &minus;10%</span><p>I expect the stock to fall significantly. The share price looks higher than the business is worth.</p></li>
     </ul>
-    <h2>Contact</h2>
-    <p>For questions, feedback or suggestions for companies to cover, email me at <a href="#" data-contact="show">email</a>.</p>
+
+    <div class="rating-notes">
+      <p>Industry or thematic reports that don't recommend a specific stock are marked <span class="rating nr">Not Rated</span>.</p>
+      <p>Stock pitches only take a side, Long or Short. On this site a pitch shows the rating its price target implies on the scale above, with a note saying so.</p>
+    </div>
   </div>
+</section>
+
+<section id="disclaimer">
+  <div class="container">
+    <div class="fine-print" data-reveal>
+      <h2 class="mt-0">Disclaimer</h2>
+      <p>Pelagic Research is an independent, personal research publication. All content on this website and in any report is provided for informational and educational purposes only and reflects the author's opinion at the time of publication.</p>
+      <ol>
+        <li>Nothing published by Pelagic Research constitutes investment, financial, tax or legal advice, or an offer or solicitation to buy or sell any security.</li>
+        <li>Pelagic Research is not a registered investment adviser, broker-dealer or financial institution.</li>
+        <li>Information is obtained from sources believed to be reliable, but its accuracy and completeness are not guaranteed. Opinions, estimates and price targets are subject to change without notice.</li>
+        <li>The author may hold, or may in future take, positions in securities discussed. Any such positions will be disclosed in the relevant report.</li>
+        <li>Past performance is not indicative of future results. Investing involves risk, including the possible loss of principal.</li>
+        <li>Always do your own research and consult a qualified, licensed professional before making any investment decision.</li>
+      </ol>
+      <h2>Contact</h2>
+      <p>For questions, feedback or suggestions for companies to cover, email me at <a href="#" data-contact="show">email</a>.</p>
+    </div>
   </div>
 </section>
 </main>
