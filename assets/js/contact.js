@@ -11,7 +11,7 @@
    ========================================================= */
 
 // Web3Forms access key for the site's inbox. Clear it to fall back to FormSubmit.
-const WEB3FORMS_KEY = "1bf8357e-8912-4d59-b323-9dfd7c92787c";
+const WEB3FORMS_KEY = "e513036f-9396-4c75-961c-401d9d218dcd";
 const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 const FORMSUBMIT_ENDPOINT = (email) => `https://formsubmit.co/ajax/${encodeURIComponent(email)}`;
 const MAX_LENGTHS = { name: 120, email: 200, message: 4000 };
