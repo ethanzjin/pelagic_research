@@ -111,6 +111,7 @@
 .postcard.is-sending .postcard-send { opacity: .7; cursor: progress; }
 .postcard-status { min-height: 1.5em; margin: 0; font-size: var(--text-secondary); line-height: 1.5; }
 .postcard-status[data-tone="error"] { color: var(--sell); }
+.postcard-status[data-tone="wait"] { color: var(--muted); font-style: italic; }
 .postcard-status[data-tone="ok"] { color: var(--ink); font-family: var(--serif); font-style: italic; font-size: var(--text-body); }
 .postcard :disabled { cursor: default; }
 .postcard textarea:disabled, .postcard input:disabled, .postcard select:disabled { color: var(--ink-soft); opacity: 1; }
