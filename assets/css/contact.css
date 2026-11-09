@@ -1,0 +1,156 @@
+/* =========================================================
+   Contact: a postcard and a message in a bottle
+   Loaded only on contact.html, after journal.css. The form is an
+   airmail postcard: the note on ruled paper on the left, the
+   address side with a postage stamp and postmark on the right.
+   Beside it, three direct routes (email, copy, LinkedIn).
+   Motion: the bottle bobs on the swell, the "Sent" mark stamps
+   down when a note goes out. Off under reduced motion.
+   ========================================================= */
+
+:root {
+  --notepaper: #fffdf7;
+  --airmail-red: #c0392b;
+  --line-h: 2rem;
+}
+
+/* ---------- Cover: a bottle riding the swell ---------- */
+
+.contact-hero .container { position: relative; }
+.contact-hero p { max-width: 34em; }
+.bottle { position: absolute; right: var(--space-6); top: calc(-1 * var(--space-4)); width: 132px; height: 132px; color: var(--ink); }
+.bottle-float { transform-box: view-box; transform-origin: 60px 80px; animation: bob 5.5s ease-in-out infinite; }
+@keyframes bob {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(0, 5px, 0) rotate(4deg); }
+}
+@media (max-width: 767.98px) { .bottle { width: 76px; height: 76px; top: auto; bottom: var(--space-8); right: 0; } }
+
+/* ---------- Layout ---------- */
+
+.contact-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: var(--space-12); align-items: start; }
+@media (max-width: 999.98px) { .contact-layout { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- The postcard ---------- */
+
+/* Airmail edge: red and blue chevrons around a cream card. */
+.postcard {
+  position: relative; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  padding: 10px; border-radius: var(--radius);
+  background: repeating-linear-gradient(135deg, var(--airmail-red) 0 14px, var(--notepaper) 14px 22px, var(--pen) 22px 36px, var(--notepaper) 36px 44px);
+  box-shadow: 0 1px 2px rgba(22, 24, 29, .12), 0 18px 36px -18px rgba(22, 24, 29, .45);
+  transform: rotate(-.6deg);
+}
+.postcard > div { background: var(--notepaper); }
+.postcard-message {
+  display: flex; flex-direction: column; padding: var(--space-6) var(--space-8) var(--space-8);
+  border-radius: calc(var(--radius) - 2px) 0 0 calc(var(--radius) - 2px);
+  border-right: 1px solid var(--line);
+}
+.postcard-address { position: relative; display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-6) var(--space-8) var(--space-8); border-radius: 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0; }
+
+.field-label, .line-field > span, .postcard-to span {
+  font-size: var(--text-meta); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+}
+.field-label { margin-bottom: var(--space-2); }
+
+/* The note is written on ruled lines that move with the text as it scrolls. */
+.postcard textarea {
+  flex: 1; width: 100%; min-height: calc(var(--line-h) * 9); resize: vertical; margin: 0; padding: 0;
+  border: 0; outline: 0; background-color: transparent;
+  background-image: repeating-linear-gradient(to bottom, transparent 0 calc(var(--line-h) - 1px), rgba(66, 72, 237, .2) calc(var(--line-h) - 1px) var(--line-h));
+  background-attachment: local; background-position: 0 -6px;
+  font-family: var(--serif); font-size: 1.125rem; line-height: var(--line-h); color: var(--ink);
+}
+.postcard textarea::placeholder, .postcard input::placeholder { color: var(--muted); opacity: .8; font-style: italic; }
+
+.postcard-top { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-4); margin-bottom: var(--space-2); }
+.postmark { width: 92px; height: 92px; color: var(--ink); opacity: .55; transform: rotate(-12deg); }
+.postmark svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.postmark text { fill: currentColor; stroke: none; font-family: var(--mono); letter-spacing: .08em; }
+/* Postage stamp: the manta, with a perforated edge. */
+.postage {
+  display: block; padding: 5px; background: #fffefa; outline: 3px dotted var(--line); outline-offset: -1px;
+  box-shadow: 0 1px 2px rgba(22, 24, 29, .2); transform: rotate(3deg);
+}
+.postage img { display: block; width: 64px; height: 64px; border: 1px solid var(--ink); }
+
+.postcard-to { margin: 0; font-family: var(--serif); font-size: var(--step-1); color: var(--ink); }
+.postcard-to span { display: block; margin-bottom: 2px; }
+
+/* Address lines: the input sits on a single ruled line. */
+.line-field { display: grid; gap: 2px; }
+.line-field input, .line-field select {
+  width: 100%; min-height: 44px; padding: var(--space-1) 0; border: 0; border-bottom: 1px solid var(--ink); border-radius: 0;
+  background: transparent; font: inherit; font-size: 1rem; color: var(--ink);
+  transition: border-color var(--motion-150) var(--ease-out), box-shadow var(--motion-150) var(--ease-out);
+}
+.line-field select { appearance: none; cursor: pointer; padding-right: var(--space-6);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2316181d' stroke-width='1.5'/%3E%3C/svg%3E") right 2px center / 12px 8px no-repeat; }
+.line-field input:focus-visible, .line-field select:focus-visible { outline: 0; border-bottom-color: var(--pen); box-shadow: 0 2px 0 var(--pen); }
+.postcard textarea:focus-visible { box-shadow: inset 0 -2px 0 var(--pen); }
+.postcard [aria-invalid="true"] { border-bottom-color: var(--sell); box-shadow: 0 2px 0 var(--sell); }
+.postcard textarea[aria-invalid="true"] { box-shadow: inset 0 -2px 0 var(--sell); }
+
+.honey { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.postcard-send { align-self: flex-start; margin-top: var(--space-2); min-height: 44px; }
+.postcard.is-sending .postcard-send { opacity: .7; cursor: progress; }
+.postcard-status { min-height: 1.5em; margin: 0; font-size: var(--text-secondary); line-height: 1.5; }
+.postcard-status[data-tone="error"] { color: var(--sell); }
+.postcard-status[data-tone="ok"] { color: var(--ink); font-family: var(--serif); font-style: italic; font-size: var(--text-body); }
+.postcard :disabled { cursor: default; }
+.postcard textarea:disabled, .postcard input:disabled, .postcard select:disabled { color: var(--ink-soft); opacity: 1; }
+
+/* "Sent": a postmark pressed across the card once the note goes out. */
+.sent-stamp {
+  position: absolute; left: 50%; top: 42%; z-index: 2; padding: .2em .7em;
+  border: 3px double var(--accumulate); border-radius: 6px; color: var(--accumulate);
+  font-family: var(--serif); font-size: 2.5rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+  background: rgba(255, 253, 247, .6); pointer-events: none;
+  opacity: 0; transform: translate(-50%, -50%) rotate(-14deg) scale(1.6);
+}
+.postcard.is-sent .sent-stamp {
+  opacity: .9; transform: translate(-50%, -50%) rotate(-14deg) scale(1);
+  transition: opacity 180ms var(--ease-out), transform 420ms cubic-bezier(.34, 1.4, .64, 1);
+}
+
+@media (max-width: 767.98px) {
+  .postcard { grid-template-columns: minmax(0, 1fr); padding: 8px; transform: none; }
+  .postcard-message { border-right: 0; border-bottom: 1px dashed var(--line); border-radius: calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0 0; padding: var(--space-6) var(--space-4); }
+  .postcard-address { border-radius: 0 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px); padding: var(--space-6) var(--space-4); }
+  .postcard textarea { min-height: calc(var(--line-h) * 6); }
+  .postmark { width: 72px; height: 72px; }
+  .sent-stamp { font-size: 2rem; }
+}
+
+/* ---------- Direct routes ---------- */
+
+.other-ways h2 { margin: 0 0 var(--space-4); font-size: var(--step-2); }
+.other-ways ul { display: grid; gap: var(--space-4); list-style: none; margin: 0; padding: 0; }
+.way-wrap { display: block; }
+.way {
+  display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: var(--space-4); align-items: center;
+  width: 100%; padding: var(--space-4); text-align: left; text-decoration: none; cursor: pointer;
+  background: var(--raised); border: 1px solid var(--ink); border-radius: var(--radius); box-shadow: var(--stack);
+  font: inherit; color: var(--ink);
+  transition: transform var(--motion-200) var(--ease-out), box-shadow var(--motion-200) var(--ease-out);
+}
+.way:hover { text-decoration: none; }
+.way svg { width: 40px; height: 40px; padding: 8px; border-radius: 50%; border: 1px solid var(--line); fill: none; stroke: var(--pen); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.way strong { display: block; font-family: var(--serif); font-size: var(--step-1); font-weight: 500; line-height: 1.3; }
+.way strong + span { display: block; font-size: var(--text-secondary); color: var(--muted); overflow-wrap: anywhere; }
+.way:active { transform: translate(2px, 2px); box-shadow: 5px 5px 0 -1px var(--raised), 5px 5px 0 0 var(--line); }
+@media (hover: hover) and (pointer: fine) {
+  .way:hover { transform: translate(-2px, -2px); box-shadow: 9px 9px 0 -1px var(--raised), 9px 9px 0 0 var(--ink); }
+}
+.reply-note { margin: var(--space-6) 0 0; padding-left: var(--space-4); border-left: 2px solid var(--margin-red); font-family: var(--serif); font-style: italic; color: var(--ink-soft); }
+@media (max-width: 999.98px) { .other-ways ul { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); } }
+
+/* ---------- Preferences ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .bottle-float { animation: none; }
+  .way, .line-field input, .line-field select { transition: none; }
+  .way:hover, .way:active { transform: none; }
+  .postcard.is-sent .sent-stamp { transform: translate(-50%, -50%) rotate(-14deg); transition: opacity 180ms linear; }
+}
