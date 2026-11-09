@@ -37,17 +37,15 @@
 }
 .sonar figcaption { margin-top: var(--space-2); font-family: var(--mono); font-size: var(--text-meta); color: var(--muted); letter-spacing: .04em; }
 
+/* On tablets and phones the sonar leaves the corner and sits under the intro, with its
+   caption beside it, so it never crowds the heading or the text. */
 @media (max-width: 899.98px) {
-  .research-hero .container > p { padding-right: 120px; }
-  .sonar { width: 96px; top: 0; }
-  .sonar svg { width: 96px; height: 96px; }
-  .sonar figcaption { display: none; }
-}
-@media (max-width: 599.98px) {
-  .research-hero .container > p { padding-right: 0; }
-  .research-hero h1 { padding-right: 96px; }
-  .sonar { width: 72px; top: var(--space-1); }
-  .sonar svg { width: 72px; height: 72px; }
+  .sonar {
+    position: static; display: flex; align-items: center; gap: var(--space-4);
+    width: auto; margin: var(--space-6) 0 0; text-align: left;
+  }
+  .sonar svg { flex: none; width: 88px; height: 88px; }
+  .sonar figcaption { margin: 0; }
 }
 
 /* ---------- Filters ---------- */
