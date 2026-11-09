@@ -1,10 +1,8 @@
 /* =========================================================
    Research: the report logbook
-   Loaded only on research.html, after journal.css and about-me.css
-   (which supplies the wave rule). Still the working index, so the
-   journal touches stay light: a sonar on the cover, a drifting
-   wave above the filters, and the sector symbol on each
-   report card.
+   Loaded only on research.html, after journal.css. Still the
+   working index, so the journal touches stay light: a sonar on
+   the cover and the sector symbol on each report card.
    Motion: the sonar beam sweeps and each report's blip flares as
    it passes. Off under reduced motion.
    ========================================================= */
@@ -19,8 +17,6 @@
 
 .research-hero .container { position: relative; }
 .research-hero .container > p { max-width: 36em; }
-/* The drifting wave below takes the place of the cover's double rule. */
-.research-hero .container::after { display: none; }
 
 .sonar { position: absolute; right: var(--space-6); top: calc(-1 * var(--space-6)); width: 156px; margin: 0; text-align: center; }
 .sonar svg { display: block; width: 156px; height: 156px; overflow: visible; }
@@ -54,11 +50,8 @@
   .sonar svg { width: 72px; height: 72px; }
 }
 
-/* ---------- Wave and filters ---------- */
+/* ---------- Filters ---------- */
 
-.research-hero { padding-bottom: var(--space-4); }
-.research-hero + .tight { padding-top: 0; }
-.research-wave { margin-bottom: var(--space-8); }
 .archive-count {
   margin: var(--space-2) 0 var(--space-6); font-family: var(--mono); font-size: var(--text-meta);
   letter-spacing: .08em; text-transform: uppercase;

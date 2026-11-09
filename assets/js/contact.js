@@ -1,16 +1,21 @@
 /* =========================================================
    Contact page: the postcard form.
-   GitHub Pages can't send mail, so the note goes through
-   FormSubmit (formsubmit.co), which forwards it to
-   SITE.contactEmail. The very first message sent from the live
-   site makes FormSubmit email an activation link to that address;
-   until it is clicked, notes are held, not delivered.
+   GitHub Pages can't send mail, so the note goes through a relay
+   that emails it on:
+   - Web3Forms (web3forms.com), fast, once WEB3FORMS_KEY is set.
+     The access key is meant to sit in public page code; it only
+     lets people send notes to the inbox it was issued for.
+   - Otherwise FormSubmit (formsubmit.co) to SITE.contactEmail,
+     which is slow and needs a one-time activation click.
    Loaded after site.js (SITE) and motion.js.
    ========================================================= */
 
-const FORM_ENDPOINT = (email) => `https://formsubmit.co/ajax/${encodeURIComponent(email)}`;
+// Web3Forms access key for the site's inbox. Clear it to fall back to FormSubmit.
+const WEB3FORMS_KEY = "1bf8357e-8912-4d59-b323-9dfd7c92787c";
+const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
+const FORMSUBMIT_ENDPOINT = (email) => `https://formsubmit.co/ajax/${encodeURIComponent(email)}`;
 const MAX_LENGTHS = { name: 120, email: 200, message: 4000 };
-const SLOW_NOTICE_MS = 5000;     // FormSubmit often takes close to a minute to answer
+const SLOW_NOTICE_MS = 5000;     // only FormSubmit is slow enough for this to show
 const GIVE_UP_MS = 120000;       // after this, stop waiting and point people to email
 
 // FormSubmit holds every note until the address owner clicks its one-time activation link.
@@ -39,27 +44,52 @@ function readForm(form) {
   return { name: get("name"), email: get("email"), topic: get("topic"), message: get("message"), honey: get("_honey") };
 }
 
-async function sendNote(data) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), GIVE_UP_MS);
-  const res = await fetch(FORM_ENDPOINT(SITE.contactEmail), {
-    method: "POST",
-    signal: controller.signal,
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({
+// The request for whichever relay is in use: where it goes and what it sends.
+function buildRequest(data) {
+  const subject = `Pelagic Research: ${data.topic}`;
+  if (WEB3FORMS_KEY) {
+    return {
+      url: WEB3FORMS_ENDPOINT,
+      payload: {
+        access_key: WEB3FORMS_KEY,
+        subject,
+        from_name: "Pelagic Research website",
+        name: data.name,
+        email: data.email,
+        topic: data.topic,
+        message: data.message,
+        botcheck: data.honey,
+      },
+    };
+  }
+  return {
+    url: FORMSUBMIT_ENDPOINT(SITE.contactEmail),
+    payload: {
       name: data.name,
       email: data.email,
       topic: data.topic,
       message: data.message,
-      _subject: `Pelagic Research: ${data.topic}`,
+      _subject: subject,
       _replyto: data.email,
       _template: "table",
       _honey: data.honey,
-    }),
+    },
+  };
+}
+
+async function sendNote(data) {
+  const { url, payload } = buildRequest(data);
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), GIVE_UP_MS);
+  const res = await fetch(url, {
+    method: "POST",
+    signal: controller.signal,
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify(payload),
   }).finally(() => clearTimeout(timer));
   const body = await res.json().catch(() => ({}));
-  if (/activat/i.test(body.message || "")) throw new NeedsActivationError(body.message);
-  // A 2xx answer means FormSubmit accepted the note unless it says outright that it didn't.
+  if (!WEB3FORMS_KEY && /activat/i.test(body.message || "")) throw new NeedsActivationError(body.message);
+  // A 2xx answer means the relay accepted the note unless it says outright that it didn't.
   if (!res.ok || String(body.success) === "false") throw new Error(body.message || `HTTP ${res.status}`);
 }
 
