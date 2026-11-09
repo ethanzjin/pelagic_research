@@ -65,9 +65,23 @@
 .postcard textarea::placeholder, .postcard input::placeholder { color: var(--muted); opacity: .8; font-style: italic; }
 
 .postcard-top { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-4); margin-bottom: var(--space-2); }
-.postmark { width: 92px; height: 92px; color: var(--ink); opacity: .55; transform: rotate(-12deg); }
-.postmark svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.5; }
-.postmark text { fill: currentColor; stroke: none; font-family: var(--mono); letter-spacing: .08em; }
+/* Postmark: a red ring with the name and city running round it, the date and a little swell
+   in the middle, and wavy blue cancellation lines trailing off to the right. It inks itself
+   onto the card when the page opens. */
+.postmark { width: 128px; height: 92px; transform: rotate(-10deg); animation: postmark-ink 650ms var(--ease-out) 350ms backwards; }
+.postmark svg { width: 100%; height: 100%; overflow: visible; }
+.pm-ring { color: var(--airmail-red); }
+.pm-ring circle:not(.pm-dot) { fill: none; stroke: currentColor; stroke-width: 1.6; }
+.pm-ring circle:first-child { stroke-width: 2.2; }
+.pm-dot { fill: currentColor; }
+.pm-arc-text { fill: currentColor; font-family: var(--mono); font-size: 8.4px; font-weight: 600; letter-spacing: .12em; }
+.pm-date { fill: var(--ink); font-family: var(--serif); font-size: 14px; font-weight: 600; letter-spacing: .06em; }
+.pm-wave { fill: none; stroke: var(--pen); stroke-width: 1.8; stroke-linecap: round; }
+.pm-cancel { stroke-width: 2; opacity: .8; }
+@keyframes postmark-ink {
+  from { opacity: 0; transform: rotate(-4deg) scale(1.25); }
+  to { opacity: 1; transform: rotate(-10deg) scale(1); }
+}
 /* Postage stamp: the manta, with a perforated edge. */
 .postage {
   display: block; padding: 5px; background: #fffefa; outline: 3px dotted var(--line); outline-offset: -1px;
@@ -119,7 +133,7 @@
   .postcard-message { border-right: 0; border-bottom: 1px dashed var(--line); border-radius: calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0 0; padding: var(--space-6) var(--space-4); }
   .postcard-address { border-radius: 0 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px); padding: var(--space-6) var(--space-4); }
   .postcard textarea { min-height: calc(var(--line-h) * 6); }
-  .postmark { width: 72px; height: 72px; }
+  .postmark { width: 104px; height: 75px; }
   .sent-stamp { font-size: 2rem; }
 }
 
@@ -149,7 +163,7 @@
 /* ---------- Preferences ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .bottle-float { animation: none; }
+  .bottle-float, .postmark { animation: none; }
   .way, .line-field input, .line-field select { transition: none; }
   .way:hover, .way:active { transform: none; }
   .postcard.is-sent .sent-stamp { transform: translate(-50%, -50%) rotate(-14deg); transition: opacity 180ms linear; }

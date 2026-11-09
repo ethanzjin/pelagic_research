@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&display=swap">
   <link rel="stylesheet" href="assets/css/style.css?v=20261108">
   <link rel="stylesheet" href="assets/css/journal.css?v=20261108">
-  <link rel="stylesheet" href="assets/css/contact.css?v=20261109">
+  <link rel="stylesheet" href="assets/css/contact.css?v=20261110">
 </head>
 <body>
 <div class="page">
@@ -78,7 +78,20 @@
       <div class="postcard-address">
         <div class="postcard-top">
           <span class="postmark" aria-hidden="true">
-            <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44"/><circle cx="50" cy="50" r="34"/><path id="pm-arc" d="M22 50a28 28 0 0 1 56 0" fill="none" stroke="none"/><text font-size="10"><textPath href="#pm-arc" startOffset="50%" text-anchor="middle">NEW YORK</textPath></text><text x="50" y="66" font-size="10" text-anchor="middle" data-postmark-date>2026</text><path d="M86 40h14M86 50h14M86 60h14" opacity=".6"/></svg>
+            <svg viewBox="0 0 140 100">
+              <g class="pm-ring">
+                <circle cx="50" cy="50" r="45"/>
+                <circle cx="50" cy="50" r="31"/>
+                <path id="pm-top" d="M15 50a35 35 0 0 1 70 0" fill="none" stroke="none"/>
+                <path id="pm-bottom" d="M8.5 50a41.5 41.5 0 0 0 83 0" fill="none" stroke="none"/>
+                <text class="pm-arc-text"><textPath href="#pm-top" startOffset="50%" text-anchor="middle">PELAGIC RESEARCH</textPath></text>
+                <text class="pm-arc-text"><textPath href="#pm-bottom" startOffset="50%" text-anchor="middle">NEW YORK · NY</textPath></text>
+                <circle cx="10" cy="50" r="1.6" class="pm-dot"/><circle cx="90" cy="50" r="1.6" class="pm-dot"/>
+              </g>
+              <text x="50" y="49" text-anchor="middle" class="pm-date" data-postmark-date>NOV 9</text>
+              <path d="M37 58q3.25-3 6.5 0t6.5 0 6.5 0 6.5 0" class="pm-wave"/>
+              <path d="M96 34q5-4 10 0t10 0 10 0 10 0M96 50q5-4 10 0t10 0 10 0 10 0M96 66q5-4 10 0t10 0 10 0 10 0" class="pm-wave pm-cancel"/>
+            </svg>
           </span>
           <span class="postage" aria-hidden="true"><img src="assets/img/apple-touch-icon.png?v=20261108" alt="" width="64" height="64"></span>
         </div>
