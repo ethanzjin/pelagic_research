@@ -211,7 +211,7 @@ function renderLatest() {
     el.innerHTML = `<div class="feature-body"><span class="eyebrow">Latest report</span>
       <h2>No reports yet</h2>
       <p class="summary">The first report is being written and will be posted here when it's done.</p>
-      <div class="hero-actions"><a class="btn btn-primary" href="#contact">Ask to be notified</a></div></div>`;
+      <div class="hero-actions"><a class="btn btn-primary" href="contact.html">Ask to be notified</a></div></div>`;
     el.style.display = "block";
     return;
   }
@@ -322,7 +322,7 @@ function renderArchive() {
         : emptyState({
             title: "No reports yet",
             body: "The first report is being written and will appear here when it's published.",
-            action: `<a class="btn btn-primary" href="index.html#contact">Ask to be notified</a>`,
+            action: `<a class="btn btn-primary" href="contact.html">Ask to be notified</a>`,
           });
   }
 
