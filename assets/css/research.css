@@ -1,0 +1,77 @@
+/* =========================================================
+   Research: the report logbook
+   Loaded only on research.html, after journal.css. Kept quiet on
+   purpose: this is the working index, so the journal touches are
+   a sonar on the cover, a typed log line, sector counts on the
+   tabs, and an index-card rule on each report card.
+   Motion: the sonar beam sweeps slowly and each report's blip
+   flares as it passes. Off under reduced motion.
+   ========================================================= */
+
+/* ---------- Cover: an echo sounder with one blip per report ---------- */
+
+.research-hero .container { position: relative; }
+.research-hero .container > p:not(.log-line) { max-width: 36em; }
+.log-line {
+  margin: var(--space-4) 0 0; font-family: var(--mono); font-size: var(--text-meta);
+  letter-spacing: .06em; text-transform: uppercase; color: var(--muted);
+}
+.log-line:empty { display: none; }
+
+.sonar { position: absolute; right: var(--space-6); top: calc(-1 * var(--space-6)); width: 156px; margin: 0; text-align: center; }
+.sonar svg { display: block; width: 156px; height: 156px; overflow: visible; }
+.sonar-face { fill: var(--raised); stroke: var(--ink); stroke-width: 1.5; }
+.sonar-ring { fill: none; stroke: var(--ink); stroke-opacity: .16; stroke-width: 1; }
+.sonar-beam { stroke: var(--pen); stroke-width: 1.4; stroke-linecap: round; }
+.sonar-hub { fill: var(--ink); }
+.sonar-sweep { transform-box: view-box; transform-origin: 80px 80px; animation: sonar-sweep 7s linear infinite; }
+@keyframes sonar-sweep { to { transform: rotate(360deg); } }
+/* Each blip flares as the beam crosses it, then fades back to a faint echo. */
+.sonar-blip { fill: var(--pen); transform-box: fill-box; transform-origin: center; animation: sonar-blip 7s linear infinite; }
+@keyframes sonar-blip {
+  0% { opacity: 1; transform: scale(1.5); }
+  6% { transform: scale(1); }
+  65%, 100% { opacity: .2; transform: scale(1); }
+}
+.sonar figcaption { margin-top: var(--space-2); font-family: var(--mono); font-size: var(--text-meta); color: var(--muted); letter-spacing: .04em; }
+
+@media (max-width: 899.98px) {
+  .research-hero .container > p:not(.log-line) { padding-right: 120px; }
+  .sonar { width: 96px; top: 0; right: var(--space-6); }
+  .sonar svg { width: 96px; height: 96px; }
+  .sonar figcaption { display: none; }
+}
+@media (max-width: 599.98px) {
+  .research-hero .container > p:not(.log-line) { padding-right: 0; }
+  .research-hero h1 { padding-right: 96px; }
+  .sonar { width: 72px; top: var(--space-1); right: var(--space-6); }
+  .log-line { letter-spacing: .02em; }
+  .sonar svg { width: 72px; height: 72px; }
+}
+
+/* ---------- Filters: index tabs on a ruled line ---------- */
+
+.research-hero + .tight .filters { padding-bottom: var(--space-6); border-bottom: 1px dashed var(--line); }
+.chip-count {
+  display: inline-block; min-width: 1.6em; margin-left: .45em; padding: 0 .35em;
+  font-family: var(--mono); font-size: var(--text-meta); line-height: 1.5; color: var(--muted);
+  border: 1px solid var(--line); border-radius: 999px; text-align: center;
+}
+.chip[aria-pressed="true"] .chip-count { color: var(--ink); border-color: var(--ink); }
+/* On a phone the four tabs only just fit, so the counts step aside. */
+@media (max-width: 599.98px) { .chip-count { display: none; } }
+.archive-count {
+  margin: var(--space-4) 0 var(--space-6); font-family: var(--mono); font-size: var(--text-meta);
+  letter-spacing: .08em; text-transform: uppercase;
+}
+
+/* ---------- Report cards: an index card's red rule under the plate ---------- */
+
+#archive .report-card .card-body { box-shadow: inset 0 2px 0 var(--margin-red); }
+
+/* ---------- Preferences ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .sonar-sweep { animation: none; transform: rotate(-40deg); }
+  .sonar-blip { animation: none; opacity: .75; }
+}
