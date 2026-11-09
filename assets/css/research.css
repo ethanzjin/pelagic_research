@@ -1,22 +1,27 @@
 /* =========================================================
    Research: the report logbook
-   Loaded only on research.html, after journal.css. Kept quiet on
-   purpose: this is the working index, so the journal touches are
-   a sonar on the cover, a typed log line, sector counts on the
-   tabs, and an index-card rule on each report card.
-   Motion: the sonar beam sweeps slowly and each report's blip
-   flares as it passes. Off under reduced motion.
+   Loaded only on research.html, after journal.css and about-me.css
+   (which supplies the wave rule). Still the working index, so the
+   journal touches stay light: a sonar on the cover, a drifting
+   wave above the filters, and a sector postage stamp on each
+   report card, inked in that sector's colour.
+   Motion: the sonar beam sweeps and each report's blip flares as
+   it passes; the stamps press onto the cards as they arrive and
+   straighten when you point at a card. Off under reduced motion.
    ========================================================= */
+
+:root {
+  --sector-marine: var(--pen);
+  --sector-energy: var(--hold);
+  --sector-sustainability: var(--accumulate);
+}
 
 /* ---------- Cover: an echo sounder with one blip per report ---------- */
 
 .research-hero .container { position: relative; }
-.research-hero .container > p:not(.log-line) { max-width: 36em; }
-.log-line {
-  margin: var(--space-4) 0 0; font-family: var(--mono); font-size: var(--text-meta);
-  letter-spacing: .06em; text-transform: uppercase; color: var(--muted);
-}
-.log-line:empty { display: none; }
+.research-hero .container > p { max-width: 36em; }
+/* The drifting wave below takes the place of the cover's double rule. */
+.research-hero .container::after { display: none; }
 
 .sonar { position: absolute; right: var(--space-6); top: calc(-1 * var(--space-6)); width: 156px; margin: 0; text-align: center; }
 .sonar svg { display: block; width: 156px; height: 156px; overflow: visible; }
@@ -28,50 +33,83 @@
 @keyframes sonar-sweep { to { transform: rotate(360deg); } }
 /* Each blip flares as the beam crosses it, then fades back to a faint echo. */
 .sonar-blip { fill: var(--pen); transform-box: fill-box; transform-origin: center; animation: sonar-blip 7s linear infinite; }
+.sonar-blip.energy { fill: var(--sector-energy); }
+.sonar-blip.sustainability { fill: var(--sector-sustainability); }
 @keyframes sonar-blip {
   0% { opacity: 1; transform: scale(1.5); }
   6% { transform: scale(1); }
-  65%, 100% { opacity: .2; transform: scale(1); }
+  65%, 100% { opacity: .25; transform: scale(1); }
 }
 .sonar figcaption { margin-top: var(--space-2); font-family: var(--mono); font-size: var(--text-meta); color: var(--muted); letter-spacing: .04em; }
 
 @media (max-width: 899.98px) {
-  .research-hero .container > p:not(.log-line) { padding-right: 120px; }
-  .sonar { width: 96px; top: 0; right: var(--space-6); }
+  .research-hero .container > p { padding-right: 120px; }
+  .sonar { width: 96px; top: 0; }
   .sonar svg { width: 96px; height: 96px; }
   .sonar figcaption { display: none; }
 }
 @media (max-width: 599.98px) {
-  .research-hero .container > p:not(.log-line) { padding-right: 0; }
+  .research-hero .container > p { padding-right: 0; }
   .research-hero h1 { padding-right: 96px; }
-  .sonar { width: 72px; top: var(--space-1); right: var(--space-6); }
-  .log-line { letter-spacing: .02em; }
+  .sonar { width: 72px; top: var(--space-1); }
   .sonar svg { width: 72px; height: 72px; }
 }
 
-/* ---------- Filters: index tabs on a ruled line ---------- */
+/* ---------- Wave and filters ---------- */
 
-.research-hero + .tight .filters { padding-bottom: var(--space-6); border-bottom: 1px dashed var(--line); }
-.chip-count {
-  display: inline-block; min-width: 1.6em; margin-left: .45em; padding: 0 .35em;
-  font-family: var(--mono); font-size: var(--text-meta); line-height: 1.5; color: var(--muted);
-  border: 1px solid var(--line); border-radius: 999px; text-align: center;
-}
-.chip[aria-pressed="true"] .chip-count { color: var(--ink); border-color: var(--ink); }
-/* On a phone the four tabs only just fit, so the counts step aside. */
-@media (max-width: 599.98px) { .chip-count { display: none; } }
+.research-hero { padding-bottom: var(--space-4); }
+.research-hero + .tight { padding-top: 0; }
+.research-wave { margin-bottom: var(--space-8); }
 .archive-count {
-  margin: var(--space-4) 0 var(--space-6); font-family: var(--mono); font-size: var(--text-meta);
+  margin: var(--space-2) 0 var(--space-6); font-family: var(--mono); font-size: var(--text-meta);
   letter-spacing: .08em; text-transform: uppercase;
 }
 
-/* ---------- Report cards: an index card's red rule under the plate ---------- */
+/* ---------- Report cards: a sector postage stamp on each plate ---------- */
 
 #archive .report-card .card-body { box-shadow: inset 0 2px 0 var(--margin-red); }
+
+/* The stamp sits on the plate above the sepia wash; its dotted outline in paper colour
+   reads as the perforated edge against the photo. */
+.sector-post {
+  --c: var(--ink);
+  position: absolute; top: 10px; right: 12px; z-index: 2; width: 40px; height: 48px;
+  background: var(--raised); outline: 3px dotted var(--raised); outline-offset: 1px;
+  box-shadow: 0 2px 6px rgba(5, 13, 36, .35);
+  transform: rotate(6deg);
+  transition: transform var(--motion-300) var(--ease-out);
+}
+.sector-post::before {
+  content: ""; position: absolute; inset: 4px; border: 1.5px solid var(--c);
+}
+.sector-post::after {
+  content: ""; position: absolute; inset: 11px 9px; background: var(--c);
+  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
+}
+.report-card:nth-child(even) .sector-post { transform: rotate(-5deg); }
+.sector-post.marine {
+  --c: var(--sector-marine);
+  --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12c3-4.5 8-5.5 12-3l5-3.5v13L14 15c-4 2.5-9 1.5-12-3z'/%3E%3Ccircle cx='7' cy='11' r='.8' fill='%23000'/%3E%3C/svg%3E");
+}
+.sector-post.energy {
+  --c: var(--sector-energy);
+  --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M13.5 2 5 13.5h6.5L10 22l9-12h-6.5z'/%3E%3C/svg%3E");
+}
+.sector-post.sustainability {
+  --c: var(--sector-sustainability);
+  --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20C4 10 10 4 20 4c0 10-6 16-16 16z'/%3E%3Cpath d='M4 20 14 10'/%3E%3C/svg%3E");
+}
+/* Pressed on as each card arrives, a beat after the card itself. */
+#archive .sector-post { animation: post-press 520ms var(--ease-out) 280ms backwards; }
+@keyframes post-press { from { opacity: 0; transform: rotate(-14deg) scale(1.5); } }
+@media (hover: hover) and (pointer: fine) {
+  .report-card:hover .sector-post { transform: rotate(0deg) scale(1.08); }
+}
 
 /* ---------- Preferences ---------- */
 
 @media (prefers-reduced-motion: reduce) {
   .sonar-sweep { animation: none; transform: rotate(-40deg); }
   .sonar-blip { animation: none; opacity: .75; }
+  #archive .sector-post { animation: none; transition: none; }
 }
