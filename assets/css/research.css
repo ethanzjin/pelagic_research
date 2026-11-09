@@ -3,11 +3,10 @@
    Loaded only on research.html, after journal.css and about-me.css
    (which supplies the wave rule). Still the working index, so the
    journal touches stay light: a sonar on the cover, a drifting
-   wave above the filters, and a sector postage stamp on each
-   report card, inked in that sector's colour.
+   wave above the filters, and the sector symbol on each
+   report card.
    Motion: the sonar beam sweeps and each report's blip flares as
-   it passes; the stamps press onto the cards as they arrive and
-   straighten when you point at a card. Off under reduced motion.
+   it passes. Off under reduced motion.
    ========================================================= */
 
 :root {
@@ -65,45 +64,24 @@
   letter-spacing: .08em; text-transform: uppercase;
 }
 
-/* ---------- Report cards: a sector postage stamp on each plate ---------- */
+/* ---------- Report cards: the sector's symbol in the corner of the plate ---------- */
 
 #archive .report-card .card-body { box-shadow: inset 0 2px 0 var(--margin-red); }
 
-/* The stamp sits on the plate above the sepia wash; its dotted outline in paper colour
-   reads as the perforated edge against the photo. */
-.sector-post {
-  --c: var(--ink);
-  position: absolute; top: 10px; right: 12px; z-index: 2; width: 40px; height: 48px;
-  background: var(--raised); outline: 3px dotted var(--raised); outline-offset: 1px;
-  box-shadow: 0 2px 6px rgba(5, 13, 36, .35);
-  transform: rotate(6deg);
-  transition: transform var(--motion-300) var(--ease-out);
-}
-.sector-post::before {
-  content: ""; position: absolute; inset: 4px; border: 1.5px solid var(--c);
-}
-.sector-post::after {
-  content: ""; position: absolute; inset: 11px 9px; background: var(--c);
+/* White like the ticker and rating on the photo, with a soft shadow so it reads on any image. */
+.sector-mark {
+  position: absolute; top: 10px; right: 10px; z-index: 2; width: 22px; height: 22px;
+  background: #fff; filter: drop-shadow(0 1px 2px rgba(5, 13, 36, .6));
   -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
 }
-.report-card:nth-child(even) .sector-post { transform: rotate(-5deg); }
-.sector-post.marine {
-  --c: var(--sector-marine);
+.sector-mark.marine {
   --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12c3-4.5 8-5.5 12-3l5-3.5v13L14 15c-4 2.5-9 1.5-12-3z'/%3E%3Ccircle cx='7' cy='11' r='.8' fill='%23000'/%3E%3C/svg%3E");
 }
-.sector-post.energy {
-  --c: var(--sector-energy);
+.sector-mark.energy {
   --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linejoin='round'%3E%3Cpath d='M13.5 2 5 13.5h6.5L10 22l9-12h-6.5z'/%3E%3C/svg%3E");
 }
-.sector-post.sustainability {
-  --c: var(--sector-sustainability);
+.sector-mark.sustainability {
   --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20C4 10 10 4 20 4c0 10-6 16-16 16z'/%3E%3Cpath d='M4 20 14 10'/%3E%3C/svg%3E");
-}
-/* Pressed on as each card arrives, a beat after the card itself. */
-#archive .sector-post { animation: post-press 520ms var(--ease-out) 280ms backwards; }
-@keyframes post-press { from { opacity: 0; transform: rotate(-14deg) scale(1.5); } }
-@media (hover: hover) and (pointer: fine) {
-  .report-card:hover .sector-post { transform: rotate(0deg) scale(1.08); }
 }
 
 /* ---------- Preferences ---------- */
@@ -111,5 +89,4 @@
 @media (prefers-reduced-motion: reduce) {
   .sonar-sweep { animation: none; transform: rotate(-40deg); }
   .sonar-blip { animation: none; opacity: .75; }
-  #archive .sector-post { animation: none; transition: none; }
 }

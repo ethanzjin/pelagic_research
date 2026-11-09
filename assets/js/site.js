@@ -170,7 +170,7 @@ function reportCard(r) {
     <a class="report-card" href="${reportUrl(r)}">
       <div class="card-media">
         ${photo ? `<img src="${esc(photo)}" alt="" loading="lazy" width="900" height="675">` : ""}
-        <span class="sector-post ${esc(r.sector)}" aria-hidden="true"></span>
+        <span class="sector-mark ${esc(r.sector)}" aria-hidden="true"></span>
         <div class="card-media-meta">
           <span class="ticker">${esc(r.ticker)}</span>
           <span class="rating-on-photo">${esc(r.rating || "Not Rated")}</span>

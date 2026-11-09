@@ -10,6 +10,11 @@
 
 const FORM_ENDPOINT = (email) => `https://formsubmit.co/ajax/${encodeURIComponent(email)}`;
 const MAX_LENGTHS = { name: 120, email: 200, message: 4000 };
+const SLOW_NOTICE_MS = 5000;     // FormSubmit often takes close to a minute to answer
+const GIVE_UP_MS = 120000;       // after this, stop waiting and point people to email
+
+// FormSubmit holds every note until the address owner clicks its one-time activation link.
+class NeedsActivationError extends Error {}
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 function fillContactDetails() {
@@ -35,8 +40,11 @@ function readForm(form) {
 }
 
 async function sendNote(data) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), GIVE_UP_MS);
   const res = await fetch(FORM_ENDPOINT(SITE.contactEmail), {
     method: "POST",
+    signal: controller.signal,
     headers: { "Content-Type": "application/json", Accept: "application/json" },
     body: JSON.stringify({
       name: data.name,
@@ -48,9 +56,11 @@ async function sendNote(data) {
       _template: "table",
       _honey: data.honey,
     }),
-  });
+  }).finally(() => clearTimeout(timer));
   const body = await res.json().catch(() => ({}));
-  if (!res.ok || String(body.success) !== "true") throw new Error(body.message || `HTTP ${res.status}`);
+  if (/activat/i.test(body.message || "")) throw new NeedsActivationError(body.message);
+  // A 2xx answer means FormSubmit accepted the note unless it says outright that it didn't.
+  if (!res.ok || String(body.success) === "false") throw new Error(body.message || `HTTP ${res.status}`);
 }
 
 function setupPostcard() {
@@ -86,6 +96,8 @@ function setupPostcard() {
     button.disabled = true;
     button.textContent = "Sending…";
     say("");
+    // The relay is slow, so after a few seconds say so instead of looking stuck.
+    const slowNotice = setTimeout(() => say("Still sending. This can take up to a minute, so keep this page open.", "wait"), SLOW_NOTICE_MS);
     try {
       await sendNote(data);
       form.classList.add("is-sent");
@@ -96,8 +108,14 @@ function setupPostcard() {
       console.error("Contact form failed to send:", err);
       button.disabled = false;
       button.textContent = "Send note";
-      say(`That didn't go through. You can email me directly at ${SITE.contactEmail}.`, "error");
+      const why = err instanceof NeedsActivationError
+        ? "The message form isn't switched on yet, so your note wasn't delivered."
+        : err.name === "AbortError"
+          ? "Sending took too long and was stopped, so your note may not have arrived."
+          : "That didn't go through.";
+      say(`${why} You can email me directly at ${SITE.contactEmail}.`, "error");
     } finally {
+      clearTimeout(slowNotice);
       form.classList.remove("is-sending");
     }
   });
