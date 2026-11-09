@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="48" viewBox="0 0 120 48" fill="none" stroke="#2f35d6" stroke-linecap="round" stroke-linejoin="round">
+  <!-- the face of the wave, rising from the trough and curling over at the crest -->
+  <path d="M0 36 C 14 36 24 30 33 22 C 41 15 50 10 59 10 C 68 10 74 15 74 21 C 74 26 70 29 66 29 C 62 29 59 26 60 23 C 61 20 64 19 66 21" stroke-width="1.6"/>
+  <!-- the back of the wave, running down into the next trough -->
+  <path d="M74 21 C 80 28 92 35 120 36" stroke-width="1.6"/>
+  <!-- engraved hatching that follows the face -->
+  <path d="M6 42 C 18 41 27 35 35 28" stroke-width="1" opacity=".55"/>
+  <path d="M17 46 C 28 45 36 40 43 34" stroke-width="1" opacity=".35"/>
+  <path d="M44 16 C 49 13 54 12 58 12" stroke-width="1" opacity=".45"/>
+  <path d="M80 31 C 89 37 100 41 114 42" stroke-width="1" opacity=".45"/>
+  <!-- spray off the crest -->
+  <circle cx="78" cy="12" r="1.3" fill="#2f35d6" stroke="none"/>
+  <circle cx="84" cy="16" r="1" fill="#2f35d6" stroke="none"/>
+  <circle cx="81" cy="7" r=".9" fill="#2f35d6" stroke="none"/>
+  <circle cx="88" cy="11" r=".7" fill="#2f35d6" stroke="none"/>
+</svg>
