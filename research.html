@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&display=swap">
   <link rel="stylesheet" href="assets/css/style.css?v=20261108">
   <link rel="stylesheet" href="assets/css/journal.css?v=20261108">
+  <link rel="stylesheet" href="assets/css/research.css?v=20261109">
 </head>
 <body>
 <div class="page">
@@ -46,11 +47,30 @@
 </header>
 
 <main id="main">
-<section class="page-hero">
-  <div class="page-hero-media" aria-hidden="true"><img src="assets/img/photos/light-2000.jpg" srcset="assets/img/photos/light-1000.jpg 1000w, assets/img/photos/light-2000.jpg 2000w" sizes="100vw" alt="" width="2000" height="1335"></div>
+<section class="page-hero research-hero">
   <div class="container">
     <h1>All reports</h1>
     <p>Every report published so far, newest first. You can filter by sector or search by company name or ticker.</p>
+    <p class="log-line" data-log-line></p>
+    <figure class="sonar" aria-hidden="true">
+      <svg viewBox="0 0 160 160">
+        <defs>
+          <linearGradient id="sweep-fade" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0" stop-color="#2f35d6" stop-opacity="0"/>
+            <stop offset="1" stop-color="#2f35d6" stop-opacity=".3"/>
+          </linearGradient>
+        </defs>
+        <circle cx="80" cy="80" r="76" class="sonar-face"/>
+        <circle cx="80" cy="80" r="57" class="sonar-ring"/>
+        <circle cx="80" cy="80" r="38" class="sonar-ring"/>
+        <circle cx="80" cy="80" r="19" class="sonar-ring"/>
+        <path d="M80 4v152M4 80h152" class="sonar-ring"/>
+        <g class="sonar-sweep"><path d="M80 80 80 4A76 76 0 0 0 26.3 26.3Z" fill="url(#sweep-fade)"/><path d="M80 80V4" class="sonar-beam"/></g>
+        <g data-sonar-blips></g>
+        <circle cx="80" cy="80" r="2.5" class="sonar-hub"/>
+      </svg>
+      <figcaption>Each blip is a report</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -107,6 +127,7 @@
 </footer>
 </div>
 <script src="assets/js/reports.js?v=20261108"></script>
+<script src="assets/js/research.js?v=20261109"></script>
 <script src="assets/js/site.js?v=20261108"></script>
 <script src="assets/js/motion.js?v=20261108"></script>
 </body>
