@@ -160,8 +160,15 @@ html.js-reveal .wave-rule[data-reveal]:not(.is-revealed) { clip-path: inset(0 10
 /* ---------- Favorite trips: ink passport stamps ---------- */
 
 .trips-section { padding-top: 0; }
-.trips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-8) var(--space-12); list-style: none; margin: 0; padding: var(--space-4) 0 0; }
+/* Four to a row on a laptop, spread edge to edge, with every other stamp pressed a little
+   lower so the page reads like a well-used passport rather than a grid. */
+.trips {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); justify-items: center; align-items: center;
+  gap: var(--space-10, 2.5rem) var(--space-6); list-style: none; margin: 0; padding: var(--space-4) 0 var(--space-8);
+}
 .trip { flex: none; }
+.trip:nth-child(even) { margin-top: var(--space-8); }
+@media (max-width: 899.98px) { .trips { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 /* A passport stamp: its own shape, ink and angle, with a small engraved drawing of the place. */
 .trip-face {
   display: grid; place-items: center; align-content: center; gap: 2px;
@@ -176,14 +183,15 @@ html.js-reveal .wave-rule[data-reveal]:not(.is-revealed) { clip-path: inset(0 10
 /* Postage stamp: the dotted outline reads as a perforated edge. */
 .trip--post  { width: 138px; height: 166px; border-radius: 2px; outline: 3px dotted currentColor; outline-offset: 5px; }
 .trip-icon { width: 40px; height: 40px; margin-bottom: 2px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-.trip-icon .dot { fill: currentColor; stroke: none; }
+.trip-icon .dot, .trip-icon .fill { fill: currentColor; stroke: none; }
+.trip-icon .fill { fill-rule: evenodd; } /* holes in the shape show the paper, like an orca's white patches */
 .trip-country { max-width: 8em; font-family: var(--serif); font-size: var(--text-body); font-weight: 600; line-height: 1.15; letter-spacing: .05em; text-transform: uppercase; }
 .trip-coords { font-family: var(--mono); font-size: var(--text-meta); letter-spacing: .02em; }
 /* Each stamp presses down the first time the row reaches the screen, staggered by the reveal. */
 html.js-reveal .trip[data-reveal]:not(.is-revealed) .trip-face { opacity: 0; transform: rotate(var(--tilt, 0deg)) scale(1.3); }
 @media (hover: hover) and (pointer: fine) { .trip:hover .trip-face { opacity: 1; transform: rotate(0deg); } }
 @media (max-width: 599.98px) {
-  .trips { gap: var(--space-6) var(--space-3); justify-content: center; }
+  .trips { gap: var(--space-6) var(--space-3); }
   .trip-face { padding: var(--space-2); }
   .trip--round { width: 156px; height: 156px; }
   .trip--badge { width: 160px; height: 146px; }

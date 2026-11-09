@@ -1,0 +1,168 @@
+/* =========================================================
+   Methodology: the survey notes
+   Loaded only on about.html, after journal.css and about-me.css
+   (which supply the ruled page, the info label and the wave rule).
+   A sounding line on the cover, the report structure as a charted
+   route, the rating scale as a ruler, and the disclaimer as a typed
+   sheet of fine print.
+   Motion: the lead drops and settles, the route line draws itself,
+   the scale fills in, the rating stamps press down. Once each, and
+   off under reduced motion.
+   ========================================================= */
+
+/* ---------- Cover: a lead line sounding the depth ---------- */
+
+.method-hero .container { position: relative; }
+.sounding { position: absolute; right: var(--space-12); top: calc(-1 * var(--space-16)); width: 64px; height: 136px; color: var(--ink); overflow: visible; }
+.sounding text { font-family: var(--mono); }
+.sounding-line { transform-box: view-box; transform-origin: 40px 0; animation: lead-drop 1500ms var(--ease-out) 250ms backwards; }
+@keyframes lead-drop {
+  0% { transform: translate3d(0, -60px, 0) rotate(0deg); opacity: 0; }
+  40% { transform: translate3d(0, 0, 0) rotate(5deg); opacity: 1; }
+  65% { transform: rotate(-3deg); }
+  85% { transform: rotate(1.5deg); }
+  100% { transform: rotate(0deg); }
+}
+@media (max-width: 767.98px) { .sounding { display: none; } }
+
+/* ---------- The publication: ruled page beside an info label ---------- */
+
+.method-spread { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: var(--space-16); align-items: start; }
+.method-spread .ruled-page { max-width: none; }
+.method-label { position: sticky; top: calc(var(--nav-h) + var(--space-8)); transform: rotate(1.2deg); }
+.method-label .label-head { padding-right: var(--space-8); }
+@media (max-width: 899.98px) {
+  .method-spread { grid-template-columns: minmax(0, 1fr); gap: var(--space-12); }
+  .method-label { position: static; max-width: 420px; transform: none; }
+}
+
+/* ---------- The route: four waypoints on a dashed course line ---------- */
+
+.route {
+  --mark: 56px;
+  position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-8);
+  list-style: none; margin: var(--space-8) 0 0; padding: 0;
+}
+/* The course line runs through the centre of every waypoint mark and draws itself left to right. */
+.route::before {
+  content: ""; position: absolute; left: calc(var(--mark) / 2); right: 0; top: calc(var(--mark) / 2); height: 0;
+  border-top: 2px dashed var(--pen); opacity: .6;
+  clip-path: inset(0 0 0 0); transition: clip-path 1600ms var(--ease-out) 150ms;
+}
+html.js-reveal .route[data-reveal]:not(.is-revealed)::before { clip-path: inset(0 100% 0 0); }
+.waypoint { position: relative; }
+.waypoint-mark {
+  position: relative; z-index: 1; display: grid; place-items: center; width: var(--mark); height: var(--mark);
+  border: 1.5px solid var(--ink); border-radius: 50%; background: var(--paper); box-shadow: 0 0 0 5px var(--paper);
+  font-family: var(--serif); font-style: italic; font-size: var(--step-2); line-height: 1; color: var(--ink);
+  transition: transform var(--motion-300) var(--ease-out), opacity var(--motion-300) var(--ease-out);
+}
+.waypoint-icon {
+  display: block; width: 44px; height: 44px; margin: var(--space-6) 0 var(--space-3);
+  fill: none; stroke: var(--pen); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
+}
+.waypoint-icon .dot { fill: var(--pen); stroke: none; }
+.waypoint h3 { margin: 0 0 var(--space-2); font-size: var(--step-2); }
+.waypoint p { margin: 0; color: var(--ink-soft); }
+/* Each mark pops onto the chart as the line reaches it. */
+html.js-reveal .route[data-reveal]:not(.is-revealed) .waypoint-mark { opacity: 0; transform: scale(.6); }
+.route.is-revealed .waypoint:nth-child(2) .waypoint-mark { transition-delay: 400ms; }
+.route.is-revealed .waypoint:nth-child(3) .waypoint-mark { transition-delay: 750ms; }
+.route.is-revealed .waypoint:nth-child(4) .waypoint-mark { transition-delay: 1100ms; }
+@media (hover: hover) and (pointer: fine) {
+  .route:not([data-reveal]) .waypoint-mark { transition-delay: 0s; }
+  .waypoint:hover .waypoint-mark { transform: rotate(-8deg) scale(1.06); }
+}
+@media (max-width: 899.98px) {
+  .route { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+  .route::before { left: calc(var(--mark) / 2 - 1px); right: auto; top: calc(var(--mark) / 2); bottom: calc(var(--mark) / 2); width: 0; height: auto; border-top: 0; border-left: 2px dashed var(--pen); }
+  html.js-reveal .route[data-reveal]:not(.is-revealed)::before { clip-path: inset(0 0 100% 0); }
+  .waypoint { display: grid; grid-template-columns: var(--mark) minmax(0, 1fr); column-gap: var(--space-6); }
+  .waypoint-mark { grid-row: 1 / span 3; }
+  .waypoint-icon { width: 36px; height: 36px; margin: 0 0 var(--space-2); }
+}
+
+/* ---------- Ratings: a ruler of expected returns ---------- */
+
+.ratings-lede { max-width: 40em; color: var(--ink-soft); }
+.return-scale { margin: var(--space-8) 0 var(--space-12); }
+/* Widths follow the return bands: Hold spans 20 points, the others 10. */
+.scale-bar {
+  display: grid; grid-template-columns: 1fr 2fr 1fr 1fr; height: 52px;
+  border: 1.5px solid var(--ink); border-radius: var(--radius); overflow: hidden; background: var(--raised); box-shadow: var(--stack);
+}
+.seg {
+  display: grid; place-items: center; padding: 0 var(--space-2); color: var(--c);
+  background: color-mix(in srgb, var(--c) 13%, transparent); border-left: 1px solid var(--ink);
+  font-size: var(--text-meta); font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  clip-path: inset(0 0 0 0); transition: clip-path 900ms var(--ease-out);
+}
+.seg:first-child { border-left: 0; }
+.seg.sell { --c: var(--sell); }
+.seg.hold { --c: var(--hold); }
+.seg.accumulate { --c: var(--accumulate); }
+.seg.buy { --c: var(--buy); }
+html.js-reveal .return-scale[data-reveal]:not(.is-revealed) .seg { clip-path: inset(0 100% 0 0); }
+.return-scale.is-revealed .seg:nth-child(2) { transition-delay: 150ms; }
+.return-scale.is-revealed .seg:nth-child(3) { transition-delay: 300ms; }
+.return-scale.is-revealed .seg:nth-child(4) { transition-delay: 450ms; }
+.scale-ticks { position: relative; height: 32px; }
+.scale-ticks span {
+  position: absolute; left: var(--at); top: 0; padding-top: 12px; transform: translateX(-50%);
+  font-family: var(--mono); font-size: var(--text-meta); color: var(--muted); white-space: nowrap;
+}
+.scale-ticks span::before { content: ""; position: absolute; left: 50%; top: 0; width: 1px; height: 9px; background: var(--ink); }
+/* On a phone "Accumulate" can't fit its band, so the bar uses the short form. */
+@media (max-width: 599.98px) {
+  .seg { letter-spacing: .06em; }
+  .seg[data-short] { font-size: 0; }
+  .seg[data-short]::after { content: attr(data-short); font-size: var(--text-meta); }
+}
+
+.rating-cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-6); list-style: none; margin: 0; padding: 0; }
+.rating-cards li {
+  display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2);
+  padding: var(--space-6); background: var(--raised); border: 1px solid var(--ink); border-radius: var(--radius); box-shadow: var(--stack);
+}
+.rating-cards .stamp { margin: 0 0 var(--space-2); font-size: var(--text-meta); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; transform: rotate(-3deg); }
+.rating-cards li:nth-child(even) .stamp { transform: rotate(2deg); }
+.rating-cards .band { font-family: var(--mono); font-size: var(--text-secondary); color: var(--ink); }
+.rating-cards p { margin: 0; font-size: var(--text-secondary); line-height: 1.55; color: var(--ink-soft); }
+@media (max-width: 1023.98px) { .rating-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 599.98px) { .rating-cards { grid-template-columns: minmax(0, 1fr); } }
+
+.rating-notes { display: grid; gap: var(--space-2); margin-top: var(--space-8); max-width: 46em; }
+.rating-notes p { margin: 0; padding-left: var(--space-4); border-left: 2px solid var(--margin-red); font-family: var(--serif); font-style: italic; color: var(--ink-soft); }
+
+/* ---------- Disclaimer: a typed sheet of fine print ---------- */
+
+.fine-print {
+  position: relative; max-width: 52rem; margin: 0 auto; padding: var(--space-12) var(--space-12) var(--space-12) calc(var(--space-12) + var(--space-6));
+  background: var(--notepaper); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--stack);
+}
+.fine-print::before { content: ""; position: absolute; top: 0; bottom: 0; left: var(--space-12); width: 1px; background: var(--margin-red); }
+.fine-print h2 { font-size: var(--step-3); }
+.fine-print h2:not(.mt-0) { margin-top: var(--space-8); }
+.fine-print p { color: var(--ink-soft); }
+.fine-print ol { counter-reset: clause; list-style: none; margin: var(--space-6) 0 0; padding: 0; }
+.fine-print ol li {
+  counter-increment: clause; position: relative; padding: var(--space-3) 0 var(--space-3) var(--space-12);
+  border-top: 1px dotted var(--line); color: var(--ink-soft); line-height: 1.6;
+}
+.fine-print ol li:last-child { border-bottom: 1px dotted var(--line); }
+.fine-print ol li::before {
+  content: counter(clause, decimal-leading-zero); position: absolute; left: 0; top: var(--space-3);
+  font-family: var(--mono); font-size: var(--text-meta); line-height: 1.6rem; color: var(--pen);
+}
+@media (max-width: 599.98px) {
+  .fine-print { padding: var(--space-8) var(--space-4) var(--space-8) var(--space-8); }
+  .fine-print::before { left: var(--space-4); }
+  .fine-print ol li { padding-left: var(--space-8); }
+}
+
+/* ---------- Preferences ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .sounding-line { animation: none; }
+  .route::before, .seg, .waypoint-mark { transition: none; }
+}
