@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&display=swap">
   <link rel="stylesheet" href="assets/css/style.css?v=20261108">
-  <link rel="stylesheet" href="assets/css/journal.css?v=20261113">
+  <link rel="stylesheet" href="assets/css/journal.css?v=20261113b">
 </head>
 <body>
 <div class="page">
@@ -59,12 +59,27 @@
     </div>
     <figure class="plate hero-plate">
       <div class="hero-media" aria-hidden="true">
-        <img src="assets/img/photos/hero-manta-2400.jpg"
-             srcset="assets/img/photos/hero-manta-1200.jpg 1200w, assets/img/photos/hero-manta-2400.jpg 2400w"
+        <img src="assets/img/photos/hero-manta-1600.jpg"
+             srcset="assets/img/photos/hero-manta-1200.jpg 1200w, assets/img/photos/hero-manta-1600.jpg 1600w, assets/img/photos/hero-manta-2400.jpg 2400w"
              sizes="(max-width: 899px) 100vw, 50vw" alt="" width="2400" height="1600" fetchpriority="high">
       </div>
       <figcaption><span class="fig-no">Fig. 1</span> Manta ray in open water, the namesake of the publication's mark.</figcaption>
     </figure>
+    <script>
+      /* Hold the plate closed until the photo has loaded and decoded, then develop it, so a slow
+         connection never shows a half-drawn image. Runs before first paint; gives up after 6s. */
+      (function () {
+        var plate = document.querySelector(".hero-plate"), img = plate && plate.querySelector("img");
+        if (!img) return;
+        var done = false;
+        function ready() { if (done) return; done = true; plate.classList.remove("is-waiting"); plate.classList.add("is-ready"); }
+        if (img.complete && img.naturalWidth) return ready();
+        plate.classList.add("is-waiting");
+        (img.decode ? img.decode() : Promise.reject()).then(ready, function () { img.addEventListener("load", ready, { once: true }); });
+        img.addEventListener("error", ready, { once: true });
+        setTimeout(ready, 6000);
+      })();
+    </script>
   </div>
 </section>
 
