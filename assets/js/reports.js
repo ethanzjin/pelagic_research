@@ -21,6 +21,9 @@
      target       12-month price target (number, optional)
      bear, bull   bear- and bull-case price targets (numbers, optional);
                   with price and target they draw the scenario range chart
+     upside       optional; the upside % as published in the report (e.g. 36.9),
+                  so the site shows the same figure. Otherwise it is worked
+                  out from price and target and rounded to one decimal.
      currency     "USD", "EUR", "NOK", ... (optional, default USD)
      summary      2–3 sentence abstract shown on cards
      thesis       array of key thesis points (optional)
@@ -30,6 +33,11 @@
      format       optional; "pitch" marks a slide-deck pitch rather than a
                   written report (adds a "Pitch deck" tag and button labels)
      note         optional author's note shown above the summary
+     pitch        optional earlier pitch deck that led to this report:
+                  { pdf: "reports/...pdf", date: "YYYY-MM-DD", summary: "" }
+                  Shown as its own section on the report page.
+     aliases      optional array of old ids that should still open this
+                  report (keeps shared links working when an entry is renamed)
 
    Template:
    {
@@ -56,38 +64,43 @@
 window.PELAGIC_REPORTS = [
   // Newest report goes here, at the top.
   {
-    id: "2026-11-fslr-pitch",
+    id: "2026-11-fslr",
+    aliases: ["2026-11-fslr-pitch"],
     title: "First Solar: Policy Tailwinds Behind America's Largest Solar Maker",
     company: "First Solar",
     ticker: "NASDAQ: FSLR",
     sector: "energy",
-    date: "2026-11-07",
-    rating: "Accumulate",
-    price: 201.14,
-    priceDate: "2026-11-06",
+    date: "2026-11-13",
+    rating: "Buy",
+    price: 171.39,
+    priceDate: "2026-11-13",
     target: 234.72,
     bear: 156.00,
     bull: 280.21,
+    upside: 36.9,
     currency: "USD",
-    format: "pitch",
-    note:
-      "This is a stock pitch, not a full report. A pitch only takes a side, Long or Short, so the deck's call is Long. On Pelagic's rating scale, 16.7% upside to the $234.72 target is Accumulate, which is the rating shown here. The full written report on First Solar is coming.",
     summary:
-      "First Solar is the only U.S.-headquartered company among the world's largest solar manufacturers, and its thin-film modules use no Chinese polysilicon. Federal 45X manufacturing credits, FEOC rules and the Section 232 import floor all favor its U.S. production. Holding today's 5.94x NTM EV/EBITDA on our 2028E EBITDA gives a 12-month target of $234.72, about 17% above the $201.14 close on November 6, 2026.",
+      "First Solar is the only U.S.-headquartered company among the world's largest solar manufacturers, and its cadmium telluride modules use no polysilicon, which shields it from Section 232, Section 301 and FEOC rules that hit its rivals. U.S. and Indian manufacturing credits support earnings through 2029, and import price floors should lift module prices while its costs stay flat. Applying 5.94x NTM EV/EBITDA to our 2028E EBITDA gives a 12-month target of $234.72, 36.9% above the $171.39 close on November 13, 2026.",
     thesis: [
-      "45X manufacturing credits are worth up to $0.17/W on a fully U.S.-made module, against a production cost of about $0.267/W. They made up about $1.5B, or roughly 82%, of gross profit in the first nine months of 2026, and run at full value through 2029.",
-      "First Solar's cadmium telluride modules use no Chinese polysilicon, so FEOC rules that threaten rivals' credits barely touch it. U.S. silicon assemblers are also short of cells, with about 65 GW of module capacity on only 3.2 GW of cell capacity.",
-      "From December 4, 2026, Section 232 sets a minimum import price of $0.38/W for modules plus a 15% tariff, putting imports at about $0.42–$0.44/W. That gives First Solar room to lift prices from about $0.36/W toward $0.40–$0.42/W without higher costs.",
-      "Q3 2026 EPS of $5.30 rose 25% year over year. Sales guidance was cut, but gross profit guidance held at $2.4–$2.6B because the lost volume was mostly international, where no credits are earned.",
-      "At 5.94x NTM EV/EBITDA, First Solar trades at about half its peer median of 11.5x. Our DCF of $159.55–$178.80 is a longer-term floor, since it assumes the credits phase out on schedule and growth fades.",
+      "45X manufacturing credits pay up to $0.17/W on a fully U.S.-made module, against a production cost of about $0.267/W. They were about $1.5B, or roughly 82% of gross profit, in the first nine months of 2026 and run at full value through 2029.",
+      "Its thin-film modules contain no polysilicon, so First Solar has minimal exposure to Chinese trade and FEOC rules. U.S. silicon rivals sit on about 65 GW of module capacity but only 3.2 GW of cell capacity, and imported cells earn only about $0.07/W of 45X credit.",
+      "From December 4, 2026, Section 232 sets a $0.38/W floor on imported modules plus a 15% tariff. New U.S. bookings since July 30 already average $0.36/W against a $0.31/W backlog, and Roth estimates post-232 pricing for U.S. assemblers near $0.40/W.",
+      "We model 2026 revenue down 8% to $4.82B but net income up 19% to about $1.82B on a 51.4% EBITDA margin, then revenue up 21% in 2027 on higher-priced bookings. There is no long-term debt and $1.5B of net cash.",
+      "At 5.77x NTM EV/EBITDA against a peer median of 11.1x, the stock is cheap. Our target holds its November average of 5.94x on 2028E EBITDA of $3,658M; a DCF of $156.83–$177.47 that strips the credit from terminal value is our cross-check.",
     ],
     risks: [
-      "Post-credit pricing (high): once 45X phases out, profit depends on price per watt alone. Backlog sits at about $0.31/W; if prices stay there, value stays near the DCF.",
-      "Developer tax credits (medium-high): projects that missed the July 4, 2026, construction start no longer qualify for 48E and 45Y credits, so demand after about 2029 is uncertain.",
-      "Multiple compression (medium): investors may pay less per dollar of EBITDA as the 2030 phase-down nears. One turn of multiple moves the stock about $34.",
-      "Credit policy and trade (low): changes to 45X or a weaker Section 232 floor would cut cash flow or let cheaper imports back in.",
+      "Post-credit pricing and margins (high): the 45X credit steps down from 2030 and ends in 2033. Against a $0.267/W cost, the $0.31/W backlog leaves only about $0.04/W of margin before the credit.",
+      "Demand after developer credits end (medium-high): projects must be in service by year-end 2027 to qualify for 48E and 45Y credits, and last quarter's backlog fell 1.1 GW while 4.1 GW shipped.",
+      "Multiple compression (medium): each 1.0x turn of EV/EBITDA moves the target about $34. At our 5.0x bear multiple, base-case EBITDA still gives about $203, 18% above today's price.",
+      "Policy and trade (low): changes to 45X, the FEOC rules or the Section 232 floor would hit earnings directly, though the 2026 midterm results make such changes less likely.",
     ],
-    pdf: "reports/2026-11-fslr-pitch.pdf",
+    pdf: "reports/2026-11-fslr.pdf",
+    pitch: {
+      pdf: "reports/2026-11-fslr-pitch.pdf",
+      date: "2026-11-07",
+      summary:
+        "Before this report, I made the case for First Solar as a slide-deck stock pitch on November 7, 2026, taking a Long position at the November 6 close of $201.14. The full report builds on that pitch with more detail on the business, policy and valuation.",
+    },
     author: "Ethan Jin",
   },
   {

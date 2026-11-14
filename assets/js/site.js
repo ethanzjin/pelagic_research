@@ -55,7 +55,10 @@ function fmtMoney(n, currency = "USD") {
   }
 }
 
+// A report can state its published upside (`upside`, in percent) so the site matches the PDF
+// exactly; otherwise it is worked out from the reference price and target.
 function upside(r) {
+  if (typeof r.upside === "number") return r.upside;
   if (!r.price || !r.target) return null;
   return (r.target / r.price - 1) * 100;
 }
@@ -87,7 +90,29 @@ function sampleTag(r) {
 const isPitch = (r) => r.format === "pitch";
 
 function formatTag(r) {
-  return isPitch(r) ? `<span class="tag pitch">Pitch deck</span>` : "";
+  if (isPitch(r)) return `<span class="tag pitch">Pitch deck</span>`;
+  return hasPitch(r) ? `<span class="tag pitch">Report + pitch</span>` : "";
+}
+
+// A full report can carry the earlier pitch deck that led to it (see `pitch` in reports.js).
+function hasPitch(r) {
+  return Boolean(r.pitch && r.pitch.pdf);
+}
+
+function pitchLink(r, cls) {
+  return `<a class="${cls}" href="${esc(r.pitch.pdf)}" data-sheet="${esc(r.pitch.pdf)}" data-sheet-title="${esc(r.title)} (pitch deck)">View the original pitch deck</a>`;
+}
+
+function pitchSection(r) {
+  if (!hasPitch(r)) return "";
+  return `<h2>Original pitch deck</h2>
+    <div class="report-open">
+      <p>${esc(r.pitch.summary || "The stock pitch that came before this report, saved as a PDF.")}${r.pitch.date ? ` Pitched ${fmtDate(r.pitch.date)}.` : ""}</p>
+      <div class="hero-actions">
+        ${pitchLink(r, "btn btn-light pitch-btn")}
+        <a class="more" href="${esc(r.pitch.pdf)}" download>Download pitch PDF</a>
+      </div>
+    </div>`;
 }
 
 // Issue number, journal style: the oldest report is No. 01. `reports` is sorted newest first.
@@ -353,7 +378,8 @@ function renderReport() {
   const el = $("#report");
   if (!el) return;
   const id = new URLSearchParams(location.search).get("id");
-  const r = reports.find((x) => x.id === id);
+  // Old ids listed in `aliases` still open the report, so links shared before a rename keep working.
+  const r = reports.find((x) => x.id === id || (x.aliases || []).includes(id));
   const hero = $("#report-hero");
 
   if (!r) {
@@ -399,6 +425,7 @@ function renderReport() {
               body: "The full PDF for this report hasn't been uploaded yet. The summary, thesis and risks above are complete.",
               action: `<a class="btn btn-primary" href="research.html">See all reports</a>`,
             })}
+        ${pitchSection(r)}
       </article>
       <aside class="report-aside">
         <div class="card">
@@ -417,6 +444,7 @@ function renderReport() {
           </div>
         </div>
         ${r.pdf ? `${sheetButton(r)}<a class="more center" href="${esc(r.pdf)}" download>Download PDF</a>` : ""}
+        ${hasPitch(r) ? pitchLink(r, "more center") : ""}
         <p class="note">
           For information and education only. This is not investment advice. Read the
           <a href="about.html#disclaimer">full disclaimer</a>.
