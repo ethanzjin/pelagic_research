@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&display=swap">
   <link rel="stylesheet" href="assets/css/style.css?v=20261108">
-  <link rel="stylesheet" href="assets/css/journal.css?v=20261114">
+  <link rel="stylesheet" href="assets/css/journal.css?v=20261114c">
 </head>
 <body>
 <div class="page">
@@ -88,6 +88,30 @@
     <aside class="zone" data-reveal><span class="zone-name">Epipelagic</span><span class="zone-depth">100 m</span><span class="zone-note">Latest entry</span></aside>
     <div class="log-body">
       <div class="feature" id="latest" data-reveal aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<section class="now-section" id="now" data-depth="150" aria-labelledby="now-head">
+  <div class="container log">
+    <aside class="zone" data-reveal><span class="zone-name">Epipelagic</span><span class="zone-depth">150 m</span><span class="zone-note">Now</span></aside>
+    <div class="log-body now-layout">
+      <!-- Now: what Ethan is up to. Edit the lines below to update it, and the date with them.
+           "Latest report" fills itself from the newest report in reports.js. -->
+      <header class="now-intro" data-reveal>
+        <p class="now-kicker">Log entry</p>
+        <h2 id="now-head">Now</h2>
+        <p class="now-date">Updated <time datetime="2026-11-14">November&nbsp;14,&nbsp;2026</time></p>
+        <p class="now-lede">What I'm working on, listening to and up to right now.</p>
+        <a class="btn now-btn" href="about-me.html">More about me</a>
+      </header>
+      <dl class="now-list" data-reveal>
+        <div><dt>Researching</dt><dd>Mowi ASA <span class="now-ticker">(OSLO: MOWI)</span> and Ormat Technologies <span class="now-ticker">(NYSE: ORA)</span></dd></div>
+        <div><dt>Latest report</dt><dd data-now-latest>First Solar <span class="now-ticker">(NASDAQ: FSLR)</span></dd></div>
+        <div><dt>Listening to</dt><dd>The Strokes &amp; Arctic Monkeys</dd></div>
+        <div><dt>Studying</dt><dd>Finance &amp; Sustainable Business at NYU Stern</dd></div>
+        <div><dt>Based in</dt><dd>New York</dd></div>
+      </dl>
     </div>
   </div>
 </section>
@@ -226,7 +250,7 @@
 </footer>
 </div>
 <script src="assets/js/reports.js?v=20261113b"></script>
-<script src="assets/js/site.js?v=20261114"></script>
+<script src="assets/js/site.js?v=20261114c"></script>
 <script src="assets/js/motion.js?v=20261108"></script>
 <script src="assets/js/ambient.js?v=20261108"></script>
 <script src="assets/js/depth.js?v=20261108"></script>

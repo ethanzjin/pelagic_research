@@ -230,6 +230,14 @@ function emptyState({ title, body, action = "" }) {
 
 /* ---------- homepage ---------- */
 
+// The homepage "Now" section's Latest report line follows the newest report, linking to it.
+function renderNow() {
+  const el = $("[data-now-latest]");
+  const r = reports[0];
+  if (!el || !r) return;
+  el.innerHTML = `<a href="${reportUrl(r)}">${esc(r.company)}</a> <span class="now-ticker">(${esc(r.ticker)})</span>`;
+}
+
 function renderLatest() {
   const el = $("#latest");
   if (!el) return;
@@ -494,6 +502,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupContact();
   renderMasthead();
   renderLatest();
+  renderNow();
   renderRecent();
   renderArchive();
   renderReport();

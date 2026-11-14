@@ -419,3 +419,60 @@ canvas.snow { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 
 
 /* Report cards: the date never wraps, and keeps its own space beside the tags. */
 .report-card .top > .muted { flex: none; white-space: nowrap; }
+
+/* ---------- Homepage: "Now", its own section ---------- */
+
+/* A blue-washed band of log paper, set apart from the white latest report above and the grey
+   archive below. The intro sits on the left; the entries are typed onto a ruled log sheet. */
+.now-section {
+  position: relative;
+  background-color: color-mix(in srgb, var(--pen) 9%, var(--paper));
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--pen) 10%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--pen) 10%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
+  border-top: 1px solid color-mix(in srgb, var(--pen) 30%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--pen) 30%, transparent);
+}
+.now-section .zone { color: var(--pen); }
+.now-layout { display: grid; grid-template-columns: minmax(0, 18rem) minmax(0, 1fr); gap: var(--space-12); align-items: start; }
+
+.now-kicker { margin: 0 0 var(--space-2); font-family: var(--mono); font-size: var(--text-meta); letter-spacing: .12em; text-transform: uppercase; color: var(--pen); }
+.now-intro h2 { margin: 0; font-size: clamp(3rem, 6vw, 4.5rem); line-height: .95; color: var(--ink); }
+/* The date, pressed on like a rubber stamp. */
+.now-date {
+  display: inline-block; margin: var(--space-4) 0 0; padding: .3em .7em .25em;
+  font-family: var(--mono); font-size: var(--text-meta); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap;
+  color: var(--sell); border: 2px solid currentColor; outline: 1px solid currentColor; outline-offset: 2px; border-radius: 3px;
+  transform: rotate(-3deg);
+}
+.now-lede { margin: var(--space-6) 0 0; font-family: var(--serif); font-style: italic; color: var(--ink-soft); max-width: 18em; }
+.now-btn { margin-top: var(--space-6); background: var(--pen); color: #fff; border: 1px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+.now-btn::after { content: " \2192"; }
+.now-btn:hover { background: var(--brand-deep, var(--pen)); color: #fff; }
+.now-btn:active { box-shadow: 1px 1px 0 var(--ink); transform: translate(2px, 2px); }
+
+/* The log sheet: white paper with a red margin rule, each entry on its own ruled line. */
+.now-list {
+  position: relative; margin: 0; padding: var(--space-4) var(--space-8) var(--space-4) calc(var(--space-12) + var(--space-4));
+  background: var(--notepaper, #fffdf7); border: 1px solid var(--ink); border-radius: var(--radius); box-shadow: var(--stack);
+}
+.now-list::before { content: ""; position: absolute; top: 0; bottom: 0; left: var(--space-12); width: 1px; background: var(--margin-red); }
+.now-list > div {
+  display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: var(--space-4); align-items: baseline;
+  padding: var(--space-4) 0; border-bottom: 1px solid color-mix(in srgb, var(--pen) 18%, transparent);
+}
+.now-list > div:last-child { border-bottom: 0; }
+.now-list dt { font-family: var(--mono); font-size: var(--text-meta); letter-spacing: .1em; text-transform: uppercase; color: var(--pen); }
+.now-list dd { margin: 0; font-family: var(--serif); font-size: var(--step-1); line-height: 1.4; color: var(--ink); }
+.now-ticker { font-family: var(--mono); font-size: .8em; color: var(--muted); white-space: nowrap; }
+.now-list dd a { color: var(--pen); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+
+@media (max-width: 899.98px) {
+  .now-layout { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+}
+@media (max-width: 599.98px) {
+  .now-list { padding: var(--space-2) var(--space-4) var(--space-2) var(--space-8); }
+  .now-list::before { left: var(--space-4); }
+  .now-list > div { grid-template-columns: minmax(0, 1fr); gap: 2px; padding: var(--space-3) 0; }
+}

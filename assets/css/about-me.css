@@ -303,3 +303,128 @@ html.album-open { overflow: hidden; }
 
 /* Trips with no surviving photos keep their stamp but are not clickable. */
 button.trip-face.is-plain { cursor: default; }
+
+/* ---------- Trip map: a sea chart with a pin per stamp ---------- */
+
+.trip-map { margin: var(--space-4) 0 var(--space-12); }
+.map-sheet {
+  position: relative; aspect-ratio: 1000 / 372.2; padding: 0;
+  background-color: var(--notepaper); border: 1px solid var(--ink); border-radius: var(--radius); box-shadow: var(--stack);
+  overflow: hidden;
+}
+.map-land, .map-lines { position: absolute; inset: 0; width: 100%; height: 100%; }
+.map-land { opacity: .9; }
+.map-lines .graticule { stroke: var(--pen); stroke-opacity: .12; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.map-lines .equator { stroke-opacity: .25; stroke-dasharray: 4 4; }
+.map-lines .leader { stroke: var(--ink); stroke-opacity: .55; stroke-width: 1; vector-effect: non-scaling-stroke; }
+.map-pins { position: absolute; inset: 0; }
+
+/* Pins: a dot in the stamp's ink on a paper ring. They drop in when the map reaches the screen. */
+.map-pin {
+  position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; padding: 0; border-radius: 50%;
+  background: var(--stamp-ink, var(--ink)); border: 2px solid var(--notepaper); box-shadow: 0 0 0 1px var(--stamp-ink, var(--ink)), 0 2px 4px rgba(22, 24, 29, .35);
+  cursor: pointer; -webkit-appearance: none; appearance: none;
+  transition: transform var(--motion-150) var(--ease-out);
+}
+/* A bigger invisible hit area, so small pins are easy to tap. */
+button.map-pin::before { content: ""; position: absolute; inset: -12px; border-radius: 50%; }
+button.map-pin::after {
+  content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--stamp-ink, var(--ink));
+  opacity: 0; transform: scale(.6); transition: opacity var(--motion-200) var(--ease-out), transform var(--motion-200) var(--ease-out);
+}
+button.map-pin:focus-visible { outline: 2px solid var(--brand); outline-offset: 6px; }
+@media (hover: hover) and (pointer: fine) {
+  button.map-pin:hover { transform: scale(1.25); }
+  button.map-pin:hover::after { opacity: .5; transform: scale(1); }
+}
+button.map-pin:active { transform: scale(.9); }
+.map-pin.is-plain { background: var(--notepaper); cursor: default; }
+
+.map-label {
+  position: absolute; transform: translate(0, -50%); padding: 1px 6px; white-space: nowrap; pointer-events: none;
+  font-family: var(--mono); font-size: var(--text-meta); letter-spacing: .06em; text-transform: uppercase; line-height: 1.5;
+  color: var(--stamp-ink, var(--ink)); background: var(--notepaper); border: 1px solid currentColor; border-radius: 3px;
+}
+.map-label--left { transform: translate(-100%, -50%); }
+.map-label.is-plain { border-style: dashed; opacity: .75; }
+
+html.js-reveal .trip-map[data-reveal]:not(.is-revealed) .map-pin { opacity: 0; transform: translate3d(0, -10px, 0); }
+.trip-map .map-pin { transition: transform var(--motion-300) var(--ease-out), opacity var(--motion-300) var(--ease-out); }
+
+/* On phones the map is too small for labels; the stamps below name every place. */
+@media (max-width: 699.98px) {
+  .map-label, .map-lines .leader { display: none; }
+  .map-pin { width: 12px; height: 12px; margin: -6px 0 0 -6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-pin, button.map-pin::after { transition: none; }
+  html.js-reveal .trip-map[data-reveal]:not(.is-revealed) .map-pin { transform: none; }
+}
+
+/* Other places: soft ink dots, quieter than the favorite pins. Places close together share a
+   small numbered marker. Hover or tap shows a little card with the name, or the list. */
+.map-mark {
+  position: absolute; padding: 0; cursor: pointer; border: 0; color: var(--ink);
+  -webkit-appearance: none; appearance: none; font: inherit;
+}
+.map-dot { width: 18px; height: 18px; margin: -9px 0 0 -9px; background: none; }
+.map-dot::before { /* the dot itself; the button around it is a bigger, easier target */
+  content: ""; position: absolute; inset: 5px; border-radius: 50%;
+  background: color-mix(in srgb, var(--ink) 55%, transparent); box-shadow: 0 0 0 2px var(--notepaper);
+  transition: transform var(--motion-150) var(--ease-out), background-color var(--motion-150) var(--ease-out);
+}
+.map-group {
+  display: grid; place-items: center; width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 50%;
+  background: var(--notepaper); border: 1.5px solid color-mix(in srgb, var(--ink) 65%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ink) 10%, transparent);
+  transition: transform var(--motion-150) var(--ease-out);
+}
+.map-count { font-family: var(--mono); font-size: .75rem; font-weight: 600; line-height: 1; color: var(--ink); }
+
+/* The name card (or list card) that appears above a dot or group. */
+.map-card {
+  position: absolute; left: 50%; bottom: calc(100% + 8px); z-index: 4; display: grid; gap: 1px;
+  padding: 4px 8px; white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, 4px);
+  font-family: var(--mono); font-size: var(--text-meta); letter-spacing: .05em; text-transform: uppercase; line-height: 1.5; text-align: left;
+  color: var(--ink); background: var(--notepaper); border: 1px solid var(--line); border-radius: 4px;
+  box-shadow: 0 6px 14px -8px rgba(22, 24, 29, .45);
+  transition: opacity var(--motion-150) var(--ease-out), transform var(--motion-150) var(--ease-out);
+}
+.map-card b { font-weight: 600; color: var(--muted); letter-spacing: .1em; margin-bottom: 2px; }
+.map-mark:hover .map-card, .map-mark:focus-visible .map-card, .map-mark.is-open .map-card { opacity: 1; transform: translate(-50%, 0); }
+.map-mark:hover, .map-mark.is-open { z-index: 5; }
+@media (hover: hover) and (pointer: fine) {
+  .map-dot:hover::before { transform: scale(1.3); background: var(--ink); }
+  .map-group:hover { transform: scale(1.1); }
+}
+.map-dot.is-open::before { background: var(--ink); }
+.map-mark:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; border-radius: 50%; }
+
+.map-legend {
+  display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); margin: var(--space-3) 0 0;
+  font-family: var(--mono); font-size: var(--text-meta); letter-spacing: .04em; color: var(--ink-soft);
+}
+.map-legend span { display: inline-flex; align-items: center; gap: var(--space-2); }
+.key-pin { width: 12px; height: 12px; border-radius: 50%; background: var(--pen); border: 2px solid var(--notepaper); box-shadow: 0 0 0 1px var(--pen); }
+.key-dot { width: 8px; height: 8px; border-radius: 50%; background: color-mix(in srgb, var(--ink) 55%, transparent); }
+.key-group {
+  display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; font-style: normal;
+  font-size: .68rem; font-weight: 600; color: var(--ink); border: 1.5px solid color-mix(in srgb, var(--ink) 65%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) { .map-card, .map-dot::before, .map-group { transition: none; } }
+
+/* The map's caption reads in the same small capitals as its "Fig. 2" tag. */
+.trip-map figcaption {
+  margin-top: var(--space-3); font-family: var(--sans); font-size: var(--text-meta); font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase; line-height: 1.6; color: var(--muted);
+}
+.trip-map figcaption .fig-no { margin-right: var(--space-2); }
+/* Group lists are taller, so they open downward where the map has room. */
+.map-group .map-card { bottom: auto; top: calc(100% + 8px); transform: translate(-50%, -4px); }
+.map-group:hover .map-card, .map-group:focus-visible .map-card, .map-group.is-open .map-card { transform: translate(-50%, 0); }
+/* Let name and list cards spill past the map's frame (the phone-size map is short). */
+.map-sheet { overflow: visible; }
+.map-land { border-radius: var(--radius); }
+.trip-map .map-pins { z-index: 2; }
