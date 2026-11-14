@@ -302,9 +302,11 @@ function setupTripAlbums() {
       stamp.innerHTML = trip.stampHtml;
       shownPhotos = albumPhotos(album);
       drawGrid();
-      page.scrollTop = 0;
       document.documentElement.classList.add("album-open");
       dialog.showModal();
+      // A closed dialog can't be scrolled, so start each album at its top once it's open.
+      page.scrollTop = 0;
+      requestAnimationFrame(() => { page.scrollTop = 0; });
     });
   });
 }
