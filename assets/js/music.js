@@ -1,12 +1,13 @@
 /* =========================================================
    About me: favorite songs.
-   Each song is a record in its sleeve. Clicking one slides the
-   disc out, sets it spinning and opens that song's player under
-   it; clicking again (or another record) stops it. Nothing ever
-   plays on its own.
-   Audio comes from Spotify's official embed, so the site never
-   hosts song files: signed-in Spotify listeners hear the full
-   track, everyone else a 30-second preview.
+   Each song is a record in its sleeve. Tapping one slides the
+   disc out, sets it spinning and plays the song's official
+   30-second Spotify preview right away; tapping again (or another
+   record) stops it. Nothing ever plays on its own.
+   The audio is played by the page itself during the tap, which is
+   what phones require; it streams from Spotify's preview server,
+   so the site never hosts song files. A "Full song on Spotify"
+   link appears under the playing record.
    Loaded only on about-me.html.
 
    To add a song, fill in an entry below:
@@ -16,21 +17,32 @@
      cover           album art, e.g. "assets/img/songs/<album>.jpg" (480px square)
      spotify         the track's Spotify link, e.g.
                      "https://open.spotify.com/track/<id>"
-   Entries without a cover or link show placeholders.
+     preview         the track's 30-second preview clip, found in the
+                     page source of open.spotify.com/embed/track/<id>
+                     (search for "p.scdn.co/mp3-preview")
+   Entries without a cover show a placeholder.
    ========================================================= */
 
 // Order matters: songs from the same album sit apart, so matching covers never touch whether the
 // records show four to a row (laptop) or two to a row (phone). Same-album pairs are at
 // positions 1 & 6 and 3 & 8, which are never side by side or stacked in either layout.
 const SONGS = [
-  { title: "Someday", artist: "The Strokes", album: "Is This It", cover: "assets/img/songs/is-this-it.jpg", spotify: "https://open.spotify.com/track/7hm4HTk9encxT0LYC0J6oI" },
-  { title: "You Only Live Once", artist: "The Strokes", album: "First Impressions of Earth", cover: "assets/img/songs/first-impressions-of-earth.jpg", spotify: "https://open.spotify.com/track/4fPBB44eDH71YohayI4eKV" },
-  { title: "Ode To The Mets", artist: "The Strokes", album: "The New Abnormal", cover: "assets/img/songs/the-new-abnormal.jpg", spotify: "https://open.spotify.com/track/1BLOVHYYlH4JUHQGcpt75R" },
-  { title: "Fluorescent Adolescent", artist: "Arctic Monkeys", album: "Favourite Worst Nightmare", cover: "assets/img/songs/favourite-worst-nightmare.jpg", spotify: "https://open.spotify.com/track/7e8utCy2JlSB8dRHKi49xM" },
-  { title: "Love is a Laserquest", artist: "Arctic Monkeys", album: "Suck It and See", cover: "assets/img/songs/suck-it-and-see.jpg", spotify: "https://open.spotify.com/track/7wsEZh68qX7jY0dziXMb0H" },
-  { title: "Hard To Explain", artist: "The Strokes", album: "Is This It", cover: "assets/img/songs/is-this-it.jpg", spotify: "https://open.spotify.com/track/0OM9ri37LIbPc9hffwsyb1" },
-  { title: "Under Cover of Darkness", artist: "The Strokes", album: "Angles", cover: "assets/img/songs/angles.jpg", spotify: "https://open.spotify.com/track/6u0x5ad9ewHvs3z6u9Oe3c" },
-  { title: "Selfless", artist: "The Strokes", album: "The New Abnormal", cover: "assets/img/songs/the-new-abnormal.jpg", spotify: "https://open.spotify.com/track/2t0wwvR15fc3K1ey8OiOaN" },
+  { title: "Someday", artist: "The Strokes", album: "Is This It", cover: "assets/img/songs/is-this-it.jpg", spotify: "https://open.spotify.com/track/7hm4HTk9encxT0LYC0J6oI",
+    preview: "https://p.scdn.co/mp3-preview/241189aa54503d502d3e06cf6996a87a27f73a81" },
+  { title: "You Only Live Once", artist: "The Strokes", album: "First Impressions of Earth", cover: "assets/img/songs/first-impressions-of-earth.jpg", spotify: "https://open.spotify.com/track/4fPBB44eDH71YohayI4eKV",
+    preview: "https://p.scdn.co/mp3-preview/4e65165f1a88d641bec5f181ffb8ba4d516a9c39" },
+  { title: "Ode To The Mets", artist: "The Strokes", album: "The New Abnormal", cover: "assets/img/songs/the-new-abnormal.jpg", spotify: "https://open.spotify.com/track/1BLOVHYYlH4JUHQGcpt75R",
+    preview: "https://p.scdn.co/mp3-preview/2d3fa8428d3dff3cfff3c2349194cfd560075a8a" },
+  { title: "Fluorescent Adolescent", artist: "Arctic Monkeys", album: "Favourite Worst Nightmare", cover: "assets/img/songs/favourite-worst-nightmare.jpg", spotify: "https://open.spotify.com/track/7e8utCy2JlSB8dRHKi49xM",
+    preview: "https://p.scdn.co/mp3-preview/5d554321da6089f449862bf515d63fe3f80829f9" },
+  { title: "Love is a Laserquest", artist: "Arctic Monkeys", album: "Suck It and See", cover: "assets/img/songs/suck-it-and-see.jpg", spotify: "https://open.spotify.com/track/7wsEZh68qX7jY0dziXMb0H",
+    preview: "https://p.scdn.co/mp3-preview/72d43d88ed129ddebe431e9cbcc8e4031670ecaf" },
+  { title: "Hard To Explain", artist: "The Strokes", album: "Is This It", cover: "assets/img/songs/is-this-it.jpg", spotify: "https://open.spotify.com/track/0OM9ri37LIbPc9hffwsyb1",
+    preview: "https://p.scdn.co/mp3-preview/71144fab351034d82cb1a2ef60fcd4f0f5d5979f" },
+  { title: "Under Cover of Darkness", artist: "The Strokes", album: "Angles", cover: "assets/img/songs/angles.jpg", spotify: "https://open.spotify.com/track/6u0x5ad9ewHvs3z6u9Oe3c",
+    preview: "https://p.scdn.co/mp3-preview/392943fec90313dec65b40afa326c3c822984b1d" },
+  { title: "Selfless", artist: "The Strokes", album: "The New Abnormal", cover: "assets/img/songs/the-new-abnormal.jpg", spotify: "https://open.spotify.com/track/2t0wwvR15fc3K1ey8OiOaN",
+    preview: "https://p.scdn.co/mp3-preview/4d9ef2f5c4f6aab389563bae3d4baa575e2c004f" },
 ];
 
 // Each record's label and placeholder cover take one of the site's inks, in turn.
@@ -39,12 +51,6 @@ const RECORD_TILTS = [-2, 1.5, -1, 2];
 
 const escapeText = (s) =>
   String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
-
-// Accepts a Spotify track link (or a bare id) and returns the track id, or "" if it isn't one.
-function spotifyTrackId(link) {
-  const m = String(link || "").match(/(?:track[/:])?([A-Za-z0-9]{22})(?:\?|$)/);
-  return m ? m[1] : "";
-}
 
 function coverMarkup(song, n) {
   if (song.cover) {
@@ -75,73 +81,69 @@ function recordMarkup(song, i) {
     </li>`;
 }
 
-// The player that opens under a playing record: Spotify's embed, or a labelled placeholder.
+// The line that opens under a playing record: a progress bar and a link to the full song.
 function playerMarkup(song) {
-  const id = spotifyTrackId(song.spotify);
-  if (!id) {
-    return `<div class="player-placeholder"><span class="player-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Spotify player for this song appears here</div>`;
-  }
-  return `<iframe title="${escapeText(song.title)} on Spotify" src="https://open.spotify.com/embed/track/${id}?utm_source=generator&amp;theme=0" width="100%" height="80" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>`;
-}
-
-// Spotify's iFrame API lets the page start a song with one click on its record, instead of the
-// listener also having to press play inside the player. It loads in the background; until it is
-// ready (or if it is blocked) the plain embed is used, which plays from its own button.
-let spotifyApi = null;
-window.onSpotifyIframeApiReady = (api) => { spotifyApi = api; };
-function loadSpotifyApi() {
-  if (document.querySelector("script[data-spotify-api]")) return;
-  const s = document.createElement("script");
-  s.src = "https://open.spotify.com/embed/iframe-api/v1";
-  s.async = true;
-  s.dataset.spotifyApi = "";
-  document.head.appendChild(s);
-}
-
-// Opens the player for a record and, where the API is ready, starts it straight away.
-function openPlayer(player, song) {
-  const id = spotifyTrackId(song.spotify);
-  if (!id || !spotifyApi) {
-    player.innerHTML = playerMarkup(song);
-    return;
-  }
-  const mount = document.createElement("div");
-  player.replaceChildren(mount);
-  spotifyApi.createController(mount, { uri: `spotify:track:${id}`, width: "100%", height: 80 }, (controller) => {
-    player.spotifyController = controller;
-    controller.addListener("ready", () => controller.play());
-  });
+  const link = song.spotify
+    ? `<a class="player-link" href="${escapeText(song.spotify)}" target="_blank" rel="noopener">Full song on Spotify<span aria-hidden="true"> ↗</span></a>`
+    : "";
+  return `<div class="player-line"><span class="player-bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>` +
+    `<span class="player-track" aria-hidden="true"><span class="player-fill"></span></span>${link}</div>`;
 }
 
 function setupSongs() {
   const list = document.querySelector("[data-songs]");
   if (!list) return;
   list.innerHTML = SONGS.map(recordMarkup).join("");
-  if (SONGS.some((s) => spotifyTrackId(s.spotify))) loadSpotifyApi();
 
-  const stop = (li) => {
-    li.classList.remove("is-playing");
-    li.querySelector(".record-play").setAttribute("aria-pressed", "false");
-    const player = li.querySelector(".record-player");
-    try { player.spotifyController?.destroy(); } catch (err) { /* the player is removed below either way */ }
-    player.spotifyController = null;
-    player.innerHTML = ""; // removing the embed stops its audio
+  // One shared audio element. Phones only let a page start sound from inside a tap, so play()
+  // is called right in the click handler below, never after a wait.
+  const audio = new Audio();
+  audio.preload = "none";
+  let current = null; // the <li> that is playing
+
+  const stop = () => {
+    if (!current) return;
+    audio.pause();
+    current.classList.remove("is-playing", "is-loading");
+    current.querySelector(".record-play").setAttribute("aria-pressed", "false");
+    const player = current.querySelector(".record-player");
+    player.innerHTML = "";
     player.hidden = true;
+    current = null;
   };
+
+  audio.addEventListener("timeupdate", () => {
+    const fill = current?.querySelector(".player-fill");
+    if (fill && audio.duration) fill.style.transform = `scaleX(${audio.currentTime / audio.duration})`;
+  });
+  audio.addEventListener("playing", () => current?.classList.remove("is-loading"));
+  audio.addEventListener("ended", stop);
+  audio.addEventListener("error", () => {
+    if (!current) return;
+    // The clip didn't load: keep the record open and offer the song on Spotify instead.
+    current.classList.remove("is-loading");
+    current.classList.add("is-error");
+  });
 
   list.addEventListener("click", (e) => {
     const button = e.target.closest(".record-play");
     if (!button) return;
     const li = button.closest(".record");
-    const wasPlaying = li.classList.contains("is-playing");
-    list.querySelectorAll(".record.is-playing").forEach(stop); // one record at a time
+    const wasPlaying = li === current;
+    stop(); // one record at a time
     if (wasPlaying) return;
     const song = SONGS[Number(button.dataset.index)];
-    li.classList.add("is-playing");
+    current = li;
+    li.classList.remove("is-error");
+    li.classList.add("is-playing", "is-loading");
     button.setAttribute("aria-pressed", "true");
     const player = li.querySelector(".record-player");
+    player.innerHTML = playerMarkup(song);
     player.hidden = false;
-    openPlayer(player, song);
+    if (!song.preview) { li.classList.add("is-error"); li.classList.remove("is-loading"); return; }
+    audio.src = song.preview;
+    const started = audio.play();
+    if (started) started.catch(() => { if (current === li) { li.classList.remove("is-loading"); li.classList.add("is-error"); } });
   });
 }
 
