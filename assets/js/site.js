@@ -42,8 +42,9 @@ function parseDate(iso) {
   return new Date(y, m - 1, d || 1);
 }
 
+// Non-breaking spaces keep a date like "November 13, 2026" on one line wherever it appears.
 function fmtDate(iso) {
-  return parseDate(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+  return parseDate(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" }).replace(/ /g, " ");
 }
 
 function fmtMoney(n, currency = "USD") {
