@@ -22,8 +22,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&display=swap">
   <link rel="stylesheet" href="assets/css/style.css?v=20261108">
-  <link rel="stylesheet" href="assets/css/journal.css?v=20261113">
- <link rel="stylesheet" href="assets/css/about-me.css?v=20261109g">
+  <link rel="stylesheet" href="assets/css/journal.css?v=20261113b">
+ <link rel="stylesheet" href="assets/css/about-me.css?v=20261113c">
 </head>
 <body>
 <div class="page">
@@ -144,55 +144,56 @@
   <div class="container">
     <div class="section-head" data-reveal>
       <h2>Favorite trips</h2>
+      <p class="trips-hint">Tap a stamp to open that trip's photo album.</p>
     </div>
     <ul class="trips">
-      <li class="trip" data-reveal style="--tilt: -6deg; --stamp-ink: var(--pen)">
-        <span class="trip-face trip--round">
-          <svg class="trip-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M3 40h42"/><path d="M8 40 18 23q6-4 12 0l10 17"/><path d="M18 23l3 4 3-3 3 3 3-4"/><path d="M24 18q-3-4 0-8t0-8"/><path d="M29 16q-2-3 1-6"/><circle cx="38" cy="8" r="1" class="dot"/><circle cx="10" cy="11" r="1" class="dot"/></svg>
-          <span class="trip-country">Iceland</span><span class="trip-coords">65° N · 18° W</span>
-        </span>
-      </li>
       <li class="trip" data-reveal style="--tilt: 4deg; --stamp-ink: var(--sell)">
-        <span class="trip-face trip--post">
+        <button type="button" class="trip-face trip--post">
           <svg class="trip-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M22 45q-2-20 8-40"/><path d="M23 38l-7-3M23 32l-8-4M24 26l-8-5M26 20l-7-6M28 14l-5-6"/><path d="M23 38l7-2M23 32l8-2M25 26l8-3M27 20l7-4M29 14l5-4"/></svg>
           <span class="trip-country">New Zealand</span><span class="trip-coords">41° S · 174° E</span>
-        </span>
+        </button>
       </li>
       <li class="trip" data-reveal style="--tilt: -3deg; --stamp-ink: var(--ink)">
-        <span class="trip-face trip--oval">
+        <button type="button" class="trip-face trip--oval">
           <svg class="trip-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M2 30 12 13l7 11 8-16 9 13 10-6"/><path d="M4 37q4-2 8 0t8 0 8 0 8 0 8 0"/><path d="M19 32h10l-2 3h-6z"/><path d="M24 32V23l4 7"/></svg>
           <span class="trip-country">Norway</span><span class="trip-coords">62° N · 10° E</span>
-        </span>
-      </li>
-      <li class="trip" data-reveal style="--tilt: 5deg; --stamp-ink: var(--hold)">
-        <span class="trip-face trip--badge">
-          <svg class="trip-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M8 43q16-8 32 0"/><path d="M24 39q-3-9 0-18-5-5-1-11 1-3 4-5"/><path d="M24 21q4-5 1-10"/><path d="M18 20q-4-3-2-8M30 20q4-3 2-8"/><circle cx="13" cy="26" r="1" class="dot"/><circle cx="35" cy="25" r="1" class="dot"/><circle cx="16" cy="31" r="1" class="dot"/><circle cx="32" cy="31" r="1" class="dot"/></svg>
-          <span class="trip-country">Yellowstone</span><span class="trip-coords">44.4° N · 110.6° W</span>
-        </span>
-      </li>
-      <li class="trip" data-reveal style="--tilt: -5deg; --stamp-ink: var(--accumulate)">
-        <span class="trip-face trip--round">
-          <svg class="trip-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M3 41h42"/><path d="M8 41q2-22 18-27 8-2 9 7v20"/><path d="M14 30q4-9 11-12"/><path d="M38 41l3-10 3 10M40 35l1-3 1 3"/><path d="M4 41l2-7 2 7"/></svg>
-          <span class="trip-country">Yosemite</span><span class="trip-coords">37.7° N · 119.5° W</span>
-        </span>
-      </li>
-      <li class="trip" data-reveal style="--tilt: 3deg; --stamp-ink: var(--pen)">
-        <span class="trip-face trip--post">
-          <svg class="trip-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M2 42 17 19l5 6 7-13 17 30"/><path d="M24 17l5-5 4 8-3-2-3 3-2-3z"/><path d="M4 10q10-6 20-1t20-2"/><path d="M8 15q8-4 16 0t16-1"/></svg>
-          <span class="trip-country">Alaska</span><span class="trip-coords">64° N · 150° W</span>
-        </span>
-      </li>
-      <li class="trip" data-reveal style="--tilt: -4deg; --stamp-ink: var(--ink)">
-        <span class="trip-face trip--badge">
-          <svg class="trip-icon" viewBox="0 0 48 48" aria-hidden="true"><path class="fill" d="M2.5 27.5C2.5 22.5 8 19.2 15 18.6L19 18.3C20.3 13 21.6 8 23.6 3.2 24.4 9 25.6 14 28.6 18.3 34 18.9 38.8 20.6 42 23.2L46.2 18.3C45.9 21.6 45.2 23.6 44.4 25.1L47.2 30.6C44.4 29.5 42.7 28 41.6 26.8 35 30.3 26.4 31.6 18 31.1 10 30.6 2.5 30.4 2.5 27.5ZM9.8 23.2C10.6 24.6 14.6 24.2 16.4 22.6 15.4 21.2 11.2 21.6 9.8 23.2ZM4.6 28.4C9 29.8 16 30 24.6 28.7 20.2 27.3 12.4 27.1 4.6 28.4ZM24.2 20.2C27 19.5 30.4 19.9 33 21.2 29.8 21.6 26.6 21.3 24.2 20.2Z"/><path class="fill" d="M14.6 30.2C13.6 33.6 12.8 36.2 14.2 37.8 16.4 36.4 18 33.4 18.9 30.8Z"/><path d="M3 43q4-2 8 0t8 0 8 0 8 0 8 0"/></svg>
-          <span class="trip-country">Friday Harbor</span><span class="trip-coords">48.5° N · 123.0° W</span>
-        </span>
+        </button>
       </li>
       <li class="trip" data-reveal style="--tilt: 6deg; --stamp-ink: var(--sell)">
-        <span class="trip-face trip--oval">
+        <button type="button" class="trip-face trip--oval">
           <svg class="trip-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M20 40 21.5 17h5L28 40z"/><path d="M21 17v-4h6v4"/><path d="M20 13l4-4 4 4"/><path d="M21 25h6M20.6 32h6.8"/><path d="M28 14l14-4M28 16l14 4M20 14 6 10M20 16 6 20"/><path d="M3 43q5-3 10 0t10 0 10 0 10 0"/></svg>
           <span class="trip-country">Oregon</span><span class="trip-coords">44° N · 120.5° W</span>
-        </span>
+        </button>
+      </li>
+      <li class="trip" data-reveal style="--tilt: 3deg; --stamp-ink: var(--pen)">
+        <button type="button" class="trip-face trip--post">
+          <svg class="trip-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M2 42 17 19l5 6 7-13 17 30"/><path d="M24 17l5-5 4 8-3-2-3 3-2-3z"/><path d="M4 10q10-6 20-1t20-2"/><path d="M8 15q8-4 16 0t16-1"/></svg>
+          <span class="trip-country">Alaska</span><span class="trip-coords">64° N · 150° W</span>
+        </button>
+      </li>
+      <li class="trip" data-reveal style="--tilt: -4deg; --stamp-ink: var(--ink)">
+        <button type="button" class="trip-face trip--badge">
+          <svg class="trip-icon" viewBox="0 0 48 48" aria-hidden="true"><path class="fill" d="M2.5 27.5C2.5 22.5 8 19.2 15 18.6L19 18.3C20.3 13 21.6 8 23.6 3.2 24.4 9 25.6 14 28.6 18.3 34 18.9 38.8 20.6 42 23.2L46.2 18.3C45.9 21.6 45.2 23.6 44.4 25.1L47.2 30.6C44.4 29.5 42.7 28 41.6 26.8 35 30.3 26.4 31.6 18 31.1 10 30.6 2.5 30.4 2.5 27.5ZM9.8 23.2C10.6 24.6 14.6 24.2 16.4 22.6 15.4 21.2 11.2 21.6 9.8 23.2ZM4.6 28.4C9 29.8 16 30 24.6 28.7 20.2 27.3 12.4 27.1 4.6 28.4ZM24.2 20.2C27 19.5 30.4 19.9 33 21.2 29.8 21.6 26.6 21.3 24.2 20.2Z"/><path class="fill" d="M14.6 30.2C13.6 33.6 12.8 36.2 14.2 37.8 16.4 36.4 18 33.4 18.9 30.8Z"/><path d="M3 43q4-2 8 0t8 0 8 0 8 0 8 0"/></svg>
+          <span class="trip-country">Friday Harbor</span><span class="trip-coords">48.5° N · 123.0° W</span>
+        </button>
+      </li>
+      <li class="trip" data-reveal style="--tilt: -6deg; --stamp-ink: var(--pen)">
+        <button type="button" class="trip-face trip--round">
+          <svg class="trip-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M3 40h42"/><path d="M8 40 18 23q6-4 12 0l10 17"/><path d="M18 23l3 4 3-3 3 3 3-4"/><path d="M24 18q-3-4 0-8t0-8"/><path d="M29 16q-2-3 1-6"/><circle cx="38" cy="8" r="1" class="dot"/><circle cx="10" cy="11" r="1" class="dot"/></svg>
+          <span class="trip-country">Iceland</span><span class="trip-coords">65° N · 18° W</span>
+        </button>
+      </li>
+      <li class="trip" data-reveal style="--tilt: 5deg; --stamp-ink: var(--hold)">
+        <button type="button" class="trip-face trip--badge">
+          <svg class="trip-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M8 43q16-8 32 0"/><path d="M24 39q-3-9 0-18-5-5-1-11 1-3 4-5"/><path d="M24 21q4-5 1-10"/><path d="M18 20q-4-3-2-8M30 20q4-3 2-8"/><circle cx="13" cy="26" r="1" class="dot"/><circle cx="35" cy="25" r="1" class="dot"/><circle cx="16" cy="31" r="1" class="dot"/><circle cx="32" cy="31" r="1" class="dot"/></svg>
+          <span class="trip-country">Yellowstone</span><span class="trip-coords">44.4° N · 110.6° W</span>
+        </button>
+      </li>
+      <li class="trip" data-reveal style="--tilt: -5deg; --stamp-ink: var(--accumulate)">
+        <button type="button" class="trip-face trip--round">
+          <svg class="trip-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M3 41h42"/><path d="M8 41q2-22 18-27 8-2 9 7v20"/><path d="M14 30q4-9 11-12"/><path d="M38 41l3-10 3 10M40 35l1-3 1 3"/><path d="M4 41l2-7 2 7"/></svg>
+          <span class="trip-country">Yosemite</span><span class="trip-coords">37.7° N · 119.5° W</span>
+        </button>
       </li>
     </ul>
   </div>
@@ -234,5 +235,6 @@
 <script src="assets/js/reports.js?v=20261113b"></script>
 <script src="assets/js/site.js?v=20261113b"></script>
 <script src="assets/js/motion.js?v=20261108"></script>
+<script src="assets/js/trips.js?v=20261113m"></script>
 </body>
 </html>

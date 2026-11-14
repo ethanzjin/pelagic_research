@@ -202,6 +202,93 @@ html.js-reveal .trip[data-reveal]:not(.is-revealed) .trip-face { opacity: 0; tra
   .trip-coords { white-space: nowrap; letter-spacing: 0; }
 }
 
+/* ---------- Trip albums: each stamp opens a scrapbook page ---------- */
+
+.trips-hint { margin: var(--space-2) 0 0; font-family: var(--serif); font-style: italic; color: var(--ink-soft); }
+/* The stamps are buttons now; keep them looking like ink, not form controls. */
+button.trip-face { font: inherit; background: transparent; cursor: pointer; -webkit-appearance: none; appearance: none; }
+button.trip-face:focus-visible { opacity: 1; transform: rotate(0deg); box-shadow: 0 0 0 9px var(--paper), 0 0 0 11px var(--brand); }
+button.trip-face:active { transform: rotate(0deg) scale(.96); }
+
+html.album-open { overflow: hidden; }
+.trip-album {
+  width: min(1040px, calc(100vw - 32px)); max-width: none; max-height: none; margin: auto;
+  padding: 0; border: 0; background: transparent; color: var(--ink); overflow: visible;
+}
+.trip-album::backdrop { background: rgba(22, 24, 29, .55); }
+.trip-album[open]::backdrop { animation: fade-in 250ms var(--ease-out); }
+.album-page {
+  position: relative; max-height: calc(100dvh - 32px); overflow: auto; overscroll-behavior: contain;
+  padding: var(--space-8) var(--space-12) var(--space-12);
+  background-color: var(--notepaper); border: 1px solid var(--ink); border-radius: var(--radius);
+  box-shadow: var(--stack), 0 30px 60px -24px rgba(5, 13, 36, .55);
+}
+.trip-album[open] .album-page { animation: album-in 420ms var(--ease-out); }
+@keyframes album-in { from { opacity: 0; transform: translate3d(0, 24px, 0) scale(.98); } }
+
+.album-head {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: start; gap: var(--space-4);
+  margin-bottom: var(--space-8); padding-bottom: var(--space-4); border-bottom: 2px solid var(--margin-red);
+}
+.album-coords { margin: 0; font-family: var(--mono); font-size: var(--text-meta); letter-spacing: .06em; color: var(--muted); }
+.album-head h2 { margin: var(--space-1) 0 0; font-size: var(--step-4); color: var(--stamp-ink, var(--ink)); }
+.album-note { margin: var(--space-2) 0 0; font-family: var(--serif); font-style: italic; color: var(--ink-soft); }
+/* The trip's own stamp, pressed into the page corner at a smaller size. */
+.album-stamp-wrap { position: relative; width: 104px; height: 104px; }
+.album-stamp {
+  position: absolute; top: 0; right: 0; color: var(--stamp-ink, var(--ink)); opacity: .9;
+  transform-origin: top right; transform: rotate(var(--album-tilt, 0deg)) scale(.62);
+}
+.trip-album[open] .album-stamp { animation: album-stamp-press 520ms var(--ease-out) 260ms backwards; }
+@keyframes album-stamp-press { from { opacity: 0; transform: rotate(calc(var(--album-tilt, 0deg) - 10deg)) scale(.9); } }
+.album-close {
+  display: grid; place-items: center; width: 44px; height: 44px; padding: 0; cursor: pointer;
+  background: var(--raised); color: var(--ink); border: 1px solid var(--ink); border-radius: 50%;
+  transition: transform var(--motion-150) var(--ease-out);
+}
+.album-close svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.album-close:hover { transform: rotate(90deg); }
+.album-close:active { transform: scale(.94); }
+
+/* The collage: taped instant photos in loose columns, each at its own small angle. */
+/* Columns are filled by trips.js (shortest column first) and stretch to a shared bottom edge;
+   any spare height in a column is spread between its frames, so no column stops short. */
+.album-grid { display: flex; align-items: stretch; gap: var(--space-8); }
+.album-col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; list-style: none; margin: 0; padding: 0; }
+.album-photo { padding: var(--space-3) 0 var(--space-6); }
+.album-photo figure {
+  position: relative; margin: 0; padding: 10px 10px 0; background: #fffefa;
+  border: 1px solid var(--line); box-shadow: 0 1px 2px rgba(22, 24, 29, .12), 0 12px 24px -14px rgba(22, 24, 29, .45);
+  transform: rotate(var(--tilt, 0deg)); transition: transform var(--motion-300) var(--ease-out);
+}
+.album-photo img, .album-placeholder { display: block; width: 100%; height: auto; }
+.album-placeholder {
+  display: grid; place-items: center; color: var(--muted); font-family: var(--mono); font-size: var(--text-meta); letter-spacing: .06em;
+  background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--stamp-ink, var(--ink)) 9%, transparent) 0 10px, transparent 10px 20px), var(--paper);
+  border: 1px dashed color-mix(in srgb, var(--stamp-ink, var(--ink)) 35%, transparent);
+}
+.album-photo figcaption { padding: var(--space-2) var(--space-1) var(--space-3); text-align: center; font-family: var(--serif); font-style: italic; font-size: var(--text-secondary); line-height: 1.4; color: var(--ink-soft); }
+.album-photo:not(:has(figcaption)) figure { padding-bottom: 28px; }
+.album-photo.is-taped figure::before {
+  content: ""; position: absolute; top: -12px; left: 50%; width: 84px; height: 24px; z-index: 1;
+  background: var(--tape); transform: translateX(-50%) rotate(-3deg); box-shadow: 0 1px 1px rgba(22, 24, 29, .08);
+}
+/* Photos drop onto the page one after another when the album opens. */
+.trip-album[open] .album-photo figure { animation: album-photo-drop 520ms var(--ease-out) backwards; animation-delay: calc(140ms + var(--i, 0) * 70ms); }
+@keyframes album-photo-drop { from { opacity: 0; transform: translate3d(0, -14px, 0) rotate(calc(var(--tilt, 0deg) - 6deg)); } }
+@media (hover: hover) and (pointer: fine) {
+  .album-photo figure:hover { transform: rotate(0deg) scale(1.02); z-index: 2; }
+}
+
+@media (max-width: 599.98px) {
+  .trip-album { width: calc(100vw - 16px); }
+  .album-page { max-height: calc(100dvh - 16px); padding: var(--space-6) var(--space-4) var(--space-8); }
+  .album-head { grid-template-columns: minmax(0, 1fr) auto; }
+  .album-stamp-wrap { display: none; }
+  .album-grid { gap: var(--space-4); }
+  .album-photo figure { padding: 6px 6px 0; }
+}
+
 /* ---------- Preferences ---------- */
 
 @media (prefers-reduced-motion: reduce) {
@@ -210,4 +297,9 @@ html.js-reveal .trip[data-reveal]:not(.is-revealed) .trip-face { opacity: 0; tra
   .wave-rule { transition: none; }
   .wave-track { animation: none; }
   .org-logo { transition: none; }
+  .trip-album[open] .album-page, .trip-album[open] .album-stamp, .trip-album[open] .album-photo figure, .trip-album[open]::backdrop { animation: none; }
+  .album-photo figure, .album-close { transition: none; }
 }
+
+/* Trips with no surviving photos keep their stamp but are not clickable. */
+button.trip-face.is-plain { cursor: default; }
