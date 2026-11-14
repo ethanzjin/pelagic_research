@@ -311,4 +311,172 @@ function setupTripAlbums() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", setupTripAlbums);
+/* ---------- Trip map: a pin for every stamp ---------- */
+
+// Must match the projection used to draw assets/img/world-land.svg (equirectangular, cropped).
+const MAP = { width: 1000, height: 372.2, latTop: 78, latBottom: -56 };
+// Where each label sits relative to its pin, in map units, so the four Pacific Northwest pins
+// don't collide: their labels hang out over the Pacific on leader lines.
+const MAP_LABELS = {
+  "Friday Harbor": { dx: -46, dy: -16, side: "left" },
+  Oregon: { dx: -54, dy: 4, side: "left" },
+  Yosemite: { dx: -44, dy: 22, side: "left" },
+  Yellowstone: { dx: 26, dy: 14, side: "right" },
+  Alaska: { dx: -6, dy: -16, side: "left" },
+  Iceland: { dx: -8, dy: -14, side: "left" },
+  Norway: { dx: 18, dy: -10, side: "right" },
+  "New Zealand": { dx: -26, dy: 6, side: "left" },
+};
+
+// Other places visited that aren't among the favorite stamps. Each shows as a soft ink dot, with
+// no album, named on hover or tap. Places that sit close together are gathered into one numbered
+// marker that opens a list, titled by `region`. Add one per line, e.g.
+//   { name: "Lisbon", lat: 38.7, lon: -9.1, region: "Europe" },   (south and west are negative)
+const OTHER_PLACES = [
+  { name: "Banff, Canada", lat: 51.2, lon: -115.6 },
+  { name: "Cozumel, Mexico", lat: 20.4, lon: -86.9 },
+  { name: "France", lat: 46.6, lon: 2.4, region: "Europe" },
+  { name: "Belgium", lat: 50.6, lon: 4.6, region: "Europe" },
+  { name: "Netherlands", lat: 52.2, lon: 5.5, region: "Europe" },
+  { name: "Germany", lat: 51.1, lon: 10.4, region: "Europe" },
+  { name: "Denmark", lat: 56.0, lon: 9.4, region: "Europe" },
+  { name: "Austria", lat: 47.5, lon: 14.6, region: "Europe" },
+  { name: "Italy", lat: 42.8, lon: 12.5, region: "Europe" },
+  { name: "Sweden", lat: 62.5, lon: 16.5, region: "Europe" },
+  { name: "China", lat: 35.9, lon: 104.2 },
+  { name: "Japan", lat: 36.2, lon: 138.3 },
+];
+// Places closer than this (in map units, about 11 degrees) share one numbered marker.
+const GROUP_RADIUS = 30;
+
+// Gathers nearby places into groups, each placed at the average of its members.
+function groupPlaces(places) {
+  const groups = [];
+  places.forEach((place) => {
+    const p = mapPoint(place);
+    const near = groups.find((g) => Math.hypot(g.x - p.x, g.y - p.y) < GROUP_RADIUS);
+    if (!near) { groups.push({ x: p.x, y: p.y, places: [place] }); return; }
+    near.places.push(place);
+    near.x = near.places.reduce((s, q) => s + mapPoint(q).x, 0) / near.places.length;
+    near.y = near.places.reduce((s, q) => s + mapPoint(q).y, 0) / near.places.length;
+  });
+  return groups;
+}
+
+// "65° N · 18° W" -> { lat: 65, lon: -18 }
+function parseCoords(text) {
+  const m = String(text).match(/([\d.]+)°\s*([NS])\D+([\d.]+)°\s*([EW])/);
+  if (!m) return null;
+  return { lat: Number(m[1]) * (m[2] === "S" ? -1 : 1), lon: Number(m[3]) * (m[4] === "W" ? -1 : 1) };
+}
+
+function mapPoint({ lat, lon }) {
+  return {
+    x: ((lon + 180) / 360) * MAP.width,
+    y: ((MAP.latTop - lat) / (MAP.latTop - MAP.latBottom)) * MAP.height,
+  };
+}
+
+function svgLine(ns, attrs) {
+  const l = document.createElementNS(ns, "line");
+  Object.entries(attrs).forEach(([k, v]) => l.setAttribute(k, v));
+  return l;
+}
+
+function setupTripMap() {
+  const fig = document.querySelector("[data-trip-map]");
+  if (!fig) return;
+  const pins = fig.querySelector(".map-pins");
+  const lines = fig.querySelector(".map-lines");
+  const ns = "http://www.w3.org/2000/svg";
+  const pct = (v, total) => `${((v / total) * 100).toFixed(2)}%`;
+
+  // Faint lines of latitude and longitude every 30 degrees, like a sea chart.
+  for (let lon = -150; lon <= 150; lon += 30) {
+    const { x } = mapPoint({ lat: 0, lon });
+    lines.appendChild(svgLine(ns, { x1: x, x2: x, y1: 0, y2: MAP.height, class: "graticule" }));
+  }
+  for (let lat = 60; lat >= -30; lat -= 30) {
+    const { y } = mapPoint({ lat, lon: 0 });
+    lines.appendChild(svgLine(ns, { x1: 0, x2: MAP.width, y1: y, y2: y, class: lat === 0 ? "graticule equator" : "graticule" }));
+  }
+
+  document.querySelectorAll(".trips .trip").forEach((li) => {
+    const stamp = li.querySelector(".trip-face");
+    const country = stamp.querySelector(".trip-country")?.textContent.trim() || "";
+    const coords = parseCoords(stamp.querySelector(".trip-coords")?.textContent);
+    if (!coords) return;
+    const p = mapPoint(coords);
+    const label = MAP_LABELS[country] || { dx: 10, dy: -10, side: "right" };
+    const lx = p.x + label.dx;
+    const ly = p.y + label.dy;
+    const ink = li.style.getPropertyValue("--stamp-ink") || "var(--ink)";
+    const plain = stamp.disabled; // no photos: shown on the map, but nothing to open
+
+    lines.appendChild(svgLine(ns, { x1: p.x, y1: p.y, x2: lx, y2: ly, class: "leader" }));
+
+    const pin = document.createElement(plain ? "span" : "button");
+    if (!plain) {
+      pin.type = "button";
+      pin.setAttribute("aria-label", `Open the ${country} album`);
+      pin.addEventListener("click", () => stamp.click());
+    }
+    pin.className = `map-pin${plain ? " is-plain" : ""}`;
+    pin.style.cssText = `left: ${pct(p.x, MAP.width)}; top: ${pct(p.y, MAP.height)}; --stamp-ink: ${ink}`;
+    pins.appendChild(pin);
+
+    const tag = document.createElement("span");
+    tag.className = `map-label map-label--${label.side}${plain ? " is-plain" : ""}`;
+    tag.setAttribute("aria-hidden", "true");
+    tag.style.cssText = `left: ${pct(lx, MAP.width)}; top: ${pct(ly, MAP.height)}; --stamp-ink: ${ink}`;
+    tag.textContent = country;
+    pins.appendChild(tag);
+  });
+
+  // Other places: a soft dot each, or one numbered marker for a cluster. Drawn under the favorite
+  // pins so those stay on top. Tapping toggles the name (or the list) on touch screens; hover and
+  // keyboard focus show it with a mouse or keyboard.
+  const groups = groupPlaces(OTHER_PLACES);
+  const closeAll = (except) => pins.querySelectorAll(".map-mark.is-open").forEach((m) => { if (m !== except) m.classList.remove("is-open"); });
+  groups.forEach((g) => {
+    const single = g.places.length === 1;
+    const mark = document.createElement("button");
+    mark.type = "button";
+    mark.className = `map-mark ${single ? "map-dot" : "map-group"}`;
+    mark.style.cssText = `left: ${pct(g.x, MAP.width)}; top: ${pct(g.y, MAP.height)}`;
+    const names = g.places.map((q) => q.name);
+    const title = single ? names[0] : (g.places[0].region || `${names.length} places`);
+    mark.setAttribute("aria-label", single ? names[0] : `${title}: ${names.join(", ")}`);
+    const card = document.createElement("span");
+    card.className = "map-card";
+    card.setAttribute("aria-hidden", "true");
+    card.innerHTML = single
+      ? escapeHtml(names[0])
+      : `<b>${escapeHtml(title)}</b>${names.map((n) => `<span>${escapeHtml(n)}</span>`).join("")}`;
+    if (!single) mark.insertAdjacentHTML("afterbegin", `<span class="map-count" aria-hidden="true">${names.length}</span>`);
+    mark.appendChild(card);
+    mark.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const open = mark.classList.toggle("is-open");
+      closeAll(mark);
+      if (!open) mark.blur();
+    });
+    pins.prepend(mark);
+  });
+  document.addEventListener("click", () => closeAll(null));
+
+  // Legend: only needed once other places are on the map.
+  if (groups.length) {
+    const legend = document.createElement("p");
+    legend.className = "map-legend";
+    legend.innerHTML = `<span><i class="key-pin" aria-hidden="true"></i>Favorite trips, with photo albums</span>` +
+      `<span><i class="key-dot" aria-hidden="true"></i>Other places I've been</span>` +
+      (groups.some((g) => g.places.length > 1) ? `<span><i class="key-group" aria-hidden="true">${Math.max(...groups.map((g) => g.places.length))}</i>Several places close together; tap to see them</span>` : "");
+    fig.querySelector("figcaption").before(legend);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  setupTripAlbums();
+  setupTripMap(); // after the albums, so stamps without photos are already marked
+});

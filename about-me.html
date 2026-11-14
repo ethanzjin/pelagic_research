@@ -22,8 +22,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&display=swap">
   <link rel="stylesheet" href="assets/css/style.css?v=20261108">
-  <link rel="stylesheet" href="assets/css/journal.css?v=20261114">
- <link rel="stylesheet" href="assets/css/about-me.css?v=20261113c">
+  <link rel="stylesheet" href="assets/css/journal.css?v=20261114c">
+ <link rel="stylesheet" href="assets/css/about-me.css?v=20261114g">
  <link rel="stylesheet" href="assets/css/music.css?v=20261114c">
 </head>
 <body>
@@ -147,6 +147,14 @@
       <h2>Favorite trips</h2>
       <p class="trips-hint">Tap a stamp to open that trip's photo album.</p>
     </div>
+    <figure class="trip-map" data-trip-map data-reveal>
+      <div class="map-sheet">
+        <img class="map-land" src="assets/img/world-land.svg?v=4" alt="" width="1000" height="372" loading="lazy" decoding="async">
+        <svg class="map-lines" viewBox="0 0 1000 372.2" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <div class="map-pins"></div>
+      </div>
+      <figcaption><span class="fig-no">Fig. 2</span> Where the stamps came from. Tap a pin to open that trip.</figcaption>
+    </figure>
     <ul class="trips">
       <li class="trip" data-reveal style="--tilt: 4deg; --stamp-ink: var(--sell)">
         <button type="button" class="trip-face trip--post">
@@ -243,9 +251,9 @@
 </footer>
 </div>
 <script src="assets/js/reports.js?v=20261113b"></script>
-<script src="assets/js/site.js?v=20261114"></script>
+<script src="assets/js/site.js?v=20261114c"></script>
 <script src="assets/js/music.js?v=20261114b"></script>
 <script src="assets/js/motion.js?v=20261108"></script>
-<script src="assets/js/trips.js?v=20261113o"></script>
+<script src="assets/js/trips.js?v=20261114e"></script>
 </body>
 </html>
