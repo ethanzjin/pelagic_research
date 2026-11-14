@@ -32,7 +32,7 @@ const TRIP_ALBUMS = {
     note: "",
     photos: [
       { src: "assets/img/trips/new-zealand/tekapo.jpg", w: 900, h: 1200, kind: "lake", caption: "Lake Tekapo and the Church of the Good Shepherd" },
-      { src: "assets/img/trips/new-zealand/forest.jpg", w: 900, h: 1200, kind: "land", caption: "Walking through the beech forest" },
+      { src: "assets/img/trips/new-zealand/forest.jpg", w: 900, h: 1200, kind: "land", caption: "Trekking through the Milford Track" },
       { src: "assets/img/trips/new-zealand/kaikoura.jpg", w: 900, h: 1200, kind: "coast", caption: "Limestone shelves on the Kaikōura coast" },
       { src: "assets/img/trips/new-zealand/mount-cook.jpg", w: 900, h: 1200, kind: "land", caption: "The road into Aoraki / Mount Cook" },
       { src: "assets/img/trips/new-zealand/wanaka.jpg", w: 900, h: 1200, kind: "lake", caption: "That Wānaka Tree" },
