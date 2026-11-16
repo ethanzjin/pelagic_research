@@ -145,7 +145,7 @@
   <div class="container">
     <div class="section-head" data-reveal>
       <h2>Favorite trips</h2>
-      <p class="trips-hint">Tap a stamp to open that trip's photo album.</p>
+      <p class="trips-hint">Tap a pin to open that trip's photo album.</p>
     </div>
     <figure class="trip-map" data-trip-map data-reveal>
       <div class="map-sheet">
@@ -153,9 +153,9 @@
         <svg class="map-lines" viewBox="0 0 1000 372.2" preserveAspectRatio="none" aria-hidden="true"></svg>
         <div class="map-pins"></div>
       </div>
-      <figcaption><span class="fig-no">Fig. 2</span> Where the stamps came from. Tap a pin to open that trip.</figcaption>
     </figure>
-    <ul class="trips">
+    <!-- Stamps are hidden: the map pins and albums still read their data from them. -->
+    <ul class="trips" hidden style="display: none">
       <li class="trip" data-reveal style="--tilt: 4deg; --stamp-ink: var(--sell)">
         <button type="button" class="trip-face trip--post">
           <svg class="trip-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M22 45q-2-20 8-40"/><path d="M23 38l-7-3M23 32l-8-4M24 26l-8-5M26 20l-7-6M28 14l-5-6"/><path d="M23 38l7-2M23 32l8-2M25 26l8-3M27 20l7-4M29 14l5-4"/></svg>
