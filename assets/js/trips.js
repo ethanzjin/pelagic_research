@@ -472,7 +472,7 @@ function setupTripMap() {
     legend.innerHTML = `<span><i class="key-pin" aria-hidden="true"></i>Favorite trips, with photo albums</span>` +
       `<span><i class="key-dot" aria-hidden="true"></i>Other places I've been</span>` +
       (groups.some((g) => g.places.length > 1) ? `<span><i class="key-group" aria-hidden="true">${Math.max(...groups.map((g) => g.places.length))}</i>Several places close together; tap to see them</span>` : "");
-    fig.querySelector("figcaption").before(legend);
+    fig.appendChild(legend);
   }
 }
 
