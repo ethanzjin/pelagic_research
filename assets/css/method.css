@@ -36,11 +36,11 @@
   .method-label { position: static; max-width: 420px; transform: none; }
 }
 
-/* ---------- The route: four waypoints on a dashed course line ---------- */
+/* ---------- The route: six waypoints on a dashed course line ---------- */
 
 .route {
   --mark: 56px;
-  position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-8);
+  position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-12) var(--space-8);
   list-style: none; margin: var(--space-8) 0 0; padding: 0;
 }
 /* The course line runs through the centre of every waypoint mark and draws itself left to right. */
@@ -69,6 +69,24 @@ html.js-reveal .route[data-reveal]:not(.is-revealed) .waypoint-mark { opacity: 0
 .route.is-revealed .waypoint:nth-child(2) .waypoint-mark { transition-delay: 400ms; }
 .route.is-revealed .waypoint:nth-child(3) .waypoint-mark { transition-delay: 750ms; }
 .route.is-revealed .waypoint:nth-child(4) .waypoint-mark { transition-delay: 1100ms; }
+.route.is-revealed .waypoint:nth-child(5) .waypoint-mark { transition-delay: 1400ms; }
+.route.is-revealed .waypoint:nth-child(6) .waypoint-mark { transition-delay: 1700ms; }
+/* Two rows of three on wide screens: each row gets its own course line, drawn from each mark to the next. */
+@media (min-width: 900px) {
+  .route::before { display: none; }
+  .waypoint:not(:nth-child(3n)):not(:last-child)::after {
+    content: ""; position: absolute; z-index: 0; left: calc(var(--mark) / 2); right: calc(-1 * var(--space-8)); top: calc(var(--mark) / 2);
+    border-top: 2px dashed var(--pen); opacity: .6; clip-path: inset(0 0 0 0); transition: clip-path 900ms var(--ease-out) 150ms;
+  }
+  html.js-reveal .route[data-reveal]:not(.is-revealed) .waypoint::after { clip-path: inset(0 100% 0 0); }
+}
+/* The four-step route on Write with us stays one row with a single course line. */
+@media (min-width: 900px) {
+  .route--four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .route--four::before { display: block; }
+  .route.route--four .waypoint:not(:last-child)::after { display: none; }
+}
+.route-note { margin: var(--space-8) 0 0; max-width: 60ch; font-style: italic; color: var(--ink-soft); }
 @media (hover: hover) and (pointer: fine) {
   .route:not([data-reveal]) .waypoint-mark { transition-delay: 0s; }
   .waypoint:hover .waypoint-mark { transform: rotate(-8deg) scale(1.06); }

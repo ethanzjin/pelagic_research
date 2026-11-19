@@ -31,8 +31,8 @@ function fillContactDetails() {
 // Checks the fields and returns the first problem, or null if the note is ready to send.
 function validate(data) {
   if (!data.message) return { field: "message", text: "Write a message before sending." };
-  if (!data.name) return { field: "name", text: "Add your name so I know who it's from." };
-  if (!EMAIL_PATTERN.test(data.email)) return { field: "email", text: "Add an email address I can reply to." };
+  if (!data.name) return { field: "name", text: "Add your name so we know who it's from." };
+  if (!EMAIL_PATTERN.test(data.email)) return { field: "email", text: "Add an email address we can reply to." };
   for (const [field, max] of Object.entries(MAX_LENGTHS)) {
     if (data[field].length > max) return { field, text: `That ${field} is too long.` };
   }
@@ -96,6 +96,10 @@ async function sendNote(data) {
 function setupPostcard() {
   const form = document.getElementById("postcard");
   if (!form) return;
+  // contact.html?topic=write (from the Write with us page) opens with that topic chosen.
+  const topic = new URLSearchParams(location.search).get("topic");
+  const preset = topic && form.querySelector(`option[data-topic="${CSS.escape(topic)}"]`);
+  if (preset) preset.selected = true;
   const status = form.querySelector(".postcard-status");
   const button = form.querySelector(".postcard-send");
 
@@ -133,7 +137,7 @@ function setupPostcard() {
       form.classList.add("is-sent");
       form.querySelectorAll("input, textarea, select").forEach((el) => (el.disabled = true));
       button.textContent = "Sent";
-      say(`Thanks, ${data.name.split(" ")[0]}. Your note is on its way, and I'll reply to ${data.email}.`, "ok");
+      say(`Thanks, ${data.name.split(" ")[0]}. Your note is on its way, and we'll reply to ${data.email}.`, "ok");
     } catch (err) {
       console.error("Contact form failed to send:", err);
       button.disabled = false;
@@ -143,7 +147,7 @@ function setupPostcard() {
         : err.name === "AbortError"
           ? "Sending took too long and was stopped, so your note may not have arrived."
           : "That didn't go through.";
-      say(`${why} You can email me directly at ${SITE.contactEmail}.`, "error");
+      say(`${why} You can email us directly at ${SITE.contactEmail}.`, "error");
     } finally {
       clearTimeout(slowNotice);
       form.classList.remove("is-sending");
