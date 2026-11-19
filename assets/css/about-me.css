@@ -114,7 +114,7 @@
    directions like a real sea. Each layer is a tile one wavelength wide, so the curls never
    stretch at any width and the drift loops seamlessly (transform only). */
 .wave-rule {
-  position: relative; height: 64px; margin-bottom: var(--space-12); overflow: hidden;
+  position: relative; height: 64px; margin-bottom: var(--space-8); overflow: hidden;
   clip-path: inset(0);
   transition: clip-path 1400ms var(--ease-out) 100ms, opacity var(--motion-300) var(--ease-out), transform var(--motion-300) var(--ease-out);
 }

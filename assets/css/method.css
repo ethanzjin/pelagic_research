@@ -36,29 +36,32 @@
   .method-label { position: static; max-width: 420px; transform: none; }
 }
 
-/* ---------- The route: six waypoints on a dashed course line ---------- */
+/* ---------- The route: waypoints on a dashed course line ----------
+   Methodology's six sections run down one line; the four steps on Write with us
+   run across one line on wide screens. */
 
 .route {
   --mark: 56px;
-  position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-12) var(--space-8);
-  list-style: none; margin: var(--space-8) 0 0; padding: 0;
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-8);
+  max-width: 46rem; list-style: none; margin: var(--space-8) 0 0; padding: 0;
 }
-/* The course line runs through the centre of every waypoint mark and draws itself left to right. */
+/* The course line runs through the centre of every waypoint mark and draws itself as it scrolls in. */
 .route::before {
-  content: ""; position: absolute; left: calc(var(--mark) / 2); right: 0; top: calc(var(--mark) / 2); height: 0;
-  border-top: 2px dashed var(--pen); opacity: .6;
+  content: ""; position: absolute; left: calc(var(--mark) / 2 - 1px); top: calc(var(--mark) / 2); bottom: calc(var(--mark) / 2);
+  border-left: 2px dashed var(--pen); opacity: .6;
   clip-path: inset(0 0 0 0); transition: clip-path 1600ms var(--ease-out) 150ms;
 }
-html.js-reveal .route[data-reveal]:not(.is-revealed)::before { clip-path: inset(0 100% 0 0); }
-.waypoint { position: relative; }
+html.js-reveal .route[data-reveal]:not(.is-revealed)::before { clip-path: inset(0 0 100% 0); }
+.waypoint { position: relative; display: grid; grid-template-columns: var(--mark) minmax(0, 1fr); column-gap: var(--space-6); align-items: start; }
 .waypoint-mark {
+  grid-row: 1 / span 3;
   position: relative; z-index: 1; display: grid; place-items: center; width: var(--mark); height: var(--mark);
   border: 1.5px solid var(--ink); border-radius: 50%; background: var(--paper); box-shadow: 0 0 0 5px var(--paper);
   font-family: var(--serif); font-style: italic; font-size: var(--step-2); line-height: 1; color: var(--ink);
   transition: transform var(--motion-300) var(--ease-out), opacity var(--motion-300) var(--ease-out);
 }
 .waypoint-icon {
-  display: block; width: 44px; height: 44px; margin: var(--space-6) 0 var(--space-3);
+  display: block; width: 36px; height: 36px; margin: 0 0 var(--space-2);
   fill: none; stroke: var(--pen); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
 }
 .waypoint-icon .dot { fill: var(--pen); stroke: none; }
@@ -66,39 +69,24 @@ html.js-reveal .route[data-reveal]:not(.is-revealed)::before { clip-path: inset(
 .waypoint p { margin: 0; color: var(--ink-soft); }
 /* Each mark pops onto the chart as the line reaches it. */
 html.js-reveal .route[data-reveal]:not(.is-revealed) .waypoint-mark { opacity: 0; transform: scale(.6); }
-.route.is-revealed .waypoint:nth-child(2) .waypoint-mark { transition-delay: 400ms; }
-.route.is-revealed .waypoint:nth-child(3) .waypoint-mark { transition-delay: 750ms; }
-.route.is-revealed .waypoint:nth-child(4) .waypoint-mark { transition-delay: 1100ms; }
-.route.is-revealed .waypoint:nth-child(5) .waypoint-mark { transition-delay: 1400ms; }
-.route.is-revealed .waypoint:nth-child(6) .waypoint-mark { transition-delay: 1700ms; }
-/* Two rows of three on wide screens: each row gets its own course line, drawn from each mark to the next. */
-@media (min-width: 900px) {
-  .route::before { display: none; }
-  .waypoint:not(:nth-child(3n)):not(:last-child)::after {
-    content: ""; position: absolute; z-index: 0; left: calc(var(--mark) / 2); right: calc(-1 * var(--space-8)); top: calc(var(--mark) / 2);
-    border-top: 2px dashed var(--pen); opacity: .6; clip-path: inset(0 0 0 0); transition: clip-path 900ms var(--ease-out) 150ms;
-  }
-  html.js-reveal .route[data-reveal]:not(.is-revealed) .waypoint::after { clip-path: inset(0 100% 0 0); }
-}
-/* The four-step route on Write with us stays one row with a single course line. */
-@media (min-width: 900px) {
-  .route--four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .route--four::before { display: block; }
-  .route.route--four .waypoint:not(:last-child)::after { display: none; }
-}
-.route-note { margin: var(--space-8) 0 0; max-width: 60ch; font-style: italic; color: var(--ink-soft); }
+.route.is-revealed .waypoint:nth-child(2) .waypoint-mark { transition-delay: 300ms; }
+.route.is-revealed .waypoint:nth-child(3) .waypoint-mark { transition-delay: 550ms; }
+.route.is-revealed .waypoint:nth-child(4) .waypoint-mark { transition-delay: 800ms; }
+.route.is-revealed .waypoint:nth-child(5) .waypoint-mark { transition-delay: 1050ms; }
+.route.is-revealed .waypoint:nth-child(6) .waypoint-mark { transition-delay: 1300ms; }
 @media (hover: hover) and (pointer: fine) {
   .route:not([data-reveal]) .waypoint-mark { transition-delay: 0s; }
   .waypoint:hover .waypoint-mark { transform: rotate(-8deg) scale(1.06); }
 }
-@media (max-width: 899.98px) {
-  .route { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
-  .route::before { left: calc(var(--mark) / 2 - 1px); right: auto; top: calc(var(--mark) / 2); bottom: calc(var(--mark) / 2); width: 0; height: auto; border-top: 0; border-left: 2px dashed var(--pen); }
-  html.js-reveal .route[data-reveal]:not(.is-revealed)::before { clip-path: inset(0 0 100% 0); }
-  .waypoint { display: grid; grid-template-columns: var(--mark) minmax(0, 1fr); column-gap: var(--space-6); }
-  .waypoint-mark { grid-row: 1 / span 3; }
-  .waypoint-icon { width: 36px; height: 36px; margin: 0 0 var(--space-2); }
+/* Four steps fit across a wide screen, so that route runs left to right. */
+@media (min-width: 900px) {
+  .route--four { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: none; }
+  .route--four::before { left: calc(var(--mark) / 2); right: 0; bottom: auto; height: 0; border-left: 0; border-top: 2px dashed var(--pen); }
+  html.js-reveal .route--four[data-reveal]:not(.is-revealed)::before { clip-path: inset(0 100% 0 0); }
+  .route--four .waypoint { display: block; }
+  .route--four .waypoint-icon { width: 44px; height: 44px; margin: var(--space-6) 0 var(--space-3); }
 }
+.route-note { margin: var(--space-8) 0 0; max-width: 46rem; font-style: italic; color: var(--ink-soft); }
 
 /* ---------- Ratings: a ruler of expected returns ---------- */
 
