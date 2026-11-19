@@ -286,8 +286,11 @@ p { margin: 0 0 1em; }
 
 /* ---------- Sections ---------- */
 
-section { padding: var(--space-28) 0; scroll-margin-top: var(--nav-h); }
+section { padding: var(--space-24) 0; scroll-margin-top: var(--nav-h); }
 section.tight { padding: var(--space-16) 0; }
+/* Two sections on the same background read as one stretch of page, so the second skips most of its top padding. */
+section.tight + section.tight { padding-top: 0; }
+.bg-shade + .bg-shade { padding-top: var(--space-8); }
 .bg-shade { background: var(--shade); }
 /* Deep water between the light sections: the process reads as one dark band. */
 .bg-deep { background: var(--deep); color: rgba(255, 255, 255, .76); }
