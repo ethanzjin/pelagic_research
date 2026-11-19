@@ -4,7 +4,9 @@
    To publish a new report:
      1. Drop the PDF into /reports  (e.g. reports/2026-11-ticker.pdf)
      2. Copy the template below to the TOP of the list and fill it in.
-     3. Commit & push. The homepage, archive and report
+     3. Run `node tools/build-pages.mjs` (builds the report's own page,
+        with its link preview, and the sitemap).
+     4. Commit & push. The homepage, archive and report
         page all update automatically.
 
    Field reference

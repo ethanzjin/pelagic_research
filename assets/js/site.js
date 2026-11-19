@@ -127,8 +127,9 @@ function reportNote(r) {
   return r.note ? `<p class="report-note">${esc(r.note)}</p>` : "";
 }
 
+// Each report has its own built page (tools/build-pages.mjs), so shared links preview that report.
 function reportUrl(r) {
-  return `report.html?id=${encodeURIComponent(r.id)}`;
+  return `report-${encodeURIComponent(r.id)}.html`;
 }
 
 /* ---------- components ---------- */
@@ -386,7 +387,8 @@ function renderArchive() {
 function renderReport() {
   const el = $("#report");
   if (!el) return;
-  const id = new URLSearchParams(location.search).get("id");
+  // Built report pages name their report on <html data-report>; report.html?id=… still works for old links.
+  const id = document.documentElement.dataset.report || new URLSearchParams(location.search).get("id");
   // Old ids listed in `aliases` still open the report, so links shared before a rename keep working.
   const r = reports.find((x) => x.id === id || (x.aliases || []).includes(id));
   const hero = $("#report-hero");

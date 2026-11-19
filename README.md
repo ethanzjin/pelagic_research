@@ -2,7 +2,7 @@
 
 Website for **Pelagic Research**, an independent equity research publication covering marine, energy and sustainability stocks. One to two reports per month.
 
-Plain HTML/CSS/JS: no build step and no dependencies. Open `index.html` in a browser, or serve the folder:
+Plain HTML/CSS/JS with no dependencies. One small script, `tools/build-pages.mjs` (Node), builds the per-report pages, sitemap, robots.txt and 404 page. Open `index.html` in a browser, or serve the folder:
 
 ```bash
 python3 -m http.server 8000   # then visit http://localhost:8000
@@ -12,11 +12,12 @@ python3 -m http.server 8000   # then visit http://localhost:8000
 
 1. Put the PDF in `reports/`, e.g. `reports/2026-11-xyz.pdf`.
 2. Open `assets/js/reports.js` and add an entry to the **top** of the list (a template and a field guide are in the comment at the top of that file).
-3. Commit and push.
+3. Run `node tools/build-pages.mjs`. It writes `report-<id>.html` (the page people share, with that report's title and summary in its link preview) and refreshes `sitemap.xml`. Run it again whenever you change a report or `report.html`.
+4. Commit and push.
 
 Optional `bear` and `bull` prices (with `price` and `target`) draw the scenario range chart on the cards and report page.
 
-The homepage "Latest report" card, the list of earlier reports, the research archive (with sector filters and search) and the report page (`report.html?id=<your-id>`) all update from that single file.
+The homepage "Latest report" card, the list of earlier reports, the research archive (with sector filters and search) and the report page (`report-<your-id>.html`) all update from that single file.
 
 ## Releasing style or script changes
 
