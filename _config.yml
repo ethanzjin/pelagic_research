@@ -1,0 +1,9 @@
+# GitHub Pages publishes this folder as the website. Jekyll copies every page and asset as-is
+# (none of them have front matter, so nothing is templated). It skips hidden files and folders
+# such as .claude/ and .ux-profile.md automatically; the list below hides the rest of the
+# repo's tooling from the public site.
+exclude:
+  - README.md
+  - skills-lock.json
+  - tools/
+  - graphify-out/
