@@ -31,6 +31,8 @@
      thesis       array of key thesis points (optional)
      risks        array of key risks (optional)
      pdf          path to the PDF, or "" if not uploaded yet
+     image        optional photo for this report's card (e.g. "assets/img/photos/report-xyz.jpg");
+                  otherwise the sector photo is used
      author       optional, e.g. "Ethan Jin"
      format       optional; "pitch" marks a slide-deck pitch rather than a
                   written report (adds a "Pitch deck" tag and button labels)
@@ -67,6 +69,7 @@ window.PELAGIC_REPORTS = [
   // Newest report goes here, at the top.
   {
     id: "2026-11-fslr",
+    image: "assets/img/photos/report-fslr.jpg",
     aliases: ["2026-11-fslr-pitch"],
     title: "First Solar: Policy Tailwinds Behind America's Largest Solar Maker",
     company: "First Solar",
@@ -107,6 +110,7 @@ window.PELAGIC_REPORTS = [
   },
   {
     id: "2026-10-ceg",
+    image: "assets/img/photos/report-ceg.jpg",
     title: "Constellation Energy: Upside Without Beating the Street",
     company: "Constellation Energy",
     ticker: "NASDAQ: CEG",
