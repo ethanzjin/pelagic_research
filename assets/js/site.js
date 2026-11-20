@@ -101,7 +101,7 @@ function hasPitch(r) {
 }
 
 function pitchLink(r, cls) {
-  return `<a class="${cls}" href="${esc(r.pitch.pdf)}" data-sheet="${esc(r.pitch.pdf)}" data-sheet-title="${esc(r.title)} (pitch deck)">View the original pitch deck</a>`;
+  return `<a class="${cls}" href="${readerUrl(r, "pitch")}">View the original pitch deck</a>`;
 }
 
 function pitchSection(r) {
@@ -128,8 +128,9 @@ function reportNote(r) {
 }
 
 // A one-page summary built by tools/build-pages.mjs from tools/tearsheets.json; shown when the report sets `tearsheet: true`.
+// Opens the tear-sheet PDF on the same reading page as the full report, so it keeps its one-page layout on phones.
 function tearsheetLink(r, cls) {
-  return r.tearsheet ? `<a class="${cls}" href="tearsheet-${encodeURIComponent(r.id)}.html">One-page tear sheet</a>` : "";
+  return r.tearsheet ? `<a class="${cls}" href="${readerUrl(r, "tearsheet")}">One-page tear sheet</a>` : "";
 }
 
 // Each report has its own built page (tools/build-pages.mjs), so shared links preview that report.
@@ -225,8 +226,13 @@ function reportCard(r) {
 }
 
 // Opens the PDF in a sheet (motion.js); without JavaScript it links to the file itself.
+// reader.html shows the PDF as paper pages, the same look as the one-page tear sheets.
+function readerUrl(r, doc) {
+  return `reader.html?id=${encodeURIComponent(r.id)}${doc ? `&amp;doc=${doc}` : ""}`;
+}
+
 function sheetButton(r) {
-  return `<a class="btn btn-primary" href="${esc(r.pdf)}" data-sheet="${esc(r.pdf)}" data-sheet-title="${esc(r.title)}">${isPitch(r) ? "View the pitch deck" : "Read the full report"}</a>`;
+  return `<a class="btn btn-primary" href="${readerUrl(r)}">${isPitch(r) ? "View the pitch deck" : "Read the full report"}</a>`;
 }
 
 // Empty states say what belongs here, why it's empty, and what to do next.

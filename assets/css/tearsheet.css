@@ -125,3 +125,18 @@ body { margin: 0; background: var(--desk); color: var(--ink); font-family: var(-
   .sheet { width: 8.5in; height: 11in; margin: 0; box-shadow: none; overflow: hidden; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* ---------- reader.html: a full report or pitch deck shown as paper pages ---------- */
+
+.reader-title {
+  flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: center;
+  font-family: var(--serif); font-style: italic; color: var(--ink-soft);
+}
+.reader-pages { display: grid; justify-items: center; gap: 20px; padding: 4px 8px 48px; }
+.reader-page {
+  display: block; width: min(8.5in, 100%); height: auto; background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .08), 0 12px 32px rgba(22, 24, 29, .12);
+}
+.reader-status { margin: 64px 16px; text-align: center; color: var(--muted); }
+.reader-status a { color: var(--pen); }
+@media screen and (max-width: 640px) { .reader-title { display: none; } }

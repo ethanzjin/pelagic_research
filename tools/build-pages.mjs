@@ -19,7 +19,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SITE = "https://pelagicresearch.org";
 const STATIC_PAGES = ["index.html", "research.html", "about.html", "about-me.html", "write.html", "contact.html"];
 const CURRENCY = { USD: "$", EUR: "€", GBP: "£", NOK: "NOK " };
-const TEARSHEET_CSS_VERSION = "20261120c"; // bump after editing assets/css/tearsheet.css
+const TEARSHEET_CSS_VERSION = "20261120d"; // bump after editing assets/css/tearsheet.css
 
 const read = (file) => readFileSync(join(ROOT, file), "utf8");
 const write = (file, text) => writeFileSync(join(ROOT, file), text);
