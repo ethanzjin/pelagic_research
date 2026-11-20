@@ -128,8 +128,9 @@ function reportNote(r) {
 }
 
 // A one-page summary built by tools/build-pages.mjs from tools/tearsheets.json; shown when the report sets `tearsheet: true`.
+// Opens the tear-sheet PDF on the same reading page as the full report, so it keeps its one-page layout on phones.
 function tearsheetLink(r, cls) {
-  return r.tearsheet ? `<a class="${cls}" href="tearsheet-${encodeURIComponent(r.id)}.html">One-page tear sheet</a>` : "";
+  return r.tearsheet ? `<a class="${cls}" href="${readerUrl(r, "tearsheet")}">One-page tear sheet</a>` : "";
 }
 
 // Each report has its own built page (tools/build-pages.mjs), so shared links preview that report.

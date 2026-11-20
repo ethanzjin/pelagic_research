@@ -8,6 +8,7 @@
    ========================================================= */
 
 const PDFJS_DIR = "assets/vendor/pdfjs/";
+const PAGE_CSS_WIDTH = 816; // 8.5in, the same width as the tear sheets
 
 function loadPdfjsLib() {
   return new Promise((resolve, reject) => {
@@ -29,15 +30,14 @@ function findDocument() {
   const reports = window.PELAGIC_REPORTS || [];
   const r = reports.find((x) => x.id === id || (x.aliases || []).includes(id));
   if (!r) return null;
-  const pitch = params.get("doc") === "pitch";
-  const pdf = pitch ? r.pitch && r.pitch.pdf : r.pdf;
-  if (!pdf) return null;
-  return {
-    pdf,
-    back: `report-${encodeURIComponent(r.id)}.html`,
-    title: pitch ? `${r.company} pitch deck` : r.title,
-    pageTitle: pitch ? `${r.company} pitch deck` : r.title,
+  const kind = params.get("doc");
+  const docs = {
+    pitch: { pdf: r.pitch && r.pitch.pdf, title: `${r.company} pitch deck` },
+    tearsheet: { pdf: r.tearsheet ? `reports/${r.id}-tearsheet.pdf` : "", title: `${r.company} tear sheet` },
   };
+  const chosen = docs[kind] || { pdf: r.pdf, title: r.title };
+  if (!chosen.pdf) return null;
+  return { pdf: chosen.pdf, back: `report-${encodeURIComponent(r.id)}.html`, title: chosen.title };
 }
 
 function showError(status, doc) {
@@ -58,7 +58,7 @@ async function renderReport() {
   const doc = findDocument();
   if (!doc) { showError(status, null); return; }
 
-  document.title = `${doc.pageTitle} | Pelagic Research`;
+  document.title = `${doc.title} | Pelagic Research`;
   document.querySelector("[data-reader-title]").textContent = doc.title;
   document.querySelector("[data-reader-back]").href = doc.back;
   document.querySelector("[data-reader-download]").href = doc.pdf;
@@ -67,20 +67,23 @@ async function renderReport() {
     const lib = await loadPdfjsLib();
     // isEvalSupported: false closes CVE-2024-4367 (script execution via a crafted font) in this PDF.js version.
     const pdf = await lib.getDocument({ url: doc.pdf, isEvalSupported: false }).promise;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const cssWidth = Math.min(pagesEl.clientWidth - 16, 816); // 816px = 8.5in, the tear sheet's width
+    // Every page keeps its full layout and is scaled to fit the screen, like a PDF app. On a phone that is
+    // small, so pages are drawn at 1.5x their 8.5in size whatever the screen: pinch-zooming stays sharp.
+    const pixelWidth = Math.max(Math.min(pagesEl.clientWidth, PAGE_CSS_WIDTH) * Math.min(window.devicePixelRatio || 1, 2), PAGE_CSS_WIDTH * 1.5);
+    const canvas = document.createElement("canvas");
     for (let n = 1; n <= pdf.numPages; n += 1) {
       const page = await pdf.getPage(n);
-      const scale = (cssWidth / page.getViewport({ scale: 1 }).width) * dpr;
-      const viewport = page.getViewport({ scale });
-      const canvas = document.createElement("canvas");
-      canvas.className = "reader-page";
+      const viewport = page.getViewport({ scale: pixelWidth / page.getViewport({ scale: 1 }).width });
       canvas.width = viewport.width;
       canvas.height = viewport.height;
-      canvas.setAttribute("role", "img");
-      canvas.setAttribute("aria-label", `Page ${n} of ${pdf.numPages}`);
-      pagesEl.append(canvas);
       await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+      // Each page becomes a compressed image, so an 11-page report doesn't hold 11 full-size canvases in memory.
+      const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.9));
+      const img = new Image(viewport.width, viewport.height);
+      img.className = "reader-page";
+      img.alt = `Page ${n} of ${pdf.numPages}`;
+      img.src = URL.createObjectURL(blob);
+      pagesEl.append(img);
       if (n === 1) status.remove();
     }
   } catch (err) {
