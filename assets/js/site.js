@@ -127,6 +127,11 @@ function reportNote(r) {
   return r.note ? `<p class="report-note">${esc(r.note)}</p>` : "";
 }
 
+// A one-page summary built by tools/build-pages.mjs from tools/tearsheets.json; shown when the report sets `tearsheet: true`.
+function tearsheetLink(r, cls) {
+  return r.tearsheet ? `<a class="${cls}" href="tearsheet-${encodeURIComponent(r.id)}.html">One-page tear sheet</a>` : "";
+}
+
 // Each report has its own built page (tools/build-pages.mjs), so shared links preview that report.
 function reportUrl(r) {
   return `report-${encodeURIComponent(r.id)}.html`;
@@ -407,7 +412,8 @@ function renderReport() {
     <a class="back-link" href="research.html">← All reports</a>
     <div class="meta">${issueTag(r)} ${sectorTag(r.sector)} ${formatTag(r)} ${sampleTag(r)}<span>${fmtDate(r.date)}</span>${r.author ? `<span>by ${esc(r.author)}</span>` : ""}</div>
     <h1>${esc(r.title)}</h1>
-    <p><span class="ticker">${esc(r.ticker)}</span> &nbsp;·&nbsp; ${esc(r.company)}</p>`;
+    <p><span class="ticker">${esc(r.ticker)}</span> &nbsp;·&nbsp; ${esc(r.company)}</p>
+    ${r.pdf ? `<div class="hero-actions report-hero-actions">${sheetButton(r)}${tearsheetLink(r, "btn btn-light")}</div>` : ""}`;
 
   const list = (items, cls = "") =>
     items && items.length ? `<ol class="thesis ${cls}">${items.map((t) => `<li>${esc(t)}</li>`).join("")}</ol>` : "";
@@ -429,6 +435,7 @@ function renderReport() {
                <div class="hero-actions">
                  ${sheetButton(r)}
                  <a class="more" href="${esc(r.pdf)}" download>Download PDF</a>
+                 ${tearsheetLink(r, "more")}
                </div>
              </div>`
           : emptyState({
@@ -455,6 +462,7 @@ function renderReport() {
           </div>
         </div>
         ${r.pdf ? `${sheetButton(r)}<a class="more center" href="${esc(r.pdf)}" download>Download PDF</a>` : ""}
+        ${tearsheetLink(r, "more center")}
         ${hasPitch(r) ? pitchLink(r, "more center") : ""}
         <p class="note">
           For information and education only. This is not investment advice. Read the

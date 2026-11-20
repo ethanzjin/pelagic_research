@@ -31,6 +31,8 @@
      thesis       array of key thesis points (optional)
      risks        array of key risks (optional)
      pdf          path to the PDF, or "" if not uploaded yet
+     tearsheet    optional; true once tools/tearsheets.json has this report's entry
+                  (adds a "One-page tear sheet" link; text must be copied from the PDF)
      image        optional photo for this report's card (e.g. "assets/img/photos/report-xyz.jpg");
                   otherwise the sector photo is used
      author       optional, e.g. "Ethan Jin"
@@ -69,6 +71,7 @@ window.PELAGIC_REPORTS = [
   // Newest report goes here, at the top.
   {
     id: "2026-11-fslr",
+    tearsheet: true,
     image: "assets/img/photos/report-fslr.jpg",
     aliases: ["2026-11-fslr-pitch"],
     title: "First Solar: Policy Tailwinds Behind America's Largest Solar Maker",
@@ -110,6 +113,7 @@ window.PELAGIC_REPORTS = [
   },
   {
     id: "2026-10-ceg",
+    tearsheet: true,
     image: "assets/img/photos/report-ceg.jpg",
     title: "Constellation Energy: Upside Without Beating the Street",
     company: "Constellation Energy",
