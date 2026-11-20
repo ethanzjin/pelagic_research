@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Report | Pelagic Research</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#ebe6d8">
+  <link rel="icon" type="image/png" href="assets/img/favicon.png?v=20261108">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png?v=20261108">
+  <link rel="stylesheet" href="assets/css/tearsheet.css?v=20261120d">
+</head>
+<body class="reader">
+  <!-- Reads a report PDF as paper pages, styled like the one-page tear sheets.
+       reader.html?id=<report id> opens the full report; add &doc=pitch for the pitch deck. -->
+  <nav class="ts-toolbar" aria-label="Report">
+    <a data-reader-back href="research.html">← Back to the report</a>
+    <span class="reader-title" data-reader-title></span>
+    <a class="ts-download" data-reader-download href="research.html" download>Download PDF</a>
+  </nav>
+  <main class="reader-pages" data-reader-pages aria-label="Report pages">
+    <p class="reader-status" role="status" data-reader-status>Loading the report…</p>
+  </main>
+  <script src="assets/js/reports.js?v=20261120b"></script>
+  <script src="assets/js/reader.js?v=20261120a"></script>
+</body>
+</html>
