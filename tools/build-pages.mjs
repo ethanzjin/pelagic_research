@@ -144,6 +144,12 @@ function longDate(iso) {
   return `${MONTHS[m - 1]} ${d}, ${y}`;
 }
 
+// The report title without a leading "Company:", since the company name is already the tear sheet's heading.
+function headline(r) {
+  const prefix = `${r.company}:`;
+  return r.title.startsWith(prefix) ? r.title.slice(prefix.length).trim() : r.title;
+}
+
 function tearsheetPage(r, t) {
   const points = (items, head, body) => items.map((p) => `<li><strong>${text(p[head])}</strong> ${text(p[body])}</li>`).join("\n          ");
   // Rating, target and upside already fill the rating box, so the key-data list skips them.
@@ -185,7 +191,7 @@ function tearsheetPage(r, t) {
     </header>
     <div class="ts-title">
       <h1>${text(r.company)}<span class="ts-ticker">${text(r.ticker)}</span></h1>
-      <p>${text(r.title)}${r.author ? ` · by ${text(r.author)}` : ""}</p>
+      <p>${text(headline(r))}${r.author ? ` · by ${text(r.author)}` : ""}</p>
     </div>
     <div class="ts-grid">
       <div>

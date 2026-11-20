@@ -502,3 +502,7 @@ canvas.snow { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 
 @keyframes term-tip-in { from { opacity: 0; margin-top: 4px; } }
 @media (prefers-reduced-motion: reduce) { .term-tip { animation: none !important; } }
 @media print { .term-btn { text-decoration: none; } .term-tip { display: none !important; } }
+
+/* Report header: the full report first, the one-page tear sheet beside it. */
+.report-hero-actions { gap: var(--space-3); margin-top: var(--space-6); }
+.report-hero-actions .btn-light { box-shadow: inset 0 0 0 1.5px var(--brand-deep); }

@@ -412,7 +412,8 @@ function renderReport() {
     <a class="back-link" href="research.html">← All reports</a>
     <div class="meta">${issueTag(r)} ${sectorTag(r.sector)} ${formatTag(r)} ${sampleTag(r)}<span>${fmtDate(r.date)}</span>${r.author ? `<span>by ${esc(r.author)}</span>` : ""}</div>
     <h1>${esc(r.title)}</h1>
-    <p><span class="ticker">${esc(r.ticker)}</span> &nbsp;·&nbsp; ${esc(r.company)}</p>`;
+    <p><span class="ticker">${esc(r.ticker)}</span> &nbsp;·&nbsp; ${esc(r.company)}</p>
+    ${r.pdf ? `<div class="hero-actions report-hero-actions">${sheetButton(r)}${tearsheetLink(r, "btn btn-light")}</div>` : ""}`;
 
   const list = (items, cls = "") =>
     items && items.length ? `<ol class="thesis ${cls}">${items.map((t) => `<li>${esc(t)}</li>`).join("")}</ol>` : "";
