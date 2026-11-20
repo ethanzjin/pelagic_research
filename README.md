@@ -12,7 +12,7 @@ python3 -m http.server 8000   # then visit http://localhost:8000
 
 1. Put the PDF in `reports/`, e.g. `reports/2026-11-xyz.pdf`.
 2. Open `assets/js/reports.js` and add an entry to the **top** of the list (a template and a field guide are in the comment at the top of that file).
-3. Run `node tools/build-pages.mjs`. It writes `report-<id>.html` (the page people share, with that report's title and summary in its link preview) and refreshes `sitemap.xml`. Run it again whenever you change a report or `report.html`.
+3. Run `node tools/build-pages.mjs`. It writes `report-<id>.html` (the page people share, with that report's title and summary in its link preview), draws the report's preview image in `assets/img/cards/` (needs Python with Pillow), and refreshes `sitemap.xml`. Run it again whenever you change a report or `report.html`.
 4. Commit and push.
 
 Optional `bear` and `bull` prices (with `price` and `target`) draw the scenario range chart on the cards and report page.

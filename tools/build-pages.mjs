@@ -4,11 +4,13 @@
 //   sitemap.xml       every page, for search engines
 //   robots.txt        points crawlers at the sitemap
 //   404.html          a site-styled "not found" page
+//   assets/img/cards/<id>.png  each report's link-preview image (drawn by tools/build-cards.py)
 //
 // Run it after adding or editing a report in assets/js/reports.js, then commit the output:
 //   node tools/build-pages.mjs
 
-import { readFileSync, writeFileSync, readdirSync, unlinkSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync, unlinkSync, existsSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { runInNewContext } from "node:vm";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -36,6 +38,19 @@ const attr = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;
 const text = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 const reportFile = (r) => `report-${r.id}.html`;
+const cardFile = (r) => `assets/img/cards/${r.id}.png`;
+
+// Draws the preview cards with Python + Pillow. If Python is missing, reports keep the generic card.
+function buildCards(reports) {
+  for (const python of ["python", "python3", "py"]) {
+    const run = spawnSync(python, [join(ROOT, "tools", "build-cards.py")], { input: JSON.stringify(reports), encoding: "utf8" });
+    if (run.error) continue; // this name is not installed; try the next
+    if (run.status !== 0) throw new Error(`tools/build-cards.py failed:\n${run.stderr}`);
+    process.stdout.write(run.stdout);
+    return;
+  }
+  console.warn("Python was not found, so the report preview cards were not redrawn.");
+}
 
 function upside(r) {
   if (typeof r.upside === "number") return r.upside;
@@ -71,6 +86,13 @@ function reportPage(template, r) {
   html = setHead(html, /<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${attr(description)}">`);
   html = setHead(html, /<meta property="og:type" content="[^"]*">/,
     `<meta property="og:type" content="article">\n  <meta property="og:url" content="${url}">\n  <link rel="canonical" href="${url}">`);
+  if (existsSync(join(ROOT, cardFile(r)))) {
+    const image = `${SITE}/${cardFile(r)}`;
+    const alt = attr(`${r.company} (${r.ticker}): ${callLine(r)}`);
+    html = setHead(html, /<meta property="og:image" content="[^"]*">/, `<meta property="og:image" content="${image}">`);
+    html = setHead(html, /<meta property="og:image:alt" content="[^"]*">/, `<meta property="og:image:alt" content="${alt}">`);
+    html = setHead(html, /<meta name="twitter:image" content="[^"]*">/, `<meta name="twitter:image" content="${image}">`);
+  }
   return html.replace("<!doctype html>", "<!doctype html>\n<!-- Built by tools/build-pages.mjs from report.html and assets/js/reports.js. Edit those, not this file. -->");
 }
 
@@ -119,6 +141,7 @@ function sitemap(reports) {
 function main() {
   const reports = loadReports();
   const template = read("report.html");
+  buildCards(reports);
 
   // Remove pages for reports that no longer exist, so renamed or deleted reports don't linger.
   const wanted = new Set(reports.map(reportFile));

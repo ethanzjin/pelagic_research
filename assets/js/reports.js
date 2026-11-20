@@ -101,7 +101,7 @@ window.PELAGIC_REPORTS = [
       pdf: "reports/2026-11-fslr-pitch.pdf",
       date: "2026-11-07",
       summary:
-        "Before this report, I made the case for First Solar as a slide-deck stock pitch on November 7, 2026, taking a Long position at the November 6 close of $201.14. The full report builds on that pitch with more detail on the business, policy and valuation.",
+        "This report started as a slide-deck stock pitch, which took a Long position at the November 6 close of $201.14. The full report builds on that pitch with more detail on the business, policy and valuation.",
     },
     author: "Ethan Jin",
   },
