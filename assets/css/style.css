@@ -710,7 +710,7 @@ html.js-reveal [data-reveal].is-revealed { opacity: 1; transform: none; }
 .site-footer a { color: rgba(255, 255, 255, .84); }
 .site-footer a:hover { color: #fff; }
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--space-8); }
-.footer-grid h4 { font-family: var(--sans); font-size: var(--text-secondary); line-height: 1.5; color: #fff; font-weight: 600; margin-bottom: var(--space-2); }
+.footer-grid h4, .footer-grid h2 { font-family: var(--sans); font-size: var(--text-secondary); line-height: 1.5; color: #fff; font-weight: 600; margin-bottom: var(--space-2); }
 .footer-grid ul { list-style: none; padding: 0; margin: 0; }
 .footer-grid li a { display: inline-flex; align-items: center; min-height: var(--hit); }
 .footer-grid p { max-width: 26em; }

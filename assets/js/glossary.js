@@ -90,6 +90,7 @@ function placeTip(wrap) {
   const tip = wrap.querySelector(".term-tip");
   tip.style.setProperty("--nudge", "0px");
   const box = tip.getBoundingClientRect();
+  if (!box.width) return; // not showing (closed tips are display: none)
   const gutter = 12;
   let nudge = 0;
   if (box.left < gutter) nudge = gutter - box.left;
