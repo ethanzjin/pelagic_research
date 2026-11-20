@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&display=swap">
   <link rel="stylesheet" href="assets/css/style.css?v=20261119a">
   <link rel="stylesheet" href="assets/css/journal.css?v=20261114c">
- <link rel="stylesheet" href="assets/css/about-me.css?v=20261119a">
+ <link rel="stylesheet" href="assets/css/about-me.css?v=20261120a">
  <link rel="stylesheet" href="assets/css/music.css?v=20261114e">
 </head>
 <body>
@@ -142,10 +142,14 @@
     </div>
   </div>
 </section>
-<section class="tight trips-section">
+<section class="tight trips-section" aria-labelledby="outside-head">
   <div class="container">
+    <div class="wave-rule" aria-hidden="true" data-reveal><div class="wave-track wave-back"></div><div class="wave-track wave-front"></div></div>
     <div class="section-head" data-reveal>
-      <h2>Favorite trips</h2>
+      <h2 id="outside-head">Outside research</h2>
+    </div>
+    <div class="section-head section-head--sub" data-reveal>
+      <h3>Favorite trips</h3>
       <p class="trips-hint">Tap a pin to open that trip's photo album.</p>
     </div>
     <figure class="trip-map" data-trip-map data-reveal>
@@ -210,8 +214,8 @@
 </section>
 <section class="tight songs-section" aria-labelledby="songs-head">
   <div class="container">
-    <div class="section-head" data-reveal>
-      <h2 id="songs-head">Favorite songs</h2>
+    <div class="section-head section-head--sub" data-reveal>
+      <h3 id="songs-head">Favorite songs</h3>
       <p class="trips-hint">Tap a record to play it.</p>
     </div>
     <ul class="records" data-songs></ul>

@@ -160,6 +160,9 @@ html.js-reveal .wave-rule[data-reveal]:not(.is-revealed) { clip-path: inset(0 10
 /* ---------- Favorite trips: ink passport stamps ---------- */
 
 .trips-section { padding-top: 0; }
+/* Favorite trips and songs sit under the "Outside research" heading, one level down. */
+.section-head--sub { margin-bottom: var(--space-6); }
+.section-head--sub h3 { margin: 0; font-size: var(--step-3); }
 /* Four to a row on a laptop, spread edge to edge, with every other stamp pressed a little
    lower so the page reads like a well-used passport rather than a grid. */
 .trips {
