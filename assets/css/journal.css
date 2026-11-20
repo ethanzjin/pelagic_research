@@ -476,3 +476,30 @@ canvas.snow { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 
   .now-list::before { left: var(--space-4); }
   .now-list > div { grid-template-columns: minmax(0, 1fr); gap: 2px; padding: var(--space-3) 0; }
 }
+
+/* ---------- Jargon tooltips on report pages (assets/js/glossary.js) ---------- */
+
+.term { position: relative; display: inline; }
+.term-btn {
+  display: inline; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: help;
+  text-decoration: underline dotted color-mix(in srgb, var(--pen) 70%, transparent); text-decoration-thickness: 1.5px; text-underline-offset: 3px;
+}
+.term-btn:focus-visible { outline: 2px solid var(--pen); outline-offset: 2px; border-radius: 2px; }
+.term-tip {
+  position: absolute; z-index: 30; left: 50%; top: calc(100% + 8px); width: min(18rem, calc(100vw - 32px));
+  padding: var(--space-3) var(--space-4); border: 1px solid var(--ink); border-radius: 4px; background: var(--raised);
+  box-shadow: 0 8px 24px rgba(22, 24, 29, .14);
+  font-family: var(--sans); font-size: var(--text-secondary); font-style: normal; font-weight: 400; line-height: 1.5; color: var(--ink-soft); text-align: left;
+  transform: translate(calc(-50% + var(--nudge, 0px)), 4px); opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity var(--motion-200) var(--ease-out), transform var(--motion-200) var(--ease-out), visibility 0s linear var(--motion-200);
+}
+.term-tip strong { display: block; margin-bottom: 2px; font-weight: 600; color: var(--ink); }
+.term.is-open .term-tip,
+.term-btn:focus-visible + .term-tip {
+  opacity: 1; visibility: visible; transform: translate(calc(-50% + var(--nudge, 0px)), 0); transition-delay: 0s;
+}
+@media (hover: hover) and (pointer: fine) {
+  .term:hover .term-tip { opacity: 1; visibility: visible; transform: translate(calc(-50% + var(--nudge, 0px)), 0); transition-delay: 0s; }
+}
+@media (prefers-reduced-motion: reduce) { .term-tip { transition: none; } }
+@media print { .term-btn { text-decoration: none; } .term-tip { display: none; } }
