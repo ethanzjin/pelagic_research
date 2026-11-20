@@ -1,0 +1,127 @@
+/* =========================================================
+   Tear sheet: a one-page summary of a report, sized for US Letter.
+   On screen it shows as a sheet of paper with a small toolbar; printed
+   (or saved as PDF by tools/build-pages.mjs) it is exactly one page.
+   ========================================================= */
+
+:root {
+  --paper: #fffdf7;
+  --desk: #ebe6d8;
+  --ink: #16181d;
+  --ink-soft: #3a3c42;
+  --muted: #625f57;
+  --pen: #2f35d6;
+  --rule: rgba(22, 24, 29, .16);
+  --shade: #f4f1e8;
+  --buy: #1d8348;
+  --accumulate: #4f7d12;
+  --hold: #9a6b00;
+  --sell: #c0392b;
+  --serif: "Newsreader", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--desk); color: var(--ink); font-family: var(--sans); }
+
+/* ---------- Screen: toolbar above a paper sheet ---------- */
+
+.ts-toolbar {
+  display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center;
+  max-width: 8.5in; margin: 0 auto; padding: 20px 16px 12px;
+  font-size: 15px;
+}
+.ts-toolbar a { color: var(--pen); text-decoration: none; }
+.ts-toolbar a:hover { text-decoration: underline; }
+.ts-toolbar .ts-download {
+  display: inline-block; padding: 9px 16px; border-radius: 999px; background: var(--ink); color: #fff;
+}
+.ts-toolbar .ts-download:hover { text-decoration: none; background: #000; }
+.ts-toolbar a:focus-visible { outline: 2px solid var(--pen); outline-offset: 3px; }
+
+.sheet {
+  width: 8.5in; min-height: 11in; margin: 0 auto 40px; padding: .45in .55in;
+  background: var(--paper); box-shadow: 0 1px 2px rgba(0, 0, 0, .08), 0 12px 32px rgba(22, 24, 29, .12);
+  font-size: 8.9pt; line-height: 1.4;
+}
+
+/* Narrow screens: the sheet reflows into one column instead of scrolling sideways. */
+@media screen and (max-width: 8.6in) {
+  .sheet { width: auto; min-height: 0; margin: 0 8px 24px; padding: 20px 18px; font-size: 13px; }
+  .ts-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .ts-scen table { font-size: 12px; }
+}
+
+/* ---------- Letterhead ---------- */
+
+.ts-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-bottom: 10px; border-bottom: 3px double var(--ink); }
+.ts-brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 9pt; letter-spacing: .28em; text-transform: uppercase; }
+.ts-brand img { width: 46px; height: auto; filter: brightness(0); }
+.ts-meta { font-family: var(--mono); font-size: 8pt; letter-spacing: .04em; color: var(--muted); text-align: right; }
+
+.ts-title { margin: 14px 0 12px; }
+.ts-title h1 { margin: 0; font-family: var(--serif); font-weight: 500; font-size: 24pt; line-height: 1.08; letter-spacing: -.01em; }
+.ts-title h1 .ts-ticker { font-family: var(--mono); font-size: 12pt; font-weight: 400; color: var(--pen); letter-spacing: 0; margin-left: 6px; vertical-align: middle; }
+.ts-title p { margin: 4px 0 0; font-family: var(--serif); font-style: italic; font-size: 12pt; color: var(--ink-soft); }
+
+/* ---------- Two columns: the argument, then the numbers ---------- */
+
+.ts-grid { display: grid; grid-template-columns: minmax(0, 1fr) 2.15in; gap: 22px; align-items: start; }
+
+.ts-intro { margin: 0 0 10px; font-family: var(--serif); font-size: 10.2pt; line-height: 1.4; color: var(--ink); }
+
+.ts-label {
+  margin: 14px 0 6px; padding-bottom: 3px; border-bottom: 1px solid var(--rule);
+  font-size: 7.4pt; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--muted);
+}
+.ts-points { list-style: none; margin: 0; padding: 0; }
+.ts-points li { margin: 0 0 7px; color: var(--ink-soft); }
+.ts-points li strong { color: var(--ink); font-weight: 600; }
+
+/* ---------- Side column ---------- */
+
+.ts-rating { padding: 10px 12px; border: 1.5px solid var(--ink); background: var(--shade); }
+.ts-rating .ts-small { display: block; font-size: 7.2pt; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+.ts-rating .ts-call { display: block; margin: 1px 0 6px; font-family: var(--serif); font-size: 22pt; line-height: 1.05; }
+.ts-rating .ts-call.buy { color: var(--buy); }
+.ts-rating .ts-call.accumulate { color: var(--accumulate); }
+.ts-rating .ts-call.hold { color: var(--hold); }
+.ts-rating .ts-call.sell { color: var(--sell); }
+.ts-rating .ts-target { display: flex; justify-content: space-between; gap: 8px; font-family: var(--serif); font-size: 12pt; }
+
+.ts-data { margin: 10px 0 0; }
+.ts-data div { display: flex; justify-content: space-between; gap: 10px; padding: 2px 0; border-bottom: 1px solid var(--rule); font-size: 8.2pt; }
+.ts-data dt { color: var(--muted); }
+.ts-data dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); }
+
+.ts-lens { margin-top: 10px; padding: 8px 10px; border-left: 3px solid var(--pen); background: rgba(47, 53, 214, .05); font-size: 8.4pt; color: var(--ink-soft); }
+.ts-lens .ts-small { display: block; margin-bottom: 3px; font-size: 7.2pt; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--pen); }
+
+/* ---------- Scenario table in the side column ---------- */
+
+.ts-scen { margin-top: 4px; }
+.ts-scen table { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 8.2pt; font-variant-numeric: tabular-nums; }
+.ts-scen th, .ts-scen td { padding: 2px 4px; text-align: right; }
+.ts-scen thead th { font-size: 7pt; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); border-bottom: 1.5px solid var(--ink); }
+.ts-scen .ts-row-label th { padding-top: 5px; text-align: left; font-size: 7.4pt; font-weight: 400; color: var(--muted); }
+.ts-scen tbody tr:not(.ts-row-label) td { border-bottom: 1px solid var(--rule); }
+.ts-scen td.base, .ts-scen th.base { background: var(--shade); font-weight: 600; }
+.ts-source { margin: 4px 0 0; font-size: 7pt; line-height: 1.35; color: var(--muted); }
+
+/* ---------- Footer ---------- */
+
+.ts-foot { margin-top: 14px; padding-top: 8px; border-top: 3px double var(--ink); display: flex; justify-content: space-between; gap: 16px; font-size: 7.2pt; line-height: 1.4; color: var(--muted); }
+.ts-foot p { margin: 0; max-width: 5.2in; }
+.ts-foot .ts-link { font-family: var(--mono); color: var(--ink); white-space: nowrap; }
+
+/* ---------- Print: one Letter page, no toolbar ---------- */
+
+@page { size: letter; margin: 0; }
+@media print {
+  body { background: #fff; }
+  .ts-toolbar { display: none; }
+  .sheet { width: 8.5in; height: 11in; margin: 0; box-shadow: none; overflow: hidden; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

@@ -1,0 +1,81 @@
+{
+  "_about": "Tear-sheet content, one entry per report id. Every sentence and figure is copied from that report's PDF (page 1 summary and key data, the scenario exhibit, and the risks section); only line-break hyphens and [n] citation markers were removed. tools/build-pages.mjs turns each entry into tearsheet-<id>.html and reports/<id>-tearsheet.pdf.",
+  "2026-11-fslr": {
+    "intro": "FSLR is America’s leading photovoltaic (PV) solar technology manufacturing company, and the only U.S. headquartered company among the world’s largest solar manufacturers. Unlike its foreign competitors, FSLR’s modules contain 0% polysilicon and primarily consist of cadmium telluride (CdTe), reducing exposure to harsh tariffs and Foreign Entity of Concern (FEOC) classifications. We rate FSLR a Buy with a 12-month base-case target of $234.72, representing 36.9% upside on its November 13, 2026 closing price.",
+    "summary": [
+      { "lead": "FSLR is the one large-scale U.S. module maker which has minimal reliance on Chinese trade.", "body": "Because their modules don’t contain any polysilicon, FSLR doesn’t engage in trade with Xinjiang, which manufactures 35 – 45% of the world’s polysilicon. This allows FSLR’s costs to be minimally impacted by Section 232, Section 301, and FEOC rules while similar-scale competitors are heavily affected." },
+      { "lead": "Incentive programs provide multi-year earnings tailwinds through 2029.", "body": "In FSLR’s two most relevant markets, the United States and India, government production credits provide FSLR with per watt credits for simply manufacturing solar modules in domestic American and Indian facilities." },
+      { "lead": "Prices of solar modules are expected to rise.", "body": "From December 4, 2026, onwards, solar module imports must be priced at a minimum of $0.38/W and $0.22/W for cells plus a 15% tariff. For U.S. module manufacturers who import solar cells, Roth Capital Partners estimates that post-232 pricing may rise to $0.40/W. FSLR makes its own thin-film modules in the U.S., so their asking price can rise while costs stay flat." },
+      { "lead": "We rate FSLR a Buy with a 12-month target of $234.72 and 36.9% implied upside.", "body": "We used a forward EV/EBITDA multiple for our price target, with DCF valuation and comparable analysis as cross checks." }
+    ],
+    "lens": "FSLR has a strong commitment to “Responsible Solar.” Their modules are manufactured through a vertically integrated process that uses less energy and water than conventional polysilicon modules.",
+    "keyData": [
+      ["Rating", "Buy"],
+      ["12-month target", "$234.72"],
+      ["Price (as of 11/13/2026)", "$171.39"],
+      ["Implied upside", "36.9%"],
+      ["Bear / bull", "$156.00 / $280.21"],
+      ["Market cap", "$18.42B"],
+      ["Shares outstanding", "107.5M"],
+      ["Enterprise value", "$17.12B"],
+      ["52-week range", "$165.90 – $320.95"],
+      ["FY26 volume guide", "16.0 – 17.0 GW"],
+      ["Backlog", "44.0 GW"]
+    ],
+    "scenarios": {
+      "title": "Scenario analysis",
+      "rows": [
+        ["2028E EBITDA", "$2,653M", "$3,658M", "$3,869M"],
+        ["Valuation multiple", "5.0x", "5.94x", "6.88x"],
+        ["Target price", "$156.00", "$234.72", "$280.21"],
+        ["Upside / downside", "(9.0%)", "36.9%", "63.5%"]
+      ],
+      "source": "Sources: Pelagic Estimates, S&P Capital IQ"
+    },
+    "risks": [
+      { "title": "Post-credit pricing and margins (High)", "body": "The 45X credit steps down to 75% in 2030, 50% in 2031, and 25% in 2032, before vanishing altogether in 2033. The backlog is priced at $0.31/W, and against a production cost of $0.267/W, that leaves an ex-credit margin of only $0.04/W." },
+      { "title": "Demand after developer credits end (Medium-High)", "body": "New solar projects may find it hard to qualify for investment and production tax credits. Backlog fell by 1.1 GW last quarter while 4.1 GW were shipped, which implies about 3 GW of net new orders." },
+      { "title": "Multiple compression (Medium)", "body": "Every 1.0x above or below is worth about $34 a share. If it falls to our 5.0x bear case, base-case EBITDA still gives about $203, 18% above the current price, so the upside would shrink but not disappear." },
+      { "title": "Policy and trade (Low)", "body": "The 45X credit was about 82% of gross profit in the first nine months of 2026, so any change to it, to the FEOC rules that govern which customers claim credits, or to the Section 232 import floor would hit FSLR’s earnings directly." }
+    ]
+  },
+  "2026-10-ceg": {
+    "intro": "Constellation Energy is the largest nuclear operator in the U.S. Its contracted base earnings are set to grow about 23% a year, from roughly $7.65 per share in 2027 to $11.40 - $11.90 in 2029, as new Power Purchase Agreements (PPAs), uprates, and credit-backed revenue come online. However, the market has already noticed. We rate CEG an Accumulate. Our 2027 and 2028 EPS estimates sit about 8% and 14% below consensus, but our upside doesn’t rely on earnings beating the Street. Instead, the stock currently trades at 18.8x our 2028E EPS, below its 23x forward P/E median since 2022. Combined with the recent pullback, a return to 22.5x implies about 20% upside.",
+    "summary": [
+      { "lead": "Long-term contracts are turning Constellation’s nuclear output into stable, long-dated revenue.", "body": "CEG has recently signed long-term agreements with Amazon (190 MW, Sept 2026), Google (890 MW, Oct 2026), Meta (1,121 MW, Jun 2025), and Microsoft (835 MW, Sept 2024): some of the market’s most ambitious hyperscalers." },
+      { "lead": "Zero Emission Credit (ZEC) policies are providing Constellation with a stable earnings floor.", "body": "New York recently renewed their Zero Emission Credit Program to 2049. However, such policies don’t have such longevity in other key states. Illinois, where CEG hosts six nuclear plants, currently features two programs: ZECs and Carbon Mitigation Credits (CMCs) for five of CEG’s Illinois plants. Both programs expire in 2027, and renewal is uncertain." },
+      { "lead": "Contracted base earnings are set to compound at around 23% per year.", "body": "Base EPS is expected to rise from roughly $7.65 in 2027 to $11.40 - $11.90 in 2029." },
+      { "lead": "We rate CEG an Accumulate, with a 12-month target of $329.63.", "body": "With a five-year median forward P/E ratio of about 23x, we apply a 22.5x multiple to our 2028E EPS to get our target share price. This is a ~47% premium to VST’s 15.3x multiple, which we attribute to CEG’s larger nuclear fleet and breadth of hyperscaler relationships." }
+    ],
+    "lens": "Constellation Energy is the nation’s largest producer of clean and reliable energy. It generates 10% of the United States’ emissions-free electricity with a capacity factor exceeding 94%.",
+    "keyData": [
+      ["Rating", "Accumulate"],
+      ["12-month target", "$329.63"],
+      ["Price (as of 10/15/2026)", "$275.00"],
+      ["Upside to target", "+19.9%"],
+      ["Market cap", "$97.4B"],
+      ["Enterprise value", "$121.4B"],
+      ["52-week range", "$228.63 – $412.70"],
+      ["Bear / bull range", "$239.58 – $408.00"],
+      ["2028E adjusted EPS", "$14.65"],
+      ["P/E on 2028E EPS", "18.8x"],
+      ["Net debt (6/30/26)", "$24.0B"]
+    ],
+    "scenarios": {
+      "title": "Scenario analysis",
+      "rows": [
+        ["2028E adjusted EPS", "$13.31", "$14.65", "$16.32"],
+        ["Valuation multiple", "18x", "22.5x", "25x"],
+        ["Target price", "$239.58", "$329.63", "$408.00"],
+        ["Upside / downside", "-12.88%", "+19.90%", "+48.36%"]
+      ],
+      "source": "Source: GuruFocus. Pelagic Calculations. Price of $275.00 is as of October 15, 2026."
+    },
+    "risks": [
+      { "title": "Power prices are volatile.", "body": "CEG’s Q2 earnings presentation states that sensitivity is about $0.45 of EPS per $1 / MWh. At 22.5x, each $1 / MWh miss is worth about $10 per share." },
+      { "title": "Policy support is uncertain.", "body": "While New York ZECs have been extended until 2049, Illinois support ends in 2027 and the §45U credit runs only through 2032 and shrinks when power prices are high." },
+      { "title": "Leverage is high.", "body": "After the Calpine acquisition, net debt rose by 348.57% to $24.0B, so the stock is highly exposed to interest rates and any miss in cash flow." },
+      { "title": "Execution on growth.", "body": "Delays in restarts and uprates happen, and projects can take years to get approved. A delay moves earnings out in time, which could affect stock prices in key years like 2028 and 2029." }
+    ]
+  }
+}

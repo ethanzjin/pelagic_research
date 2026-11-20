@@ -13,12 +13,13 @@ import { readFileSync, writeFileSync, readdirSync, unlinkSync, existsSync } from
 import { spawnSync } from "node:child_process";
 import { runInNewContext } from "node:vm";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SITE = "https://pelagicresearch.org";
 const STATIC_PAGES = ["index.html", "research.html", "about.html", "about-me.html", "write.html", "contact.html"];
 const CURRENCY = { USD: "$", EUR: "€", GBP: "£", NOK: "NOK " };
+const TEARSHEET_CSS_VERSION = "20261120c"; // bump after editing assets/css/tearsheet.css
 
 const read = (file) => readFileSync(join(ROOT, file), "utf8");
 const write = (file, text) => writeFileSync(join(ROOT, file), text);
@@ -131,6 +132,147 @@ function notFoundPage(template) {
   return html.replace("<!doctype html>", "<!doctype html>\n<!-- Built by tools/build-pages.mjs. Edit that script, not this file. -->");
 }
 
+/* ---------- Tear sheets: tools/tearsheets.json -> tearsheet-<id>.html -> reports/<id>-tearsheet.pdf ---------- */
+
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const SECTORS = { marine: "Marine", energy: "Energy", sustainability: "Sustainability" };
+const tearsheetFile = (r) => `tearsheet-${r.id}.html`;
+const tearsheetPdf = (r) => `reports/${r.id}-tearsheet.pdf`;
+
+function longDate(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  return `${MONTHS[m - 1]} ${d}, ${y}`;
+}
+
+function tearsheetPage(r, t) {
+  const points = (items, head, body) => items.map((p) => `<li><strong>${text(p[head])}</strong> ${text(p[body])}</li>`).join("\n          ");
+  // Rating, target and upside already fill the rating box, so the key-data list skips them.
+  const inBox = (k) => /^(rating|12-month target)$|upside/i.test(k);
+  const data = t.keyData.filter(([k]) => !inBox(k))
+    .map(([k, v]) => `<div><dt>${text(k)}</dt><dd>${text(v)}</dd></div>`).join("\n          ");
+  // Each scenario row's label sits on its own line above its three figures, so the table fits the side column.
+  const rows = t.scenarios.rows.map(([label, bear, base, bull]) =>
+    `<tr class="ts-row-label"><th colspan="3" scope="colgroup">${text(label)}</th></tr>
+            <tr><td>${text(bear)}</td><td class="base">${text(base)}</td><td>${text(bull)}</td></tr>`).join("\n            ");
+  const ratingClass = String(r.rating || "").toLowerCase().replace(/\s+/g, "-");
+  const target = t.keyData.find(([k]) => /^12-month target$/i.test(k))?.[1] || "";
+  const upside = t.keyData.find(([k]) => /upside/i.test(k))?.[1] || "";
+  const reportUrl = `${SITE}/${reportFile(r)}`;
+  return `<!doctype html>
+<!-- Built by tools/build-pages.mjs from tools/tearsheets.json and assets/js/reports.js. Edit those, not this file. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${text(r.company)} tear sheet | Pelagic Research</title>
+  <meta name="description" content="${attr(`One-page summary of the Pelagic Research report on ${r.company} (${r.ticker}): ${callLine(r)}.`)}">
+  <link rel="canonical" href="${reportUrl}">
+  <link rel="icon" type="image/png" href="assets/img/favicon.png?v=20261108">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&display=swap">
+  <link rel="stylesheet" href="assets/css/tearsheet.css?v=${TEARSHEET_CSS_VERSION}">
+</head>
+<body>
+  <nav class="ts-toolbar" aria-label="Tear sheet">
+    <a href="${reportFile(r)}">← Back to the full report</a>
+    <a class="ts-download" href="${tearsheetPdf(r)}" download>Download PDF</a>
+  </nav>
+  <main class="sheet">
+    <header class="ts-head">
+      <span class="ts-brand"><img src="assets/img/mark-white.png" alt="" width="46" height="22">Pelagic Research</span>
+      <span class="ts-meta">TEAR SHEET · ${text((SECTORS[r.sector] || "").toUpperCase())}<br>${text(longDate(r.date).toUpperCase())}</span>
+    </header>
+    <div class="ts-title">
+      <h1>${text(r.company)}<span class="ts-ticker">${text(r.ticker)}</span></h1>
+      <p>${text(r.title)}${r.author ? ` · by ${text(r.author)}` : ""}</p>
+    </div>
+    <div class="ts-grid">
+      <div>
+        <p class="ts-intro">${text(t.intro)}</p>
+        <h2 class="ts-label">Investment summary</h2>
+        <ul class="ts-points">
+          ${points(t.summary, "lead", "body")}
+        </ul>
+        <h2 class="ts-label">Key risks</h2>
+        <ul class="ts-points">
+          ${points(t.risks, "title", "body")}
+        </ul>
+      </div>
+      <aside>
+        <div class="ts-rating">
+          <span class="ts-small">Rating</span>
+          <span class="ts-call ${attr(ratingClass)}">${text(r.rating)}</span>
+          <span class="ts-small">12-month target</span>
+          <span class="ts-target"><span>${text(target)}</span><span>${text(upside)}</span></span>
+        </div>
+        <dl class="ts-data">
+          ${data}
+        </dl>
+        <section class="ts-scen" aria-label="${attr(t.scenarios.title)}">
+          <h2 class="ts-label">${text(t.scenarios.title)}</h2>
+          <table>
+            <thead><tr><th scope="col">Bear</th><th scope="col" class="base">Base</th><th scope="col">Bull</th></tr></thead>
+            <tbody>
+            ${rows}
+            </tbody>
+          </table>
+          <p class="ts-source">${text(t.scenarios.source)}</p>
+        </section>
+        <div class="ts-lens"><span class="ts-small">Pelagic Lens</span>${text(t.lens)}</div>
+      </aside>
+    </div>
+    <footer class="ts-foot">
+      <p>Excerpted from the full Pelagic Research report, which includes all sources and the author's disclosures. For information and education only; this is not investment advice, an offer, or a solicitation to buy or sell any security.</p>
+      <span class="ts-link">${reportUrl.replace("https://", "")}</span>
+    </footer>
+  </main>
+</body>
+</html>
+`;
+}
+
+// Saves a page as a PDF with a locally installed Edge or Chrome. Returns false if neither is installed.
+function printPdf(htmlFile, pdfFile) {
+  const browsers = [
+    "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+    "C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe",
+    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/usr/bin/google-chrome",
+  ];
+  const browser = browsers.find((b) => existsSync(b));
+  if (!browser) return false;
+  const profile = join(ROOT, "tools", ".print-profile");
+  const run = spawnSync(browser, [
+    "--headless=new", "--disable-gpu", "--no-pdf-header-footer", "--virtual-time-budget=10000",
+    `--user-data-dir=${profile}`, `--print-to-pdf=${join(ROOT, pdfFile)}`,
+    pathToFileURL(join(ROOT, htmlFile)).href,
+  ], { encoding: "utf8", timeout: 120000 });
+  if (run.status !== 0 || !existsSync(join(ROOT, pdfFile))) {
+    throw new Error(`Saving ${pdfFile} failed:\n${run.stderr || run.error}`);
+  }
+  return true;
+}
+
+function buildTearsheets(reports) {
+  const all = JSON.parse(read("tools/tearsheets.json"));
+  const built = new Set();
+  let printed = 0;
+  for (const r of reports) {
+    const t = all[r.id];
+    if (!t) continue;
+    write(tearsheetFile(r), tearsheetPage(r, t));
+    if (printPdf(tearsheetFile(r), tearsheetPdf(r))) printed += 1;
+    built.add(tearsheetFile(r));
+  }
+  for (const f of readdirSync(ROOT)) {
+    if (/^tearsheet-[a-z0-9-]+\.html$/.test(f) && !built.has(f)) unlinkSync(join(ROOT, f));
+  }
+  if (printed < built.size) console.warn("Edge or Chrome was not found, so tear-sheet PDFs were not saved.");
+  return built.size;
+}
+
 function sitemap(reports) {
   const today = new Date().toISOString().slice(0, 10);
   const entry = (path, lastmod) => `  <url><loc>${SITE}/${path === "index.html" ? "" : path}</loc><lastmod>${lastmod}</lastmod></url>`;
@@ -149,6 +291,8 @@ function main() {
     if (/^report-[a-z0-9-]+\.html$/.test(f) && !wanted.has(f)) unlinkSync(join(ROOT, f));
   }
   for (const r of reports) write(reportFile(r), reportPage(template, r));
+  const sheets = buildTearsheets(reports);
+  console.log(`Built ${sheets} tear sheets.`);
   write("404.html", notFoundPage(template));
   write("sitemap.xml", sitemap(reports));
   write("robots.txt", `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
