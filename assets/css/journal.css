@@ -209,7 +209,7 @@ html.js-reveal .zone[data-reveal]:not(.is-revealed)::before { transform: scaleX(
 /* Earlier reports: a lighter band between hairlines, so the table reads as its own section */
 #latest-section { padding-bottom: var(--space-16); }
 .bg-ledger { background-color: var(--raised); border-block: 1px solid var(--line); }
-.bg-ledger .ledger-row:hover { background: rgba(46, 68, 166, .05); }
+
 
 /* ---------- Latest entry: the article and its index card ---------- */
 
@@ -267,29 +267,75 @@ html.js-reveal [data-reveal].is-revealed .stamp { transition-delay: 200ms; }
 html.js-reveal [data-reveal]:not(.is-revealed) .range-gap { transform: scaleX(0); }
 html.js-reveal [data-reveal].is-revealed .range-gap { transition-delay: 150ms; }
 
-/* ---------- Earlier entries: a ruled ledger ---------- */
+/* ---------- Earlier reports: one ruled row per report, with its photo and the call ---------- */
 
 .ledger { border-top: 2px solid var(--ink); }
-.ledger-head, .ledger-row {
-  display: grid; grid-template-columns: 64px 150px minmax(0, 1fr) 120px 80px; gap: var(--space-4);
-  align-items: baseline; padding: var(--space-4) var(--space-3);
+.ledger-row {
+  position: relative; display: grid; grid-template-columns: 160px minmax(0, 1fr) 260px 24px; gap: var(--space-8);
+  align-items: center; padding: var(--space-6) 0; color: inherit; border-bottom: 1px solid var(--line);
 }
-.ledger-head { padding-block: var(--space-2); border-bottom: 1px solid var(--ink); font-size: var(--text-meta); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-.ledger-head span:last-child, .ledger-upside { text-align: right; }
-.ledger-row { position: relative; color: inherit; border-bottom: 1px solid var(--line); transition: background-color var(--motion-150) ease; }
-.ledger-row:hover { color: inherit; text-decoration: none; background: rgba(46, 68, 166, .05); }
+.ledger-row:hover { color: inherit; text-decoration: none; }
 .ledger-row:hover .ledger-company { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
-.ledger-date { font-size: var(--text-secondary); color: var(--muted); }
-.ledger-company { display: block; font-family: var(--serif); font-size: var(--step-2); font-weight: 500; line-height: 1.2; }
-.ledger-company .ticker { font-size: var(--text-meta); color: var(--muted); }
-.ledger-title { display: block; margin-top: var(--space-1); font-size: var(--text-secondary); line-height: 1.5; color: var(--ink-soft); }
-.ledger-rating { font-size: var(--text-secondary); }
-.ledger-upside { font-family: var(--serif); font-size: var(--step-1); }
-@media (max-width: 767.98px) {
-  .ledger-head { display: none; }
-  .ledger-row { grid-template-columns: 1fr auto; grid-template-areas: "no rating" "main main" "date upside"; row-gap: var(--space-2); padding-inline: 0; }
-  .ledger-no { grid-area: no; } .ledger-rating { grid-area: rating; text-align: right; }
-  .ledger-main { grid-area: main; } .ledger-date { grid-area: date; } .ledger-upside { grid-area: upside; }
+
+/* the report photo as a small mounted plate, sepia until hovered, like the sector plates */
+.ledger-plate {
+  position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; border: 1px solid var(--ink); background: var(--shade);
+}
+.ledger-plate img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform var(--motion-300) var(--ease-out); }
+.ledger-plate::after {
+  content: ""; position: absolute; inset: 0; background: #b59d72; mix-blend-mode: color; opacity: .6;
+  transition: opacity var(--motion-300) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ledger-row:hover .ledger-plate::after { opacity: 0; }
+  .ledger-row:hover .ledger-plate img { transform: scale(1.04); }
+}
+
+.ledger-main { display: grid; gap: var(--space-2); min-width: 0; }
+.ledger-meta {
+  display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); align-items: baseline;
+  font-size: var(--text-meta); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+}
+.ledger-meta .issue { color: var(--ink); }
+.ledger-company { display: block; font-family: var(--serif); font-size: var(--step-3); font-weight: 500; line-height: 1.15; }
+.ledger-company .ticker { font-family: var(--mono); font-size: var(--text-meta); color: var(--muted); letter-spacing: .04em; }
+.ledger-title { display: block; font-family: var(--serif); font-size: var(--step-1); line-height: 1.4; color: var(--ink-soft); }
+
+/* the call: rating, upside to target, and where price and target sit in the bear-to-bull range */
+.ledger-call {
+  display: grid; grid-template-columns: auto 1fr; gap: var(--space-3) var(--space-4); align-items: center;
+  padding-left: var(--space-6); border-left: 1px solid var(--line);
+}
+.ledger-call .stamp { justify-self: start; margin: 0; font-size: var(--text-meta); }
+.ledger-upside { justify-self: end; text-align: right; font-family: var(--serif); font-size: var(--step-2); line-height: 1.1; font-variant-numeric: lining-nums tabular-nums; }
+.ledger-upside.up { color: var(--buy); }
+.ledger-upside.down { color: var(--sell); }
+.ledger-upside small { display: block; white-space: nowrap; margin-top: 2px; font-family: var(--sans); font-size: var(--text-meta); color: var(--muted); }
+.ledger-range { grid-column: 1 / -1; position: relative; display: block; height: 14px; margin-top: var(--space-1); }
+.lr-track { position: absolute; left: 0; right: 0; top: 6px; height: 2px; background: var(--line); }
+.lr-gap { position: absolute; top: 5px; height: 4px; background: var(--brand); }
+.lr-price {
+  position: absolute; top: 2px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%;
+  background: var(--raised); border: 2px solid var(--brand-deep);
+}
+.lr-target { position: absolute; top: 0; width: 2px; height: 14px; margin-left: -1px; background: var(--ink); }
+.lr-ends {
+  grid-column: 1 / -1; display: flex; justify-content: space-between; margin-top: calc(var(--space-2) * -1);
+  font-size: var(--text-meta); color: var(--muted); font-variant-numeric: tabular-nums;
+}
+
+.ledger-go { font-family: var(--serif); font-size: var(--step-3); color: var(--muted); transition: transform var(--motion-150) var(--ease-out), color var(--motion-150) ease; }
+.ledger-row:hover .ledger-go { color: var(--brand-deep); transform: translateX(4px); }
+
+@media (max-width: 899.98px) {
+  .ledger-row { grid-template-columns: 120px minmax(0, 1fr); gap: var(--space-4) var(--space-6); }
+  .ledger-call { grid-column: 1 / -1; padding: var(--space-4) 0 0; border-left: 0; border-top: 1px dashed var(--line); }
+  .ledger-go { display: none; }
+}
+@media (max-width: 479.98px) {
+  .ledger-row { grid-template-columns: 88px minmax(0, 1fr); align-items: start; }
+  .ledger-company { font-size: var(--step-2); }
+  .ledger-title { font-size: var(--text-body); }
 }
 
 /* ---------- Cards and plates (sectors, archive) ---------- */
