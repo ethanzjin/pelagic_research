@@ -14,9 +14,12 @@ python3 -m http.server 8000   # then visit http://localhost:8000
 2. Open `assets/js/reports.js` and add an entry to the **top** of the list (a template and a field guide are in the comment at the top of that file).
 3. Run `node tools/build-pages.mjs`. It writes `report-<id>.html` (the page people share, with that report's title and summary in its link preview), draws the report's preview image in `assets/img/cards/` (needs Python with Pillow), and refreshes `sitemap.xml`. Run it again whenever you change a report or `report.html`.
 4. Optional tear sheet: add the report's entry to `tools/tearsheets.json` (copy the summary, key data, scenario table and risks straight from the PDF) and set `tearsheet: true` on the report. The build then writes `tearsheet-<id>.html` and a one-page `reports/<id>-tearsheet.pdf` (saved with Edge or Chrome).
-5. Commit and push.
+5. Run `node tools/check-site.mjs` and fix anything marked ✗. It checks report data, every link and file, that the built pages, feed and sitemap are current, that every page loads the same script and style versions, and that each tear sheet matches its report PDF word for word and fits on one page. It never changes files.
+6. Commit and push.
 
 Report pages also underline finance terms and show a short definition on hover or tap. The definitions live in `assets/js/glossary.js`; add an entry there when a new report uses a term that isn't covered.
+
+The build also writes `feed.xml`, an RSS feed of every report (linked in the footer), and adds search-engine structured data to each report page.
 
 Optional `bear` and `bull` prices (with `price` and `target`) draw the scenario range chart on the cards and report page.
 

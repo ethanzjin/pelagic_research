@@ -3,6 +3,7 @@
 //                     search engines see that report's title and summary
 //   sitemap.xml       every page, for search engines
 //   robots.txt        points crawlers at the sitemap
+//   feed.xml          RSS feed of every report, for feed readers and auto-posting tools
 //   404.html          a site-styled "not found" page
 //   assets/img/cards/<id>.png  each report's link-preview image (drawn by tools/build-cards.py)
 //
@@ -94,7 +95,65 @@ function reportPage(template, r) {
     html = setHead(html, /<meta property="og:image:alt" content="[^"]*">/, `<meta property="og:image:alt" content="${alt}">`);
     html = setHead(html, /<meta name="twitter:image" content="[^"]*">/, `<meta name="twitter:image" content="${image}">`);
   }
+  html = setHead(html, /<\/head>/, `${structuredData(r, url, description)}</head>`);
   return html.replace("<!doctype html>", "<!doctype html>\n<!-- Built by tools/build-pages.mjs from report.html and assets/js/reports.js. Edit those, not this file. -->");
+}
+
+// schema.org data that search engines read: what the page is, who wrote and published it, and which company it covers.
+function structuredData(r, url, description) {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: r.title,
+    description,
+    datePublished: r.date,
+    dateModified: r.date,
+    url,
+    mainEntityOfPage: url,
+    image: existsSync(join(ROOT, cardFile(r))) ? [`${SITE}/${cardFile(r)}`] : [`${SITE}/assets/img/og-card.png`],
+    author: r.author
+      ? { "@type": "Person", name: r.author, url: `${SITE}/about-me.html` }
+      : { "@id": `${SITE}/#org` },
+    publisher: { "@type": "Organization", "@id": `${SITE}/#org`, name: "Pelagic Research", logo: { "@type": "ImageObject", url: `${SITE}/assets/img/apple-touch-icon.png` } },
+    about: { "@type": "Corporation", name: r.company, tickerSymbol: r.ticker },
+  };
+  const json = JSON.stringify(data, null, 2).replace(/</g, "\\u003c"); // can't close the <script> early
+  return `  <script type="application/ld+json">\n${json}\n  </script>\n`;
+}
+
+/* ---------- RSS feed: every report, newest first ---------- */
+
+const rssDate = (iso) => new Date(`${iso}T12:00:00Z`).toUTCString();
+
+function feed(reports) {
+  const sorted = reports.slice().sort((a, b) => (a.date < b.date ? 1 : -1));
+  const items = sorted.map((r) => {
+    const url = `${SITE}/${reportFile(r)}`;
+    const call = callLine(r);
+    const description = [call && `${call}.`, r.summary].filter(Boolean).join(" ");
+    return `    <item>
+      <title>${text(r.title)}</title>
+      <link>${url}</link>
+      <guid isPermaLink="true">${url}</guid>
+      <pubDate>${rssDate(r.date)}</pubDate>${r.author ? `\n      <dc:creator>${text(r.author)}</dc:creator>` : ""}
+      <category>${text(r.sector || "")}</category>
+      <description>${text(description)}</description>
+    </item>`;
+  });
+  const latest = sorted[0] ? rssDate(sorted[0].date) : new Date().toUTCString();
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Pelagic Research</title>
+    <link>${SITE}/</link>
+    <atom:link href="${SITE}/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>Independent equity research on marine, energy and sustainability companies.</description>
+    <language>en-us</language>
+    <lastBuildDate>${latest}</lastBuildDate>
+${items.join("\n")}
+  </channel>
+</rss>
+`;
 }
 
 // The 404 page can be served at any path, so every relative link and asset becomes root-absolute.
@@ -302,7 +361,8 @@ function main() {
   write("404.html", notFoundPage(template));
   write("sitemap.xml", sitemap(reports));
   write("robots.txt", `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
-  console.log(`Built ${reports.length} report pages, 404.html, sitemap.xml and robots.txt.`);
+  write("feed.xml", feed(reports));
+  console.log(`Built ${reports.length} report pages, 404.html, sitemap.xml, robots.txt and feed.xml.`);
 }
 
 main();

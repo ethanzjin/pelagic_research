@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Pelagic Research</title>
+    <link>https://pelagicresearch.org/</link>
+    <atom:link href="https://pelagicresearch.org/feed.xml" rel="self" type="application/rss+xml"/>
+    <description>Independent equity research on marine, energy and sustainability companies.</description>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 13 Nov 2026 12:00:00 GMT</lastBuildDate>
+    <item>
+      <title>First Solar: Policy Tailwinds Behind America's Largest Solar Maker</title>
+      <link>https://pelagicresearch.org/report-2026-11-fslr.html</link>
+      <guid isPermaLink="true">https://pelagicresearch.org/report-2026-11-fslr.html</guid>
+      <pubDate>Fri, 13 Nov 2026 12:00:00 GMT</pubDate>
+      <dc:creator>Ethan Jin</dc:creator>
+      <category>energy</category>
+      <description>Buy · 12-month target $234.72 (+36.9%). First Solar is the only U.S.-headquartered company among the world's largest solar manufacturers, and its cadmium telluride modules use no polysilicon, which shields it from Section 232, Section 301 and FEOC rules that hit its rivals. U.S. and Indian manufacturing credits support earnings through 2029, and import price floors should lift module prices while its costs stay flat. Applying 5.94x NTM EV/EBITDA to our 2028E EBITDA gives a 12-month target of $234.72, 36.9% above the $171.39 close on November 13, 2026.</description>
+    </item>
+    <item>
+      <title>Constellation Energy: Upside Without Beating the Street</title>
+      <link>https://pelagicresearch.org/report-2026-10-ceg.html</link>
+      <guid isPermaLink="true">https://pelagicresearch.org/report-2026-10-ceg.html</guid>
+      <pubDate>Fri, 16 Oct 2026 12:00:00 GMT</pubDate>
+      <dc:creator>Ethan Jin</dc:creator>
+      <category>energy</category>
+      <description>Accumulate · 12-month target $329.63 (+19.9%). Constellation is the largest nuclear operator in the U.S., with contracted base earnings set to grow about 23% a year through 2029. Our 2027 and 2028 EPS estimates sit about 8% and 14% below consensus, but our upside doesn't depend on beating the Street: at 18.8x our 2028E EPS, the stock trades below its roughly 23x median forward P/E since 2022, and a return to 22.5x implies about 20% upside.</description>
+    </item>
+  </channel>
+</rss>
