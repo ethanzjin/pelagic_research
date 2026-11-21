@@ -283,7 +283,7 @@ function renderLatest() {
         <div><dt>Upside</dt><dd class="upside ${up.cls}">${up.text}</dd></div>
         <div><dt>12-mo target</dt><dd>${fmtMoney(r.target, r.currency)}</dd></div>
         <div><dt>Reference price</dt><dd>${fmtMoney(r.price, r.currency)}</dd></div>
-        <div><dt>Logged</dt><dd>${fmtDate(r.date)}</dd></div>
+        <div><dt>Published</dt><dd>${parseDate(r.date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</dd></div>
       </dl>
       ${scenarioRange(r)}
     </div>`;
@@ -297,23 +297,42 @@ function renderRecent() {
   $("#recent-section").hidden = !list.length;
   // A ledger (on the homepage) lists entries as ruled rows; anywhere else they stay cards.
   el.innerHTML = el.classList.contains("ledger")
-    ? `<div class="ledger-head" aria-hidden="true"><span>No.</span><span>Logged</span><span>Company</span><span>Rating</span><span>Upside</span></div>${list.map(ledgerRow).join("")}`
+    ? list.map(ledgerRow).join("")
     : list.map(reportCard).join("");
 }
 
-// One ruled line of the report log: issue, date, company and title, rating, upside.
+// One row of earlier reports: a photo plate, issue and date, company and title, the rating,
+// and a small bear-to-bull bar with today's price and the target marked on it.
+function ledgerRange(r) {
+  if (![r.bear, r.bull, r.price, r.target].every(isNum) || r.bull <= r.bear) return "";
+  const at = (v) => `${Math.min(100, Math.max(0, ((v - r.bear) / (r.bull - r.bear)) * 100)).toFixed(1)}%`;
+  const lo = Math.min(r.price, r.target), hi = Math.max(r.price, r.target);
+  return `<span class="ledger-range" aria-hidden="true">
+      <span class="lr-track"></span>
+      <span class="lr-gap" style="left:${at(lo)};right:calc(100% - ${at(hi)})"></span>
+      <span class="lr-price" style="left:${at(r.price)}"></span>
+      <span class="lr-target" style="left:${at(r.target)}"></span>
+    </span>
+    <span class="lr-ends" aria-hidden="true"><span>Bear ${fmtMoney(r.bear, r.currency)}</span><span>Bull ${fmtMoney(r.bull, r.currency)}</span></span>`;
+}
+
 function ledgerRow(r) {
   const up = fmtUpside(r);
+  const photo = reportPhoto(r);
   return `
     <a class="ledger-row" href="${reportUrl(r)}" data-reveal>
-      <span class="ledger-no">${issueTag(r)}</span>
-      <span class="ledger-date">${fmtDate(r.date)}</span>
+      <span class="ledger-plate">${photo ? `<img src="${esc(photo)}" alt="" width="160" height="120" loading="lazy">` : ""}</span>
       <span class="ledger-main">
+        <span class="ledger-meta">${issueTag(r)}<span>${fmtDate(r.date)}</span><span>${esc(SECTORS[r.sector] || r.sector || "")}</span></span>
         <span class="ledger-company">${esc(r.company)} <span class="ticker">${esc(r.ticker)}</span></span>
-        <span class="ledger-title">${esc(r.title)}</span>
+        <span class="ledger-title">${esc(String(r.title).replace(r.company + ": ", ""))}</span>
       </span>
-      <span class="ledger-rating"><span class="rating ${ratingClass(r.rating)}">${esc(r.rating || "Not Rated")}</span></span>
-      <span class="ledger-upside upside ${up.cls}">${up.text}</span>
+      <span class="ledger-call">
+        <span class="stamp ${ratingClass(r.rating)}"><span class="visually-hidden">Rating: </span>${esc(r.rating || "Not Rated")}</span>
+        <span class="ledger-upside upside ${up.cls}">${up.text}<small>to ${fmtMoney(r.target, r.currency)} target</small></span>
+        ${ledgerRange(r)}
+      </span>
+      <span class="ledger-go" aria-hidden="true">›</span>
     </a>`;
 }
 
