@@ -283,7 +283,7 @@ function renderLatest() {
         <div><dt>Upside</dt><dd class="upside ${up.cls}">${up.text}</dd></div>
         <div><dt>12-mo target</dt><dd>${fmtMoney(r.target, r.currency)}</dd></div>
         <div><dt>Reference price</dt><dd>${fmtMoney(r.price, r.currency)}</dd></div>
-        <div><dt>Logged</dt><dd>${fmtDate(r.date)}</dd></div>
+        <div><dt>Published</dt><dd>${parseDate(r.date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</dd></div>
       </dl>
       ${scenarioRange(r)}
     </div>`;
@@ -297,7 +297,7 @@ function renderRecent() {
   $("#recent-section").hidden = !list.length;
   // A ledger (on the homepage) lists entries as ruled rows; anywhere else they stay cards.
   el.innerHTML = el.classList.contains("ledger")
-    ? `<div class="ledger-head" aria-hidden="true"><span>No.</span><span>Logged</span><span>Company</span><span>Rating</span><span>Upside</span></div>${list.map(ledgerRow).join("")}`
+    ? `<div class="ledger-head" aria-hidden="true"><span>No.</span><span>Date</span><span>Company</span><span>Rating</span><span>Upside</span></div>${list.map(ledgerRow).join("")}`
     : list.map(reportCard).join("");
 }
 
