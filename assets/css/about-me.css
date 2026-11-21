@@ -52,7 +52,7 @@
   transition: transform var(--motion-300) var(--ease-out);
   animation: photo-drop 700ms var(--ease-out) 150ms backwards;
 }
-.polaroid img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; filter: saturate(.92) contrast(1.02); }
+.polaroid img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; filter: saturate(1.06) contrast(1.02); }
 .polaroid figcaption { padding: var(--space-3) 0 var(--space-4); text-align: center; font-family: var(--serif); font-style: italic; font-size: var(--text-body); line-height: 1.4; color: var(--ink-soft); }
 .polaroid::before, .polaroid::after {
   content: ""; position: absolute; top: -12px; width: 92px; height: 26px; z-index: 1;
@@ -92,7 +92,7 @@
   position: relative; max-width: 46rem;
   padding: var(--line-h) var(--space-8) var(--line-h) calc(var(--space-12) + var(--space-4));
   background-color: var(--notepaper);
-  background-image: repeating-linear-gradient(to bottom, transparent 0 calc(var(--line-h) - 1px), rgba(66, 72, 237, .17) calc(var(--line-h) - 1px) var(--line-h));
+  background-image: repeating-linear-gradient(to bottom, transparent 0 calc(var(--line-h) - 1px), rgba(46, 68, 166, .16) calc(var(--line-h) - 1px) var(--line-h));
   background-position: 0 -7px; /* drops each rule just under the text's baseline */
   border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--stack);
 }
@@ -128,7 +128,7 @@ html.js-reveal .wave-rule[data-reveal]:not(.is-revealed) { clip-path: inset(0 10
 }
 .wave-front {
   top: 14px; left: 0; right: -120px; height: 48px;
-  background-image: url(../img/wave-front.svg); background-size: 120px 48px;
+  background-image: url(../img/wave-front.svg?v=2); background-size: 120px 48px;
   animation: swell-left 11s linear infinite;
 }
 @keyframes swell-left { to { transform: translate3d(-120px, 0, 0); } }
@@ -177,7 +177,7 @@ html.js-reveal .wave-rule[data-reveal]:not(.is-revealed) { clip-path: inset(0 10
   display: grid; place-items: center; align-content: center; gap: 2px;
   padding: var(--space-3); text-align: center; color: var(--stamp-ink, var(--ink));
   border: 2px solid currentColor; outline: 1px solid currentColor; outline-offset: 4px;
-  opacity: .86; transform: rotate(var(--tilt, 0deg));
+  opacity: .96; transform: rotate(var(--tilt, 0deg));
   transition: transform var(--motion-200) var(--ease-out), opacity var(--motion-150) var(--ease-out);
 }
 .trip--round { width: 156px; height: 156px; border-radius: 50%; }
@@ -312,7 +312,7 @@ button.trip-face.is-plain { cursor: default; }
 .trip-map { margin: var(--space-4) 0 var(--space-12); }
 .map-sheet {
   position: relative; aspect-ratio: 1000 / 372.2; padding: 0;
-  background-color: var(--notepaper); border: 1px solid var(--ink); border-radius: var(--radius); box-shadow: var(--stack);
+  background-color: #e3edf7; /* open sea */ border: 1px solid var(--ink); border-radius: var(--radius); box-shadow: var(--stack);
   overflow: hidden;
 }
 .map-land, .map-lines { position: absolute; inset: 0; width: 100%; height: 100%; }

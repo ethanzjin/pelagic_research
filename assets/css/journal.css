@@ -27,7 +27,7 @@
   --pen: var(--brand-deep);
   --warm: #b4472e;           /* the one warm accent: section rules and issue numbers */
   --warm-light: #f2a184;     /* the same accent on the deep-blue bands */  /* annotations, like a blue field pen */
-  --margin-red: rgba(192, 57, 43, .55); /* the red rule on an index card */
+  --margin-red: rgba(180, 71, 46, .6); /* the red rule on an index card, in the brick accent */
 
   --serif: "Newsreader", "Iowan Old Style", Georgia, "Times New Roman", serif;
   --display: var(--serif);
