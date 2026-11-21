@@ -24,7 +24,9 @@
   /* accent: a deep ink blue, a little darker than the logo's #4248ED, for a print-research feel */
   --brand: #2e44a6;
   --brand-deep: #263a92;
-  --pen: var(--brand-deep);  /* annotations, like a blue field pen */
+  --pen: var(--brand-deep);
+  --warm: #b4472e;           /* the one warm accent: section rules and issue numbers */
+  --warm-light: #f2a184;     /* the same accent on the deep-blue bands */  /* annotations, like a blue field pen */
   --margin-red: rgba(192, 57, 43, .55); /* the red rule on an index card */
 
   --serif: "Newsreader", "Iowan Old Style", Georgia, "Times New Roman", serif;
@@ -57,7 +59,7 @@ h4 { font-family: var(--sans); }
   font-family: var(--sans); font-size: var(--text-meta); font-weight: 600; line-height: 1.4;
   letter-spacing: .12em; text-transform: uppercase;
 }
-.issue { font-family: var(--mono); font-size: var(--text-meta); font-weight: 500; letter-spacing: .04em; color: var(--muted); white-space: nowrap; }
+.issue { font-family: var(--mono); font-size: var(--text-meta); font-weight: 500; letter-spacing: .04em; color: var(--warm); white-space: nowrap; }
 .fig-no { font-family: var(--sans); font-size: var(--text-meta); font-weight: 600; font-style: normal; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .stat .value, .upside, .range b, .kv span:last-child, .specimen dd { font-variant-numeric: lining-nums tabular-nums; }
 .stat .value { font-family: var(--serif); font-weight: 500; letter-spacing: -.01em; }
@@ -167,7 +169,7 @@ h1.is-split .word { display: inline-block; animation: word-rise 700ms var(--ease
 }
 /* the margin rule draws itself in when the section arrives */
 .zone::before {
-  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: currentColor;
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--warm);
   transform-origin: 0 50%; transition: transform 700ms var(--ease-out) 100ms;
 }
 html.js-reveal .zone[data-reveal]:not(.is-revealed)::before { transform: scaleX(0); }
@@ -175,6 +177,7 @@ html.js-reveal .zone[data-reveal]:not(.is-revealed)::before { transform: scaleX(
 .zone-depth { font-family: var(--serif); font-size: var(--step-3); line-height: 1.1; font-variant-numeric: lining-nums tabular-nums; }
 .zone-note { font-size: var(--text-secondary); line-height: 1.4; color: var(--muted); }
 .bg-deep .zone, .contact-band .zone { color: #fff; }
+.bg-deep .zone::before, .contact-band .zone::before { background: var(--warm-light); }
 .bg-deep .zone-note, .contact-band .zone-note { color: var(--brand-light); }
 .contact-band .zone-note { color: #fff; opacity: .8; }
 
@@ -277,17 +280,12 @@ html.js-reveal [data-reveal].is-revealed .range-gap { transition-delay: 150ms; }
 .ledger-row:hover { color: inherit; text-decoration: none; }
 .ledger-row:hover .ledger-company { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
 
-/* the report photo as a small mounted plate, sepia until hovered, like the sector plates */
+/* the report photo as a small mounted plate; it eases in a touch on hover */
 .ledger-plate {
   position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; border: 1px solid var(--ink); background: var(--shade);
 }
 .ledger-plate img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform var(--motion-300) var(--ease-out); }
-.ledger-plate::after {
-  content: ""; position: absolute; inset: 0; background: #b59d72; mix-blend-mode: color; opacity: .6;
-  transition: opacity var(--motion-300) var(--ease-out);
-}
 @media (hover: hover) and (pointer: fine) {
-  .ledger-row:hover .ledger-plate::after { opacity: 0; }
   .ledger-row:hover .ledger-plate img { transform: scale(1.04); }
 }
 
@@ -296,7 +294,7 @@ html.js-reveal [data-reveal].is-revealed .range-gap { transition-delay: 150ms; }
   display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); align-items: baseline;
   font-size: var(--text-meta); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
 }
-.ledger-meta .issue { color: var(--ink); }
+.ledger-meta .issue { color: var(--warm); }
 .ledger-company { display: block; font-family: var(--serif); font-size: var(--step-3); font-weight: 500; line-height: 1.15; }
 .ledger-company .ticker { font-family: var(--mono); font-size: var(--text-meta); color: var(--muted); letter-spacing: .04em; }
 .ledger-title { display: block; font-family: var(--serif); font-size: var(--step-1); line-height: 1.4; color: var(--ink-soft); }
@@ -343,14 +341,6 @@ html.js-reveal [data-reveal].is-revealed .range-gap { transition-delay: 150ms; }
 .sector, .report-card { border: 1px solid var(--ink); border-radius: var(--radius); background: var(--raised); }
 .sector:hover, .report-card:hover { border-color: var(--ink); box-shadow: var(--stack); }
 .sector-media, .card-media { position: relative; margin: var(--space-3) var(--space-3) 0; border: 1px solid var(--line); }
-/* Sepia-toned like a printed plate; the colour comes back on hover (an opacity fade, not a filter). */
-.sector-media::after, .card-media::before {
-  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: #b59d72; mix-blend-mode: color; opacity: .6; transition: opacity var(--motion-300) var(--ease-out);
-}
-@media (hover: hover) and (pointer: fine) {
-  .sector:hover .sector-media::after, .report-card:hover .card-media::before { opacity: 0; }
-}
 .card-media-meta { z-index: 2; }
 .sector-body .fig-no { display: block; margin-bottom: var(--space-2); }
 .sector h3 { font-size: var(--step-3); }
@@ -420,7 +410,7 @@ canvas.snow { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 
 .page-hero .tag { color: var(--brand-deep); }
 .page-hero .tag.pitch { color: var(--ink-soft); }
 .page-hero .ticker { color: var(--ink); }
-.page-hero .issue { color: var(--muted); }
+.page-hero .issue { color: var(--warm); }
 .page-hero .more { color: var(--pen); }
 .back-link { color: var(--muted); }
 .back-link:hover { color: var(--ink); }
