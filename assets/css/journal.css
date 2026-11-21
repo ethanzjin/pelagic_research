@@ -206,6 +206,10 @@ html.js-reveal .zone[data-reveal]:not(.is-revealed)::before { transform: scaleX(
 /* ---------- Surfaces ---------- */
 
 .bg-shade { background-color: var(--shade); background-image: var(--grain); }
+/* Earlier reports: a lighter band between hairlines, so the table reads as its own section */
+#latest-section { padding-bottom: var(--space-16); }
+.bg-ledger { background-color: var(--raised); border-block: 1px solid var(--line); }
+.bg-ledger .ledger-row:hover { background: rgba(46, 68, 166, .05); }
 
 /* ---------- Latest entry: the article and its index card ---------- */
 
