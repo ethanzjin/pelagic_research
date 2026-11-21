@@ -14,7 +14,7 @@
 :root {
   /* paper and ink */
   --paper: #f4f1e8;
-  --shade: #ebe6d8;
+  --shade: #efebe2;          /* lighter, cleaner second paper tone */
   --raised: #fbf9f3;
   --line: #d3cbb8;
   --hairline: rgba(22, 24, 29, .12);
