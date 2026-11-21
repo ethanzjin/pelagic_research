@@ -171,3 +171,45 @@ html.js-reveal .return-scale[data-reveal]:not(.is-revealed) .seg { clip-path: in
   .sounding-line { animation: none; }
   .route::before, .seg, .waypoint-mark { transition: none; }
 }
+
+/* ---------- Research-journal pass (Nov 2026) ----------
+   Methodology and Write with us drop the notebook props to match the homepage:
+   plain paper panels instead of ruled pages, a straight label, a double rule
+   instead of the wave, solid course lines and upright numerals. */
+
+.sounding { display: none; }
+
+.ruled-page {
+  padding: var(--space-8) var(--space-12) var(--space-12);
+  background-color: var(--raised); background-image: none;
+  border: 1px solid var(--ink);
+}
+.ruled-page::before { display: none; }
+@media (max-width: 599.98px) { .ruled-page { padding: var(--space-6); } }
+
+.method-label { transform: none; }
+.specimen-label::before { display: none; }
+.label-head { border-bottom-color: var(--warm); padding-right: 0; }
+.method-label .label-head { padding-right: 0; }
+.specimen-label > div:not(.label-head) { border-bottom-style: solid; border-bottom-color: var(--line); }
+
+.section-rule {
+  height: 4px; margin: 0 0 var(--space-12); border: 0;
+  border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink);
+}
+
+.route::before { border-left: 1px solid var(--line); opacity: 1; left: calc(var(--mark) / 2); }
+@media (min-width: 900px) {
+  .route--four::before { border-left: 0; border-top: 1px solid var(--line); }
+}
+.waypoint-mark { font-style: normal; font-size: var(--step-1); border-width: 1px; }
+.waypoint:hover .waypoint-mark { transform: none; }
+.route-note { font-style: normal; }
+
+.fine-print {
+  padding: var(--space-12); background: var(--raised); border: 1px solid var(--ink);
+}
+.fine-print::before { display: none; }
+.fine-print ol li { border-top: 1px solid var(--line); }
+.fine-print ol li:last-child { border-bottom: 1px solid var(--line); }
+@media (max-width: 599.98px) { .fine-print { padding: var(--space-8) var(--space-6); } }

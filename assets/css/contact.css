@@ -169,3 +169,42 @@
   .way:hover, .way:active { transform: none; }
   .postcard.is-sent .sent-stamp { transform: translate(-50%, -50%) rotate(-14deg); transition: opacity 180ms linear; }
 }
+
+/* ---------- Research-journal pass (Nov 2026) ----------
+   The form keeps its two halves but loses the postcard props: no airmail
+   border, postmark, stamp or ruled lines, and no bottle on the cover. */
+
+.bottle { display: none; }
+
+.postcard {
+  padding: 0; background: var(--raised); border: 1px solid var(--ink);
+  box-shadow: var(--stack); transform: none;
+}
+.postcard > div { background: transparent; }
+.postcard-top { display: none; }
+
+.postcard textarea {
+  padding: var(--space-3); background-image: none; background-color: var(--paper);
+  border: 1px solid var(--line); border-radius: var(--radius);
+  font-family: var(--sans); font-size: 1rem; line-height: 1.6;
+}
+.postcard textarea:focus-visible { border-color: var(--pen); box-shadow: 0 0 0 1px var(--pen); }
+.postcard textarea[aria-invalid="true"] { border-color: var(--sell); box-shadow: 0 0 0 1px var(--sell); }
+.postcard textarea::placeholder, .postcard input::placeholder { font-style: normal; }
+.postcard-status[data-tone="wait"], .postcard-status[data-tone="ok"] { font-style: normal; }
+.postcard-status[data-tone="ok"] { font-family: var(--sans); font-size: var(--text-secondary); }
+
+.sent-stamp {
+  border: 1.5px solid var(--accumulate); border-radius: var(--radius);
+  font-family: var(--sans); font-size: var(--text-secondary); letter-spacing: .14em;
+  background: var(--raised); transform: translate(-50%, -50%) scale(.96);
+}
+.postcard.is-sent .sent-stamp { opacity: 1; transform: translate(-50%, -50%); transition: opacity 200ms var(--ease-out), transform 200ms var(--ease-out); }
+
+.reply-note { font-family: var(--sans); font-style: normal; border-left-color: var(--warm); }
+
+@media (max-width: 767.98px) {
+  .postcard { padding: 0; }
+  .postcard-message { border-bottom-style: solid; }
+  .sent-stamp { font-size: var(--text-secondary); }
+}
